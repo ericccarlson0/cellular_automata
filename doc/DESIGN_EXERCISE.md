@@ -1,3 +1,7 @@
+Charles Papandreou - cnp20
+Turner Jordan - tgj5
+Eric Carlson - ecc45
+
 1. How does a Cell know about its neighbors? How can it update itself without effecting its neighbors update?
  * Each cell object will hold 8 cell object pointers for its neighbors that will be used to determine updated state
  * Each cell will hold its current state and next state

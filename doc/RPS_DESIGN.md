@@ -1,3 +1,7 @@
+Charles Papandreou - cnp20
+Turner Jordan - tgj5
+Eric Carlson - ecc45
+
 Player
  * int score
  * destructor currSelection
