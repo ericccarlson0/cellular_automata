@@ -50,7 +50,19 @@ simulations take into account all of a cell's neighbors.
 
 
 ###- **User Interface**
+**Main Display:**
 
+To keep the UI simple, all user interaction will be hosted in a single window. About half of the window will be the main simulation display. This display will be where the grid is rendered and animated while the simulation is running. The user inputs will be found under the main display. 
+
+**User Inputs:**
+
+There will be **three buttons**: one to start the simulation, one to stop the simulation, and one to manually step the simulation. Then there will be a **slider** that allows the user to configure the speed of the simulation. Underneath, there is a **text input** for the user to enter a file name that contains the XML configurations for the desired simulation. This is accompanied by a **load button** that runs the initialization methods. 
+
+**Additional Outputs:**
+
+There will be two output boxes at the bottom of the window. The first one displays **statistics** about the simulation, such as how many cells of each state currently exist on the grid. This will be continuously updated as the simulation runs. The second one displays **messages** to the user. It will tell the user when the file has been successfully loaded (and that they can now press start to begin the simulation), when the simulation has completed, and report any errors the simulation encounters (e.g. invalid XML file format, invalid file name, unsupported simulation type).
+
+![UI Mockup](UI_mockup.png)
 
 ###- **Design Details**
 
