@@ -66,7 +66,7 @@ There will be two output boxes at the bottom of the window. The first one displa
 
 ###- **Design Details**
 
-- **Components**: 
+For information on components reference the class layout image and description in overview, as they are relatively detailed.
 
 - **Use Cases**: 
 1. *Set the next state of a middle cell to dead based on game of life implementation.*
@@ -74,20 +74,29 @@ There will be two output boxes at the bottom of the window. The first one displa
     2. We will call this cell's calcNextState() function which will count the number of its neighbors that are alive using its stored references to its neighbors.
     3. based on the findings, it has been determined that this cell's next state should be dead.
     4. nextState value is set to dead
-    5. after completing iteration of entire grid in grid class, the update function is called, which will set curr state to next state and next state to null for each cell in grid
-    6. after updating all states, display() function is called, which will iterate over cells and change their visual aspects to match up with whatever their current state is.
     
 2. *Set the next state of a cell to live for a cell on the edge.*
     1. First, we will be iterating through our grid data structure in the grid class during the calcNextState() method and come to an edge cell.
     2. We will call this cell's calcNextState() function which will count the number of its neighbors that are alive using its stored references to its neighbors. The edge cells will have been initialized with the proper neighbor references set to NULL, so we will not use any NULL neighbors in the calculation.
     3. We determine that the cell's next state should be live
     4. nextState value is set to live
+    
+3. *update all cells in a simulation from their current state to their next state and display the result graphically*
+    1. after completing iteration of entire grid in grid class, the update function is called, which will set curr state to next state and next state to null for each cell in grid
+    2. after updating all states, display() function is called, which will iterate over cells and change their visual aspects to match up with whatever their current state is.
 
 4. *Set the value of a global configuration parameter, probCatch -- for the simulation Fire -- based on the value in an XML file.*
     1. The public method initializeGrid is called.
     2. This method goes on to call a method that reads the XML file.
     3. When the XML file is read, the variable probCatch will be set in Grid.
     4. This is passed on to each cell.
+    
+5. *load a new simulation from an XML file, stopping the current running simulation*
+    1. When xml filename has been entered and load button is pressed, boolean flag for running program is set to false
+    2. New Grid object is created using new xml file.
+    3. This grid is initialized
+    4. The current grid is removed from scene and new grid is added
+    5. Message is put into message outbox stating that new simulation is ready.
 
 ###- **Design Considerations**
 
@@ -107,6 +116,8 @@ have easy access to its neighbors when updating itself.
 
 Prior to starting the project, we need to take a moment to consider the formatting of our XML documents and what
 information would best benefit our implementation.
+
+In addition, we need to look a little more into how to use panes and how we want to format our ui to allow for easy switching of grids.
 
 ###- **Team Responsibilities**
 
