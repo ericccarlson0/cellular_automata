@@ -1,8 +1,8 @@
 # **Simulation Design Plan**
 ### **Team Number**: 12 
 ### **Names**: 
-Turner Jordan (tgj5),
 Charles Papandreou (cnp20),
+Turner Jordan (tgj5),
 Eric Carlson (ecc45)
 
 - **Introduction**:
@@ -62,9 +62,11 @@ simulations take into account all of a cell's neighbors.
 
 ### **Team Responsibilities**
 
-- **Team Member #1**: 
+- **Team Member #1 (Eric Carlson)**: User Interface
 
-- **Team Member #2**: 
+- **Team Member #2 (Charles Papandreou)**: Simulation and Grid
 
-- **Team Member #3**: 
+- **Team Member #3 (Turner Jordan)**: Cell class and subclasses
 
+*(Teammates will help as needed, according to how much work each task takes and how difficult a time 
+team members are having with these tasks.)*
