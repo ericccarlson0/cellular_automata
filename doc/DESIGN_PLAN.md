@@ -77,7 +77,11 @@ There will be two output boxes at the bottom of the window. The first one displa
     5. after completing iteration of entire grid in grid class, the update function is called, which will set curr state to next state and next state to null for each cell in grid
     6. after updating all states, display() function is called, which will iterate over cells and change their visual aspects to match up with whatever their current state is.
     
-2.
+2. Apply the rules to an edge cell: set the next state of a cell to live for a cell on the edge, with some of its neighbors missing.
+    1. First, we will be iterating through our grid data structure in the grid class during the calcNextState() method and come to an edge cell.
+    2. We will call this cell's calcNextState() function which will count the number of its neighbors that are alive using its stored references to its neighbors. The edge cells will have been initialized with the proper neighbor references set to NULL, so we will not use any NULL neighbors in the calculation.
+    3. We determine that the cell's next state should be live
+    4. nextState value is set to live
 
 ###- **Design Considerations**
 We had originally discussed storing references to neighbor cells within each cell object, for easy access when checking for an updated state of that cell. The benefits of storing neighbors in each cell is that we would no longer need to use a grid shaped data structure in the grid class, but could simply just use a list instead and iterate over each cell to check. I am unsure whether this is really all that beneficial, but it does provide some more flexibility in terms of data structure/design choice. We ran into the problem of how to initialize this cell if we do not yet know what its neighbors are.
