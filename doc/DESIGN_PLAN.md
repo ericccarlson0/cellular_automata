@@ -5,7 +5,7 @@ Charles Papandreou (cnp20),
 Turner Jordan (tgj5),
 Eric Carlson (ecc45)
 
-- **Introduction**:
+###- **Introduction**:
 
 This program will implement a closed framework that runs and animates various 2D simulations of Cellular Automata *(CA)*.
 Use cases include *The Game of Life*, *Percolation*, *Segregation*, *Predator-Prey*, and *Fire*. 
@@ -14,7 +14,7 @@ We aim to design a program that can be extended to support many different CA sim
 through the use of formatted XML documents. However, its *core functionality* -- the UI, the animation, and the simulation
  itself -- will be *closed* for modification. 
 
-- **Overview**:
+###- **Overview**:
 
 **Components**: The important classes are the *simulation* class, *grid* class, and *cell* class. The three are organized 
 in a relatively linear manner -- the simulation class draws on the grid class, which draws on the cell class.
@@ -45,20 +45,27 @@ the case of certain implementations of Percolation, one would need to disregard 
 whether to turn an *empty* cell to a *full* cell. This would not be possible without an abstract class, as most CA 
 simulations take into account all of a cell's neighbors.
 
-- **User Interface**
+
+![Class Layout](classlayout.png)
 
 
-- **Design Details**
+###- **User Interface**
 
 
-- **Design Considerations**
-
+###- **Design Details**
 
 - **Components**
 
-
 - **Use Cases**
 
+###- **Design Considerations**
+We had originally discussed storing references to neighbor cells within each cell object, for easy access when checking for an updated state of that cell. The benefits of storing neighbors in each cell is that we would no longer need to use a grid shaped data structure in the grid class, but could simply just use a list instead and iterate over each cell to check. I am unsure whether this is really all that beneficial, but it does provide some more flexibility in terms of data structure/design choice. We ran into the problem of how to initialize this cell if we do not yet know what its neighbors are.
+ 
+We then considered just passing a list of neighbors for the current cell when iterating over grid during calcNewState to the cell that needs to perform the calculations, but realized that this would require us to continuously determine who neighbors are on each step, and would require unneccessary time and extra passing of data.
+
+We have decided for the time being to simply calculate these neighbors once at the beginning while initializing the cell objects in grid and then pass them to be stored for each cell. This will save a good deal of time and confusion during each step and will allow each cell easy access to its neighbors to perform calculations.
+
+Prior to starting the project, we need to take a moment to consider formatting for XML documents and what information in those documents would best benefit our implementation.
 
 ### **Team Responsibilities**
 
