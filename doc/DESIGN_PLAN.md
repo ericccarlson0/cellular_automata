@@ -66,10 +66,10 @@ There will be two output boxes at the bottom of the window. The first one displa
 
 ###- **Design Details**
 
-- **Components**
+- **Components**: 
 
-- **Use Cases**
-1. Apply the rules to a middle cell: set next state to dead based on game of life implementation.
+- **Use Cases**: 
+1. *Set the next state of a middle cell to dead based on game of life implementation.*
     1. First, we will be iterating through our grid data structure in the grid class during the calcNextState() method and come to a middle cell.
     2. We will call this cell's calcNextState() function which will count the number of its neighbors that are alive using its stored references to its neighbors.
     3. based on the findings, it has been determined that this cell's next state should be dead.
@@ -77,22 +77,38 @@ There will be two output boxes at the bottom of the window. The first one displa
     5. after completing iteration of entire grid in grid class, the update function is called, which will set curr state to next state and next state to null for each cell in grid
     6. after updating all states, display() function is called, which will iterate over cells and change their visual aspects to match up with whatever their current state is.
     
-2. Apply the rules to an edge cell: set the next state of a cell to live for a cell on the edge, with some of its neighbors missing.
+2. *Set the next state of a cell to live for a cell on the edge.*
     1. First, we will be iterating through our grid data structure in the grid class during the calcNextState() method and come to an edge cell.
     2. We will call this cell's calcNextState() function which will count the number of its neighbors that are alive using its stored references to its neighbors. The edge cells will have been initialized with the proper neighbor references set to NULL, so we will not use any NULL neighbors in the calculation.
     3. We determine that the cell's next state should be live
     4. nextState value is set to live
 
+4. *Set the value of a global configuration parameter, probCatch -- for the simulation Fire -- based on the value in an XML file.*
+    1. The public method initializeGrid is called.
+    2. This method goes on to call a method that reads the XML file.
+    3. When the XML file is read, the variable probCatch will be set in Grid.
+    4. This is passed on to each cell.
+
 ###- **Design Considerations**
-We had originally discussed storing references to neighbor cells within each cell object, for easy access when checking for an updated state of that cell. The benefits of storing neighbors in each cell is that we would no longer need to use a grid shaped data structure in the grid class, but could simply just use a list instead and iterate over each cell to check. I am unsure whether this is really all that beneficial, but it does provide some more flexibility in terms of data structure/design choice. We ran into the problem of how to initialize this cell if we do not yet know what its neighbors are.
+
+We had originally discussed storing references to neighbor cells within each cell object for easy access when checking
+for an updated state of that cell. The benefits of storing neighbors in each cell is that we would no longer need to use
+a grid-shaped data structure in the grid class, but could just use a list instead and iterate over each cell to check.
+We are unsure whether this is all that beneficial, but it does provide some more *flexibility* in terms of data structures
+and design choices. We ran into the problem of how to initialize this cell if we do not yet know what its neighbors are.
  
-We then considered just passing a list of neighbors for the current cell when iterating over grid during calcNewState to the cell that needs to perform the calculations, but realized that this would require us to continuously determine who neighbors are on each step, and would require unneccessary time and extra passing of data.
+We then considered just passing a list of neighbors for the current cell when iterating over grid during **calcNewState**
+to the cell that needs to be updated. We realized, however, that this would require us to determine which neighbors a cell
+had on each of many steps, which would be time-intensive and require passing more data.
 
-We have decided for the time being to simply calculate these neighbors once at the beginning while initializing the cell objects in grid and then pass them to be stored for each cell. This will save a good deal of time and confusion during each step and will allow each cell easy access to its neighbors to perform calculations.
+We have decided now to just calculate these neighbors *once*, at the start, when we initialize the cell objects in grid 
+and then store all of the neighbors in the cell. This would save a good deal of time each step, and would let each cell
+have easy access to its neighbors when updating itself.
 
-Prior to starting the project, we need to take a moment to consider formatting for XML documents and what information in those documents would best benefit our implementation.
+Prior to starting the project, we need to take a moment to consider the formatting of our XML documents and what
+information would best benefit our implementation.
 
-### **Team Responsibilities**
+###- **Team Responsibilities**
 
 - **Team Member #1 (Eric Carlson)**: User Interface
 
