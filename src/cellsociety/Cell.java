@@ -18,4 +18,8 @@ public class Cell {
     public Rectangle getVis() {
         return vis;
     }
+
+    public void setNeighbors(Cell[] neighbors) {
+
+    }
 }
