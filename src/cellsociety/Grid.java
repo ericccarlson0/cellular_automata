@@ -16,8 +16,7 @@ public class Grid {
 
     public void step(){
         calcNewStates();
-        updateCellStates();
-        updateCellDisplays();
+        updateCell();
     }
 
     private void parseFile(String xmlFilename) {
@@ -25,6 +24,15 @@ public class Grid {
     }
 
     private void initializeGridStructure() {
+        createCells();
+        populateCellNeighbors();
+    }
+
+    private void populateCellNeighbors() {
+
+    }
+
+    private void createCells() {
 
     }
 
@@ -33,14 +41,19 @@ public class Grid {
     }
 
     private void calcNewStates(){
-
+        for(int row = 0; row < size; row++) {
+            for(int col = 0; col < size; col++){
+                gridStructure[row][col].calcNewState();
+            }
+        }
     }
 
-    private void updateCellStates(){
-
-    }
-
-    private void updateCellDisplays(){
-
+    private void updateCell(){
+        for(int row = 0; row < size; row++) {
+            for(int col = 0; col < size; col++){
+                gridStructure[row][col].updateState();
+                gridStructure[row][col].changeDisplay();
+            }
+        }
     }
 }
