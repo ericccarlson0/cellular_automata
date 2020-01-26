@@ -20,8 +20,12 @@ public class Grid {
         updateCell();
     }
 
-    private void parseFile(String xmlFilename) {
+    public GridPane getGridVisual(){
+        return gridVisual;
+    }
 
+    private void parseFile(String xmlFilename) {
+        //TODO
     }
 
     private void initializeGridStructure() {
@@ -36,7 +40,6 @@ public class Grid {
                 gridStructure[row][col].setNeighbors(neighbors);
             }
         }
-
     }
 
     //gives array of neighbor cells starting in NE corner and moving clockwise
@@ -110,7 +113,7 @@ public class Grid {
     }
 
     private void createCells() {
-
+        //TODO
     }
 
     private void initializeGridVisual() {
