@@ -30,7 +30,83 @@ public class Grid {
     }
 
     private void populateCellNeighbors() {
+        for(int row = 0; row < size; row++){
+            for(int col = 0; col < size; col++){
+                Cell[] neighbors = getNeighbors(row,col);
+                gridStructure[row][col].setNeighbors(neighbors);
+            }
+        }
 
+    }
+
+    //gives array of neighbor cells starting in NE corner and moving clockwise
+    private Cell[] getNeighbors(int row, int col) {
+        Cell[] neighbors = new Cell[8];
+        neighbors[0] = checkNWN(row,col);
+        neighbors[1] = checkNN(row,col);
+        neighbors[2] = checkNEN(row,col);
+        neighbors[3] = checkEN(row,col);
+        neighbors[4] = checkSEN(row,col);
+        neighbors[5] = checkSN(row,col);
+        neighbors[6] = checkSWN(row,col);
+        neighbors[7] = checkWN(row,col);
+        return neighbors;
+    }
+
+    private Cell checkNWN(int row, int col){
+        if(row > 0 && col > 0){
+            return gridStructure[row - 1][col - 1];
+        }
+        return null;
+    }
+
+    private Cell checkNN(int row, int col){
+        if(row > 0){
+            return gridStructure[row - 1][col];
+        }
+        return null;
+    }
+
+    private Cell checkNEN(int row, int col){
+        if(row > 0 && col < size - 1){
+            return gridStructure[row - 1][col + 1];
+        }
+        return null;
+    }
+
+    private Cell checkEN(int row, int col){
+        if(col < size - 1){
+            return gridStructure[row][col + 1];
+        }
+        return null;
+    }
+
+    private Cell checkSEN(int row, int col){
+        if(row < size - 1 && col < size - 1){
+            return gridStructure[row + 1][col + 1];
+        }
+        return null;
+    }
+
+    private Cell checkSN(int row, int col){
+        if(row < size - 1){
+            return gridStructure[row + 1][col];
+        }
+        return null;
+    }
+
+    private Cell checkSWN(int row, int col){
+        if(row < size - 1 && col > 0){
+            return gridStructure[row + 1][col - 1];
+        }
+        return null;
+    }
+
+    private Cell checkWN(int row, int col){
+        if(col > 0){
+            return gridStructure[row][col - 1];
+        }
+        return null;
     }
 
     private void createCells() {
