@@ -1,6 +1,7 @@
 package cellsociety;
 
 import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Rectangle;
 
 public class Grid {
     private Cell[][] gridStructure;
@@ -37,7 +38,16 @@ public class Grid {
     }
 
     private void initializeGridVisual() {
-
+        gridVisual = new GridPane();
+        gridVisual.setGridLinesVisible(true);
+        gridVisual.setHgap(.5);
+        gridVisual.setVgap(.5);
+        for(int row = 0; row < size; row++){
+            for(int col = 0; col < size; col++){
+                Rectangle currCell = gridStructure[row][col].getVis();
+                gridVisual.add(currCell,col,row,1,1);
+            }
+        }
     }
 
     private void calcNewStates(){
