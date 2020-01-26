@@ -1,6 +1,9 @@
 package cellsociety;
 
+import javafx.scene.shape.Rectangle;
+
 public class Cell {
+    private Rectangle vis;
 
     public void calcNewState() {
     }
@@ -10,5 +13,9 @@ public class Cell {
 
     public void changeDisplay() {
 
+    }
+
+    public Rectangle getVis() {
+        return vis;
     }
 }
