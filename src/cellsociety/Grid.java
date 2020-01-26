@@ -5,7 +5,7 @@ import javafx.scene.layout.GridPane;
 public class Grid {
     private Cell[][] gridStructure;
     private GridPane gridVisual;
-    private String gridType;
+    private String simType;
     private int size;
 
     public Grid(String xmlFilename){
@@ -15,7 +15,9 @@ public class Grid {
     }
 
     public void step(){
-
+        calcNewStates();
+        updateCellStates();
+        updateCellDisplays();
     }
 
     private void parseFile(String xmlFilename) {
@@ -34,7 +36,11 @@ public class Grid {
 
     }
 
-    private void calcNewStates(){
+    private void updateCellStates(){
+
+    }
+
+    private void updateCellDisplays(){
 
     }
 }
