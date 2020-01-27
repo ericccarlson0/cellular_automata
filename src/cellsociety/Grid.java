@@ -113,7 +113,24 @@ public class Grid {
     }
 
     private void createCells() {
-        //TODO
+        for(int row = 0; row < size; row++){
+            for(int col = 0; col < size; col++){
+                Cell currCell = null;
+                switch(simType){
+                    case "Life":
+                        currCell = new LifeCell();
+                        break;
+                    case "Fire":
+                        currCell = new FireCell();
+                        break;
+                    case "Percolation":
+                        currCell = new PercolationCell();
+                        break;
+                    //TODO: add more cases for diff simulation types and enter parameters for creating new cells as needed.
+                }
+                gridStructure[row][col] = currCell;
+            }
+        }
     }
 
     private void initializeGridVisual() {
