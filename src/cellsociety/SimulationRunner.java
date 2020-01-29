@@ -15,7 +15,7 @@ public class SimulationRunner extends Application {
     private Grid currentGrid;
     private boolean shouldStep;
     private boolean isSimRunning;
-    private int simSpeed;
+    private int simDelay;
     private Stage simStage;
     private Scene simDisplay;
 
@@ -23,6 +23,7 @@ public class SimulationRunner extends Application {
     public void start(Stage stage){
         simStage = stage;
         initializeUI();
+        initializeVals();
 
         simStage.setScene(simDisplay);
         simStage.setTitle(TITLE);
@@ -35,12 +36,25 @@ public class SimulationRunner extends Application {
         animation.play();
     }
 
+    private void initializeVals() {
+        currentGrid = null;
+        shouldStep = false;
+        isSimRunning = false;
+        simDelay = 0;
+    }
+
     private void initializeUI() {
         //TODO set up scene in simDisplay private variable
     }
 
     private void step(){
-        if(isSimRunning || shouldStep){
+        if(currentGrid != null && (isSimRunning || shouldStep)){
+            try {
+                Thread.sleep(simDelay);
+            }
+            catch(Exception e){
+                System.out.println("Couldn't Delay");
+            }
             currentGrid.step();
             if(shouldStep){
                 shouldStep = false;
