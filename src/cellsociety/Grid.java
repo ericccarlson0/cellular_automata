@@ -74,7 +74,7 @@ public class Grid {
 
     private void createCells() {
         double cellWidth = displayWidth / size - 2*(CELL_GAP);
-        double cellHeight = displayHeight / size - 2*(CELL_GAP;
+        double cellHeight = displayHeight / size - 2*(CELL_GAP);
         for(int row = 0; row < size; row++){
             for(int col = 0; col < size; col++){
                 gridStructure[row][col] = makeCellOfType(cellWidth,cellHeight,initStatus[row][col]);
