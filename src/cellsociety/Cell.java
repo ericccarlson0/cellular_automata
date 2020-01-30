@@ -4,6 +4,7 @@ import javafx.scene.shape.Rectangle;
 
 public abstract class Cell {
     private Rectangle vis;
+    //TODO: use enums for states?
     private String currState;
     private String nextState;
     private Cell[] neighbors;
