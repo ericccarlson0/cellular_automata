@@ -4,12 +4,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 
 public class Grid {
+
+    enum SimulationType{
+        LIFE, FIRE, PERCOLATION, SEGREGATION, PREDPREY;
+    }
     public static final double CELL_GAP = .1;
 
     private String[][] initStatus;
     private Cell[][] gridStructure;
     private GridPane gridVisual;
-    private String simType;
+    private SimulationType simType;
     private int size;
     private double displayWidth;
     private double displayHeight;
@@ -85,20 +89,19 @@ public class Grid {
     private Cell makeCellOfType(double width, double height, String status){
         Cell currCell = null;
         switch(simType){
-            //TODO: use enums?
-            case "Life":
+            case LIFE:
                 currCell = new LifeCell(width,height,status);
                 break;
-            case "Fire":
+            case FIRE:
                 currCell = new FireCell(width,height,status);
                 break;
-            case "Percolation":
+            case PERCOLATION:
                 currCell = new PercolationCell(width,height,status);
                 break;
-            case "Segregation":
+            case SEGREGATION:
                 currCell = new SegregationCell(width,height,status);
                 break;
-            case "PredPrey":
+            case PREDPREY:
                 currCell = new PredPreyCell(width,height,status);
                 break;
             //TODO: add more cases for diff simulation types and enter parameters for creating new cells as needed.
