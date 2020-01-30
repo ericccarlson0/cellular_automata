@@ -4,7 +4,7 @@ import javafx.scene.shape.Rectangle;
 
 public abstract class Cell{
     private Rectangle vis;
-    //TODO: use enums for states?
+    //TODO: use enums for states - need to figure out how to declare that they are needed and then override diff set of state types in each.
     private String currState;
     private String nextState;
     private Cell[] neighbors;

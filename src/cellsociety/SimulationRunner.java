@@ -44,7 +44,7 @@ public class SimulationRunner extends Application {
     }
 
     private void initializeUI() {
-        //TODO set up scene in simDisplay private variable
+        //TODO set up scene in simDisplay private variable - USE A BORDER PANE!
     }
 
     private void step(){
