@@ -45,69 +45,22 @@ public class Grid {
     //gives array of neighbor cells starting in NE corner and moving clockwise
     private Cell[] getNeighbors(int row, int col) {
         Cell[] neighbors = new Cell[8];
-        neighbors[0] = checkNWN(row,col);
-        neighbors[1] = checkNN(row,col);
-        neighbors[2] = checkNEN(row,col);
-        neighbors[3] = checkEN(row,col);
-        neighbors[4] = checkSEN(row,col);
-        neighbors[5] = checkSN(row,col);
-        neighbors[6] = checkSWN(row,col);
-        neighbors[7] = checkWN(row,col);
+        neighbors[0] = isValidCoords(row - 1, col - 1);
+        neighbors[1] = isValidCoords(row - 1,col);
+        neighbors[2] = isValidCoords(row - 1,col + 1);
+        neighbors[3] = isValidCoords(row,col + 1);
+        neighbors[4] = isValidCoords(row + 1,col + 1);
+        neighbors[5] = isValidCoords(row + 1,col);
+        neighbors[6] = isValidCoords(row + 1,col - 1);
+        neighbors[7] = isValidCoords(row,col - 1);
         return neighbors;
     }
 
-    private Cell checkNWN(int row, int col){
-        if(row > 0 && col > 0){
-            return gridStructure[row - 1][col - 1];
-        }
-        return null;
-    }
-
-    private Cell checkNN(int row, int col){
-        if(row > 0){
-            return gridStructure[row - 1][col];
-        }
-        return null;
-    }
-
-    private Cell checkNEN(int row, int col){
-        if(row > 0 && col < size - 1){
-            return gridStructure[row - 1][col + 1];
-        }
-        return null;
-    }
-
-    private Cell checkEN(int row, int col){
-        if(col < size - 1){
-            return gridStructure[row][col + 1];
-        }
-        return null;
-    }
-
-    private Cell checkSEN(int row, int col){
-        if(row < size - 1 && col < size - 1){
-            return gridStructure[row + 1][col + 1];
-        }
-        return null;
-    }
-
-    private Cell checkSN(int row, int col){
-        if(row < size - 1){
-            return gridStructure[row + 1][col];
-        }
-        return null;
-    }
-
-    private Cell checkSWN(int row, int col){
-        if(row < size - 1 && col > 0){
-            return gridStructure[row + 1][col - 1];
-        }
-        return null;
-    }
-
-    private Cell checkWN(int row, int col){
-        if(col > 0){
-            return gridStructure[row][col - 1];
+    private Cell isValidCoords(int row, int col){
+        boolean rowValid = row >= 0 && row <= size - 1;
+        boolean colValid = col >= 0 && col <= size - 1;
+        if(rowValid && colValid){
+            return gridStructure[row][col];
         }
         return null;
     }
