@@ -2,7 +2,7 @@ package cellsociety;
 
 public class SegregationCell extends Cell {
 
-    public SegregationCell(double width, double height, String currState){
+    public SegregationCell(double width, double height, int currState){
         super(width,height,currState);
     }
 

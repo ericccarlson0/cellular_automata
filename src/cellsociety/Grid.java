@@ -5,23 +5,21 @@ import javafx.scene.shape.Rectangle;
 
 public class Grid {
 
-    enum SimulationType{
-        LIFE, FIRE, PERCOLATION, SEGREGATION, PREDPREY;
-    }
-    public static final double CELL_GAP = .1;
 
-    private String[][] initStatus;
+    public static final double CELL_GAP = .1;
+    private static double DISPLAY_WIDTH = 600;
+    private static double DISPLAY_HEIGHT = 600;
+
     private Cell[][] gridStructure;
     private GridPane gridVisual;
-    private SimulationType simType;
+    private SimulationRunner.SimulationType simType;
     private int size;
-    private double displayWidth;
-    private double displayHeight;
+    private double initPercentActive;
 
-    public Grid(String xmlFilename,double displayWidth, double displayHeight){
-        this.displayHeight = displayHeight;
-        this.displayWidth = displayWidth;
-        parseFile(xmlFilename);
+    public Grid(SimulationRunner.SimulationType typ, int size, double percentActive){
+        simType = typ;
+        this.size = size;
+        initPercentActive = percentActive;
         initializeGridStructure();
         initializeGridVisual();
     }
@@ -35,11 +33,8 @@ public class Grid {
         return gridVisual;
     }
 
-    private void parseFile(String xmlFilename) {
-        //TODO parse xml file set values necessary
-    }
-
     private void initializeGridStructure() {
+        gridStructure = new Cell[size][size];
         createCells();
         populateCellNeighbors();
     }
@@ -51,6 +46,15 @@ public class Grid {
                 gridStructure[row][col].setNeighbors(neighbors);
             }
         }
+    }
+
+    private int determineInitState(){
+        double val = Math.random() * 100;
+        if (val < initPercentActive){
+            return 1;
+        }
+        else
+            return 0;
     }
 
     //gives array of neighbor cells starting in NE corner and moving clockwise
@@ -77,32 +81,32 @@ public class Grid {
     }
 
     private void createCells() {
-        double cellWidth = displayWidth / size - 2*(CELL_GAP);
-        double cellHeight = displayHeight / size - 2*(CELL_GAP);
+        double cellWidth = DISPLAY_WIDTH / size - 2*(CELL_GAP);
+        double cellHeight = DISPLAY_HEIGHT / size - 2*(CELL_GAP);
         for(int row = 0; row < size; row++){
             for(int col = 0; col < size; col++){
-                gridStructure[row][col] = makeCellOfType(cellWidth,cellHeight,initStatus[row][col]);
+                gridStructure[row][col] = makeCellOfType(cellWidth,cellHeight);
             }
         }
     }
 
-    private Cell makeCellOfType(double width, double height, String status){
+    private Cell makeCellOfType(double width, double height){
         Cell currCell = null;
         switch(simType){
             case LIFE:
-                currCell = new LifeCell(width,height,status);
+                currCell = new LifeCell(width,height,determineInitState());
                 break;
             case FIRE:
-                currCell = new FireCell(width,height,status);
+                //currCell = new FireCell(width,height,status);
                 break;
             case PERCOLATION:
-                currCell = new PercolationCell(width,height,status);
+                //currCell = new PercolationCell(width,height,status);
                 break;
             case SEGREGATION:
-                currCell = new SegregationCell(width,height,status);
+                //currCell = new SegregationCell(width,height,status);
                 break;
             case PREDPREY:
-                currCell = new PredPreyCell(width,height,status);
+                //currCell = new PredPreyCell(width,height,status);
                 break;
             //TODO: add more cases for diff simulation types and enter parameters for creating new cells as needed.
         }
