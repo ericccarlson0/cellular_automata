@@ -1,6 +1,7 @@
 package cellsociety;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 public class SegregationCell extends Cell {
@@ -14,7 +15,7 @@ public class SegregationCell extends Cell {
         changeDisplay();
     }
 
-    public void calcNewState(Set<Cell> emptySpaces){
+    public void calcNewState(ArrayList<HashSet<Cell>> emptySpaces){
 
     }
 

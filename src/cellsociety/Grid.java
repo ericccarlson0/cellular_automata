@@ -21,7 +21,7 @@ public class Grid {
     private ArrayList<Double> statePercents;
     private ArrayList<String> states;
     private double miscVal;
-    private Set<Cell> emptySpaces;
+    private ArrayList<HashSet<Cell>> emptySpaces;
 
     public Grid(SimulationRunner.SimulationType typ, int size, ArrayList<Double> percents, ArrayList<String> associatedTypes, double misc){
         simType = typ;
@@ -29,7 +29,14 @@ public class Grid {
         states = associatedTypes;
         statePercents = percents;
         miscVal = misc;
-        emptySpaces = new HashSet<Cell>();
+
+        emptySpaces = new ArrayList<HashSet<Cell>>();
+        HashSet<Cell> currEmpty = new HashSet<>();
+        HashSet<Cell> nextEmpty = new HashSet<>();
+
+        emptySpaces.add(currEmpty);
+        emptySpaces.add(nextEmpty);
+
         initPercents();
         initializeGridStructure();
         initializeGridVisual();
@@ -44,7 +51,13 @@ public class Grid {
     public void step(){
         calcNewStates();
         updateCell();
-        System.out.println(emptySpaces.size());
+        updateEmpty();
+        System.out.println(emptySpaces.get(0).size());
+    }
+
+    private void updateEmpty() {
+        emptySpaces.get(0).addAll(emptySpaces.get(1));
+        emptySpaces.get(1).clear();
     }
 
     public GridPane getGridVisual(){
@@ -138,7 +151,7 @@ public class Grid {
             //TODO: add more cases for diff simulation types and enter parameters for creating new cells as needed.
         }
         if(initState.equals("EMPTY")){
-            emptySpaces.add(currCell);
+            emptySpaces.get(0).add(currCell);
         }
         return currCell;
     }
