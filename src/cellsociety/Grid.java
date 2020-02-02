@@ -169,8 +169,4 @@ public class Grid {
             }
         }
     }
-
-    private void determineEmptySpaces(){
-        emptySpaces = new ArrayList<Cell>();
-    }
 }

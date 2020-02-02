@@ -3,6 +3,8 @@ package cellsociety;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
+import java.util.ArrayList;
+
 public class FireCell extends Cell {
     public static final Paint TREE_COLOR = Color.FORESTGREEN;
     public static final Paint EMPTY_COLOR = Color.WHITE;
@@ -20,7 +22,7 @@ public class FireCell extends Cell {
         changeDisplay();
     }
 
-    public void calcNewState(){
+    public void calcNewState(ArrayList<Cell> emptySpaces){
         if(currState == FireCellState.EMPTY || currState == FireCellState.FIRE){
             nextState = FireCellState.EMPTY;
         }

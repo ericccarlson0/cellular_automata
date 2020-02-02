@@ -1,16 +1,22 @@
 package cellsociety;
 
+import java.util.ArrayList;
+
 public class SegregationCell extends Cell {
 
-    public SegregationCell(double width, double height, int currState){
-        super(width,height,currState);
+    enum SegregationCellState{
+        EMPTY,ONE,TWO
     }
 
-    public void calcNewState(){
+    public SegregationCell(double width, double height, String currState){
+        super(width,height,SegregationCellState.valueOf(currState));
+        changeDisplay();
+    }
+
+    public void calcNewState(ArrayList<Cell> emptySpaces){
 
     }
 
     public void changeDisplay(){
-
     }
 }
