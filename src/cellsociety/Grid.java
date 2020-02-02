@@ -56,7 +56,10 @@ public class Grid {
     }
 
     private void updateEmpty() {
-        emptySpaces.get(0).addAll(emptySpaces.get(1));
+        HashSet<Cell> nowEmpty = new HashSet<>();
+        nowEmpty.addAll(emptySpaces.get(0));
+        nowEmpty.addAll(emptySpaces.get(1));
+        emptySpaces.set(0,nowEmpty);
         emptySpaces.get(1).clear();
     }
 
@@ -143,7 +146,7 @@ public class Grid {
                 }
                 break;
             case SEGREGATION:
-                //currCell = new SegregationCell(width,height,status);
+                currCell = new SegregationCell(width,height,initState,miscVal);
                 break;
             case PREDPREY:
                 //currCell = new PredPreyCell(width,height,status);

@@ -26,7 +26,35 @@ public class SegregationCell extends Cell {
     }
 
     public void calcNewState(ArrayList<HashSet<Cell>> emptySpaces){
-        
+//        System.out.println("THIS CELL:" + this);
+//        System.out.println("-----------BEFORE--------------");
+//        System.out.println("CurrentlyEmpty: - " + emptySpaces.get(0));
+//        System.out.println("NextEmpty: - " + emptySpaces.get(1));
+//        System.out.println("-------------------------");
+        if(currState == SegregationCellState.EMPTY && nextState == null) {
+            nextState = SegregationCellState.EMPTY;
+            emptySpaces.get(1).add(this);
+//            System.out.println("Adding previously empty cell to list 2 - " + this);
+        }
+        else if(!isSatisfied() && !(emptySpaces.get(0).isEmpty())) {
+            Cell currCell = getRandomEmpty(emptySpaces.get(0));
+            emptySpaces.get(0).remove(currCell);
+            emptySpaces.get(1).remove(currCell);
+//            System.out.println("Removing empty cell from list 1 - " + currCell);
+            currCell.setNextState(currState);
+            nextState = SegregationCellState.EMPTY;
+            emptySpaces.get(1).add(this);
+            //System.out.println("adding new empty cell to list 2 - " + this);
+        }
+        else if (currState != SegregationCellState.EMPTY){
+            nextState = currState;
+        }
+//        System.out.println("-----------After--------------");
+//        System.out.println("CurrentlyEmpty: - " + emptySpaces.get(0));
+//        System.out.println("NextEmpty: - " + emptySpaces.get(1));
+//        System.out.println("-------------------------");
+//        System.out.println("______________________________________");
+//        System.out.println("");
     }
 
     public void changeDisplay(){
@@ -39,5 +67,32 @@ public class SegregationCell extends Cell {
         else {
             vis.setFill(TWO_COLOR);
         }
+    }
+
+    private boolean isSatisfied() {
+        if(currState == SegregationCellState.EMPTY){
+            return true;
+        }
+        int numSame = 0;
+        int numTotal = 0;
+        for(Cell currNeighbor : neighbors){
+            if(currNeighbor != null && currNeighbor.getCurrState() == currState){
+                numSame += 1;
+                numTotal += 1;
+            }
+            else if(currNeighbor != null && !(currNeighbor.getCurrState() == SegregationCellState.EMPTY)) {
+                numTotal += 1;
+            }
+        }
+//        System.out.println((numSame * 1.0) / numTotal);
+        return ((numSame * 1.0) / numTotal) >= satisfactionThreshold;
+    }
+
+    private Cell getRandomEmpty(HashSet<Cell> currEmpties) {
+        Cell[] empties = new Cell[currEmpties.size()];
+        currEmpties.toArray(empties);
+
+        int randIndex = (int)(Math.random() * currEmpties.size());
+        return empties[randIndex];
     }
 }

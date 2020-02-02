@@ -44,7 +44,7 @@ public class SimulationRunner extends Application {
         simStage.setTitle(TITLE);
         simStage.show();
 
-        currentGrid = fileParser.generateGrid("./data/fire_test.xml");
+        currentGrid = fileParser.generateGrid("./data/segregation_test.xml");
         displayHolder.setCenter(currentGrid.getGridVisual());
 
         KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step());
