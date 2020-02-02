@@ -10,7 +10,6 @@ public class Grid {
     private static double DISPLAY_WIDTH = 600;
     private static double DISPLAY_HEIGHT = 600;
 
-    private String[][] initStatus;
     private Cell[][] gridStructure;
     private GridPane gridVisual;
     private SimulationRunner.SimulationType simType;

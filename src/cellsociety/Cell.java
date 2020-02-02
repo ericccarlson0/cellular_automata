@@ -31,4 +31,8 @@ public abstract class Cell{
     public void setNeighbors(Cell[] neighbors) {
         this.neighbors = neighbors;
     }
+
+    public int getCurrState(){
+        return currState;
+    }
 }

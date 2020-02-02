@@ -14,7 +14,21 @@ public class LifeCell extends Cell {
     }
 
     public void calcNewState(){
-
+        int numNeighborsAlive = 0;
+        for(Cell currNeighbor : neighbors){
+            if(currNeighbor != null){
+                numNeighborsAlive += currNeighbor.getCurrState();
+            }
+        }
+        if(currState == 1 && (numNeighborsAlive == 2 || numNeighborsAlive == 3)){
+            nextState = 1;
+        }
+        else if(currState == 0 && numNeighborsAlive == 3){
+            nextState = 1;
+        }
+        else{
+            nextState = 0;
+        }
     }
 
     public void changeDisplay(){
