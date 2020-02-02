@@ -33,19 +33,33 @@ public class XMLParser {
         Element root = getRootElement(dataFile);
         if (isValidFile(root)) {
             SimulationRunner.SimulationType simType = SimulationRunner.SimulationType.valueOf(getAttribute(root,"simType"));
-            int dimensions = Integer.parseInt(getTextValue(root,"size"));
-            String[] percent = (getTextValue(root,"percents")).split(",");
-            ArrayList<Double> percents = new ArrayList<Double>();
-            for(int i = 0; i < percent.length; i++){
-                percents.add(Double.parseDouble(percent[i]));
-            }
-            String[] state = (getTextValue(root,"states")).split(",");
-            ArrayList<String> states = new ArrayList<>(Arrays.asList(state));
-            return new Grid(simType,dimensions,percents,states);
+            int dimensions = getDimensions(root);
+            ArrayList<Double> percents = getPercents(root);
+            ArrayList<String> states = getStates(root);
+            double misc = Double.parseDouble(getTextValue(root,"misc"));
+            return new Grid(simType,dimensions,percents,states,misc);
         }
         else{
             return null;
         }
+    }
+
+    private int getDimensions(Element root){
+        return Integer.parseInt(getTextValue(root,"size"));
+    }
+
+    private ArrayList<Double> getPercents(Element root){
+        String[] percent = (getTextValue(root,"percents")).split(",");
+        ArrayList<Double> percents = new ArrayList<Double>();
+        for(int i = 0; i < percent.length; i++){
+            percents.add(Double.parseDouble(percent[i]));
+        }
+        return percents;
+    }
+
+    private ArrayList<String> getStates(Element root){
+        String[] state = (getTextValue(root,"states")).split(",");
+        return new ArrayList<>(Arrays.asList(state));
     }
 
     private String getTextValue (Element e, String tagName) {

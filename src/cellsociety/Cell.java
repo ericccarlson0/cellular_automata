@@ -2,6 +2,8 @@ package cellsociety;
 
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
+
 public abstract class Cell{
     protected Rectangle vis;
     //TODO: use enums for states - need to figure out how to declare that they are needed and then override diff set of state types in each.
@@ -15,7 +17,7 @@ public abstract class Cell{
         nextState = null;
     }
 
-    public abstract void calcNewState();
+    public abstract void calcNewState(ArrayList<Cell> emptySpots);
 
     public void updateState() {
         currState = nextState;

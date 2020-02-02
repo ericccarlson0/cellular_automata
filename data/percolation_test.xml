@@ -3,4 +3,5 @@
     <size>100</size>
     <percents>60,40</percents>
     <states>BLOCK,EMPTY</states>
+    <misc>.1</misc>
 </data>

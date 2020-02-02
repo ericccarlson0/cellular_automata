@@ -4,6 +4,8 @@ package cellsociety;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
+import java.util.ArrayList;
+
 public class LifeCell extends Cell {
     public static final Paint ALIVE_COLOR = Color.BLACK;
     public static final Paint DEAD_COLOR = Color.WHITE;
@@ -17,7 +19,7 @@ public class LifeCell extends Cell {
         changeDisplay();
     }
 
-    public void calcNewState(){
+    public void calcNewState(ArrayList<Cell> emptySpaces){
         int numNeighborsAlive = 0;
         for(Cell currNeighbor : neighbors){
             if(currNeighbor != null && currNeighbor.getCurrState() == LifeCellState.ALIVE){
