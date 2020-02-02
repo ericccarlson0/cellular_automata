@@ -99,12 +99,12 @@ public class Grid {
         double cellHeight = DISPLAY_HEIGHT / size - 2*(CELL_GAP);
         for(int row = 0; row < size; row++){
             for(int col = 0; col < size; col++){
-                gridStructure[row][col] = makeCellOfType(cellWidth,cellHeight);
+                gridStructure[row][col] = makeCellOfType(row, col, cellWidth,cellHeight);
             }
         }
     }
 
-    private Cell makeCellOfType(double width, double height){
+    private Cell makeCellOfType(int row, int col, double width, double height){
         Cell currCell = null;
         switch(simType){
             case LIFE:
@@ -114,7 +114,13 @@ public class Grid {
                 //currCell = new FireCell(width,height,status);
                 break;
             case PERCOLATION:
-                //currCell = new PercolationCell(width,height,status);
+                //TODO: replace percentage top row filled with xml file specifier
+                if(row == 0 && Math.random() < 0.1){
+                    currCell = new PercolationCell(width,height,"FULL");
+                }
+                else{
+                    currCell = new PercolationCell(width,height,determineInitState());
+                }
                 break;
             case SEGREGATION:
                 //currCell = new SegregationCell(width,height,status);
