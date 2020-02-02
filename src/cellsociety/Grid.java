@@ -9,19 +9,18 @@ public class Grid {
         LIFE, FIRE, PERCOLATION, SEGREGATION, PREDPREY;
     }
     public static final double CELL_GAP = .1;
+    private static double DISPLAY_WIDTH;
+    private static double DISPLAY_HEIGHT;
 
     private String[][] initStatus;
     private Cell[][] gridStructure;
     private GridPane gridVisual;
     private SimulationType simType;
     private int size;
-    private double displayWidth;
-    private double displayHeight;
 
-    public Grid(String xmlFilename,double displayWidth, double displayHeight){
-        this.displayHeight = displayHeight;
-        this.displayWidth = displayWidth;
-        parseFile(xmlFilename);
+    public Grid(SimulationType typ, int size){
+        simType = typ;
+        this.size = size;
         initializeGridStructure();
         initializeGridVisual();
     }
@@ -35,11 +34,8 @@ public class Grid {
         return gridVisual;
     }
 
-    private void parseFile(String xmlFilename) {
-        //TODO parse xml file set values necessary
-    }
-
     private void initializeGridStructure() {
+        gridStructure = new Cell[size][size];
         createCells();
         populateCellNeighbors();
     }
@@ -77,8 +73,8 @@ public class Grid {
     }
 
     private void createCells() {
-        double cellWidth = displayWidth / size - 2*(CELL_GAP);
-        double cellHeight = displayHeight / size - 2*(CELL_GAP);
+        double cellWidth = DISPLAY_WIDTH / size - 2*(CELL_GAP);
+        double cellHeight = DISPLAY_HEIGHT / size - 2*(CELL_GAP);
         for(int row = 0; row < size; row++){
             for(int col = 0; col < size; col++){
                 gridStructure[row][col] = makeCellOfType(cellWidth,cellHeight,initStatus[row][col]);
