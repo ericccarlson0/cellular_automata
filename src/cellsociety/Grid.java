@@ -18,12 +18,14 @@ public class Grid {
     private int size;
     private ArrayList<Double> statePercents;
     private ArrayList<String> states;
+    private double miscVal;
 
-    public Grid(SimulationRunner.SimulationType typ, int size, ArrayList<Double> percents, ArrayList<String> associatedTypes){
+    public Grid(SimulationRunner.SimulationType typ, int size, ArrayList<Double> percents, ArrayList<String> associatedTypes, double misc){
         simType = typ;
         this.size = size;
         states = associatedTypes;
         statePercents = percents;
+        miscVal = misc;
         initPercents();
         initializeGridStructure();
         initializeGridVisual();
@@ -112,11 +114,11 @@ public class Grid {
                 break;
             case FIRE:
                 //TODO: replace probToCatch with xml file specifier
-                currCell = new FireCell(width,height,determineInitState(),.5);
+                currCell = new FireCell(width,height,determineInitState(),miscVal);
                 break;
             case PERCOLATION:
                 //TODO: replace percentage top row filled with xml file specifier
-                if(row == 0 && Math.random() < 0.1){
+                if(row == 0 && Math.random() < miscVal){
                     currCell = new PercolationCell(width,height,"FULL");
                 }
                 else{

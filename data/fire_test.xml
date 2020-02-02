@@ -3,4 +3,5 @@
     <size>100</size>
     <percents>10,89,1</percents>
     <states>EMPTY,TREE,FIRE</states>
+    <misc>.55</misc>
 </data>

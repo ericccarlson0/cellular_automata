@@ -36,7 +36,8 @@ public class XMLParser {
             int dimensions = getDimensions(root);
             ArrayList<Double> percents = getPercents(root);
             ArrayList<String> states = getStates(root);
-            return new Grid(simType,dimensions,percents,states);
+            double misc = Double.parseDouble(getTextValue(root,"misc"));
+            return new Grid(simType,dimensions,percents,states,misc);
         }
         else{
             return null;
