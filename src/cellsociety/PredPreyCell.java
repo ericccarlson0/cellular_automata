@@ -1,6 +1,7 @@
 package cellsociety;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class PredPreyCell extends Cell {
 
@@ -8,7 +9,7 @@ public class PredPreyCell extends Cell {
         super(width,height,currState);
     }
 
-    public void calcNewState(ArrayList<Cell> emptySpaces){
+    public void calcNewState(Set<Cell> emptySpaces){
 
     }
 

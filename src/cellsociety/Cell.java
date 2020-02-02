@@ -2,7 +2,7 @@ package cellsociety;
 
 import javafx.scene.shape.Rectangle;
 
-import java.util.ArrayList;
+import java.util.Set;
 
 public abstract class Cell{
     protected Rectangle vis;
@@ -17,7 +17,7 @@ public abstract class Cell{
         nextState = null;
     }
 
-    public abstract void calcNewState(ArrayList<Cell> emptySpots);
+    public abstract void calcNewState(Set<Cell> emptySpots);
 
     public void updateState() {
         currState = nextState;
