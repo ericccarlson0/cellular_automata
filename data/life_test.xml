@@ -2,6 +2,6 @@
 <data simType="LIFE">
     <size>100</size>
     <percents>25.0,75.0</percents>
-    <states>ALIVE,DEAD</states>
+    <states>ALIVE,EMPTY</states>
     <misc>0.0</misc>
 </data>
