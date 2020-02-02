@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 public class LifeCell extends Cell {
@@ -20,7 +21,7 @@ public class LifeCell extends Cell {
         changeDisplay();
     }
 
-    public void calcNewState(Set<Cell> emptySpaces){
+    public void calcNewState(ArrayList<HashSet<Cell>> emptySpaces){
         int numNeighborsAlive = 0;
         for(Cell currNeighbor : neighbors){
             if(currNeighbor != null && currNeighbor.getCurrState() == LifeCellState.ALIVE){
@@ -32,11 +33,11 @@ public class LifeCell extends Cell {
         }
         else if(currState == LifeCellState.EMPTY && numNeighborsAlive == 3){
             nextState = LifeCellState.ALIVE;
-            emptySpaces.remove(this);
+            emptySpaces.get(0).remove(this);
         }
         else{
             nextState = LifeCellState.EMPTY;
-            emptySpaces.add(this);
+            emptySpaces.get(1).add(this);
         }
     }
 

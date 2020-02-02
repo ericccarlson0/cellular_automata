@@ -1,6 +1,7 @@
 package cellsociety;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -24,7 +25,7 @@ public class SegregationCell extends Cell {
         changeDisplay();
     }
 
-    public void calcNewState(Set<Cell> emptySpaces){
+    public void calcNewState(ArrayList<HashSet<Cell>> emptySpaces){
         
     }
 
