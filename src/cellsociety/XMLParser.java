@@ -20,9 +20,9 @@ public class XMLParser {
 
     public XMLParser(){
         DOCUMENT_BUILDER = getDocumentBuilder();
-        Grid.SimulationType[] validSims = Grid.SimulationType.values();
+        SimulationRunner.SimulationType[] validSims = SimulationRunner.SimulationType.values();
         validSimTypes = new ArrayList<String>();
-        for(Grid.SimulationType sim : validSims){
+        for(SimulationRunner.SimulationType sim : validSims){
             validSimTypes.add(sim.name());
         }
         System.out.println(validSimTypes.get(0));

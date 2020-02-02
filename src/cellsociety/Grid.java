@@ -5,20 +5,18 @@ import javafx.scene.shape.Rectangle;
 
 public class Grid {
 
-    enum SimulationType{
-        LIFE, FIRE, PERCOLATION, SEGREGATION, PREDPREY;
-    }
+
     public static final double CELL_GAP = .1;
-    private static double DISPLAY_WIDTH;
-    private static double DISPLAY_HEIGHT;
+    private static double DISPLAY_WIDTH = 600;
+    private static double DISPLAY_HEIGHT = 600;
 
     private String[][] initStatus;
     private Cell[][] gridStructure;
     private GridPane gridVisual;
-    private SimulationType simType;
+    private SimulationRunner.SimulationType simType;
     private int size;
 
-    public Grid(SimulationType typ, int size){
+    public Grid(SimulationRunner.SimulationType typ, int size){
         simType = typ;
         this.size = size;
         initializeGridStructure();

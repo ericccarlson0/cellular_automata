@@ -18,9 +18,15 @@ public class SimulationRunner extends Application {
     private int simDelay;
     private Stage simStage;
     private Scene simDisplay;
+    private XMLParser fileParser;
+
+    enum SimulationType{
+        LIFE, FIRE, PERCOLATION, SEGREGATION, PREDPREY;
+    }
 
     @Override
     public void start(Stage stage){
+        fileParser = new XMLParser();
         simStage = stage;
         initializeUI();
         initializeVals();
@@ -28,6 +34,9 @@ public class SimulationRunner extends Application {
         simStage.setScene(simDisplay);
         simStage.setTitle(TITLE);
         simStage.show();
+
+        fileParser.generateGrid("./data/test.xml");
+        fileParser.generateGrid("./data/test2.xml");
 
         KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step());
         Timeline animation = new Timeline();
