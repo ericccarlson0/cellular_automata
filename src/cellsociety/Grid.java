@@ -111,7 +111,8 @@ public class Grid {
                 currCell = new LifeCell(width,height,determineInitState());
                 break;
             case FIRE:
-                //currCell = new FireCell(width,height,status);
+                //TODO: replace probToCatch with xml file specifier
+                currCell = new FireCell(width,height,determineInitState(),.5);
                 break;
             case PERCOLATION:
                 //TODO: replace percentage top row filled with xml file specifier
