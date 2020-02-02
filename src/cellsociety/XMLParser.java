@@ -6,11 +6,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 
@@ -29,23 +28,31 @@ public class XMLParser {
     }
 
     public Grid generateGrid(String xmlFilename){
-        System.out.println("*");
         File dataFile = new File(xmlFilename);
-        System.out.println("**");
         Element root = getRootElement(dataFile);
-        if (!isValidFile(root)) {
-            System.out.println("INVALID!!!");
-            return null;
+        if (isValidFile(root)) {
+            SimulationRunner.SimulationType simType = SimulationRunner.SimulationType.valueOf(getAttribute(root,"simType"));
+            int dimensions = Integer.parseInt(getTextValue(root,"size"));
+            double percentActive = Double.parseDouble(getTextValue(root,"numActive"));
+            return new Grid(simType,dimensions,percentActive);
         }
         else{
-            System.out.println("VALID!!!");
             return null;
+        }
+    }
+
+    private String getTextValue (Element e, String tagName) {
+        NodeList nodeList = e.getElementsByTagName(tagName);
+        if (nodeList != null && nodeList.getLength() > 0) {
+            return nodeList.item(0).getTextContent();
+        } else {
+            // FIXME: empty string or exception? In some cases it may be an error to not find any text
+            return "";
         }
     }
 
     private boolean isValidFile(Element root){
         String possibleType = getAttribute(root, "simType");
-        System.out.println(possibleType);
         return validSimTypes.contains(possibleType);
     }
 

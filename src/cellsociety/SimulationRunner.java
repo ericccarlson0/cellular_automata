@@ -3,7 +3,11 @@ package cellsociety;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -11,6 +15,7 @@ public class SimulationRunner extends Application {
     public static final String TITLE = "Simulation - Team 12";
     public static final int FRAMES_PER_SECOND = 60;
     public static final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
+    public static final Rectangle NO_CURR_GRID = new Rectangle(600,600, Color.WHITE);
 
     private Grid currentGrid;
     private boolean shouldStep;
@@ -18,6 +23,7 @@ public class SimulationRunner extends Application {
     private int simDelay;
     private Stage simStage;
     private Scene simDisplay;
+    private BorderPane displayHolder;
     private XMLParser fileParser;
 
     enum SimulationType{
@@ -35,8 +41,8 @@ public class SimulationRunner extends Application {
         simStage.setTitle(TITLE);
         simStage.show();
 
-        fileParser.generateGrid("./data/test.xml");
-        fileParser.generateGrid("./data/test2.xml");
+        Grid testing = fileParser.generateGrid("./data/test.xml");
+        displayHolder.setCenter(testing.getGridVisual());
 
         KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step());
         Timeline animation = new Timeline();
@@ -53,6 +59,11 @@ public class SimulationRunner extends Application {
     }
 
     private void initializeUI() {
+        Group root = new Group();
+        displayHolder = new BorderPane();
+        displayHolder.setPrefSize(700,800);
+        root.getChildren().add(displayHolder);
+        simDisplay = new Scene(root,700,800, Color.WHEAT);
         //TODO set up scene in simDisplay private variable - USE A BORDER PANE!
     }
 

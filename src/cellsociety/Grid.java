@@ -15,10 +15,12 @@ public class Grid {
     private GridPane gridVisual;
     private SimulationRunner.SimulationType simType;
     private int size;
+    private double initPercentActive;
 
-    public Grid(SimulationRunner.SimulationType typ, int size){
+    public Grid(SimulationRunner.SimulationType typ, int size, double percentActive){
         simType = typ;
         this.size = size;
+        initPercentActive = percentActive;
         initializeGridStructure();
         initializeGridVisual();
     }
@@ -45,6 +47,15 @@ public class Grid {
                 gridStructure[row][col].setNeighbors(neighbors);
             }
         }
+    }
+
+    private int determineInitState(){
+        double val = Math.random() * 100;
+        if (val < initPercentActive){
+            return 1;
+        }
+        else
+            return 0;
     }
 
     //gives array of neighbor cells starting in NE corner and moving clockwise
@@ -75,28 +86,28 @@ public class Grid {
         double cellHeight = DISPLAY_HEIGHT / size - 2*(CELL_GAP);
         for(int row = 0; row < size; row++){
             for(int col = 0; col < size; col++){
-                gridStructure[row][col] = makeCellOfType(cellWidth,cellHeight,initStatus[row][col]);
+                gridStructure[row][col] = makeCellOfType(cellWidth,cellHeight);
             }
         }
     }
 
-    private Cell makeCellOfType(double width, double height, String status){
+    private Cell makeCellOfType(double width, double height){
         Cell currCell = null;
         switch(simType){
             case LIFE:
-                currCell = new LifeCell(width,height,status);
+                currCell = new LifeCell(width,height,determineInitState());
                 break;
             case FIRE:
-                currCell = new FireCell(width,height,status);
+                //currCell = new FireCell(width,height,status);
                 break;
             case PERCOLATION:
-                currCell = new PercolationCell(width,height,status);
+                //currCell = new PercolationCell(width,height,status);
                 break;
             case SEGREGATION:
-                currCell = new SegregationCell(width,height,status);
+                //currCell = new SegregationCell(width,height,status);
                 break;
             case PREDPREY:
-                currCell = new PredPreyCell(width,height,status);
+                //currCell = new PredPreyCell(width,height,status);
                 break;
             //TODO: add more cases for diff simulation types and enter parameters for creating new cells as needed.
         }

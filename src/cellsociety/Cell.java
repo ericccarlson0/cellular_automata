@@ -3,23 +3,23 @@ package cellsociety;
 import javafx.scene.shape.Rectangle;
 
 public abstract class Cell{
-    private Rectangle vis;
+    protected Rectangle vis;
     //TODO: use enums for states - need to figure out how to declare that they are needed and then override diff set of state types in each.
-    private String currState;
-    private String nextState;
-    private Cell[] neighbors;
+    protected int currState;
+    protected int nextState;
+    protected Cell[] neighbors;
 
-    public Cell(double width, double height, String currState){
+    public Cell(double width, double height, int currState){
         vis = new Rectangle(width,height);
         this.currState = currState;
-        nextState = null;
+        nextState = -1;
     }
 
     public abstract void calcNewState();
 
     public void updateState() {
         currState = nextState;
-        nextState = null;
+        nextState = -1;
     }
 
     public abstract void changeDisplay();

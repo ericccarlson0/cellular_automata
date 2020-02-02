@@ -2,7 +2,7 @@ package cellsociety;
 
 public class FireCell extends Cell {
 
-    public FireCell(double width, double height, String currState){
+    public FireCell(double width, double height, int currState){
         super(width,height,currState);
     }
 
