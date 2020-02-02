@@ -1,0 +1,59 @@
+.root {
+    -fx-font-size: 16pt;
+    -fx-font-family: "Menlo";
+    -fx-base: #000000;
+    -fx-background: #FCFCFC;
+}
+
+.button {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Menlo";
+    -fx-text-fill: #440002;
+    -fx-background-color: #e6ceb9;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 5;
+}
+
+.button:hover {
+    -fx-background-color: #bd906e;
+}
+
+.slider {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Menlo";
+    -fx-text-fill: #440002;
+    -fx-background-color: #e6ceb9;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 5;
+}
+
+.combo-box-base {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Menlo";
+    -fx-text-base-color: #440002;
+    -fx-background-color: #f8fcf8;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+.combo-box-base:hover {
+    -fx-background-color: #000000;
+}
+
+.label {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Menlo";
+    -fx-text-fill: #440002;
+    -fx-opacity: 0.6;
+}
+
+.text {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Menlo";
+}
+
+.text-field {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Menlo";
+}
