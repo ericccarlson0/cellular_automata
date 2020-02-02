@@ -38,4 +38,8 @@ public abstract class Cell{
     public Object getCurrState(){
         return currState;
     }
+
+    public void setNextState(Object state){
+        nextState = state;
+    }
 }
