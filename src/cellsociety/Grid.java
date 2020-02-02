@@ -19,6 +19,7 @@ public class Grid {
     private ArrayList<Double> statePercents;
     private ArrayList<String> states;
     private double miscVal;
+    private ArrayList<Cell> emptySpaces;
 
     public Grid(SimulationRunner.SimulationType typ, int size, ArrayList<Double> percents, ArrayList<String> associatedTypes, double misc){
         simType = typ;
@@ -26,6 +27,7 @@ public class Grid {
         states = associatedTypes;
         statePercents = percents;
         miscVal = misc;
+        emptySpaces = new ArrayList<Cell>();
         initPercents();
         initializeGridStructure();
         initializeGridVisual();
@@ -101,28 +103,27 @@ public class Grid {
         double cellHeight = DISPLAY_HEIGHT / size - 2*(CELL_GAP);
         for(int row = 0; row < size; row++){
             for(int col = 0; col < size; col++){
-                gridStructure[row][col] = makeCellOfType(row, col, cellWidth,cellHeight);
+                gridStructure[row][col] = makeCellOfType(row, col, cellWidth, cellHeight);
             }
         }
     }
 
     private Cell makeCellOfType(int row, int col, double width, double height){
         Cell currCell = null;
+        String initState = determineInitState();
         switch(simType){
             case LIFE:
-                currCell = new LifeCell(width,height,determineInitState());
+                currCell = new LifeCell(width,height,initState);
                 break;
             case FIRE:
-                //TODO: replace probToCatch with xml file specifier
-                currCell = new FireCell(width,height,determineInitState(),miscVal);
+                currCell = new FireCell(width,height,initState,miscVal);
                 break;
             case PERCOLATION:
-                //TODO: replace percentage top row filled with xml file specifier
                 if(row == 0 && Math.random() < miscVal){
                     currCell = new PercolationCell(width,height,"FULL");
                 }
                 else{
-                    currCell = new PercolationCell(width,height,determineInitState());
+                    currCell = new PercolationCell(width,height,initState);
                 }
                 break;
             case SEGREGATION:
@@ -132,6 +133,9 @@ public class Grid {
                 //currCell = new PredPreyCell(width,height,status);
                 break;
             //TODO: add more cases for diff simulation types and enter parameters for creating new cells as needed.
+        }
+        if(initState.equals("EMPTY")){
+            emptySpaces.add(currCell);
         }
         return currCell;
     }
@@ -152,7 +156,7 @@ public class Grid {
     private void calcNewStates(){
         for(int row = 0; row < size; row++) {
             for(int col = 0; col < size; col++){
-                gridStructure[row][col].calcNewState();
+                gridStructure[row][col].calcNewState(emptySpaces);
             }
         }
     }
@@ -164,5 +168,9 @@ public class Grid {
                 gridStructure[row][col].changeDisplay();
             }
         }
+    }
+
+    private void determineEmptySpaces(){
+        emptySpaces = new ArrayList<Cell>();
     }
 }
