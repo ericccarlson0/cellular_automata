@@ -5,7 +5,9 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -21,6 +23,7 @@ public class SimulationRunner extends Application {
     private boolean shouldStep;
     private boolean isSimRunning;
     private int simDelay;
+    private int currDelayLeft;
     private Stage simStage;
     private Scene simDisplay;
     private BorderPane displayHolder;
@@ -41,8 +44,8 @@ public class SimulationRunner extends Application {
         simStage.setTitle(TITLE);
         simStage.show();
 
-        Grid testing = fileParser.generateGrid("./data/test.xml");
-        displayHolder.setCenter(testing.getGridVisual());
+        currentGrid = fileParser.generateGrid("./data/test.xml");
+        displayHolder.setCenter(currentGrid.getGridVisual());
 
         KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step());
         Timeline animation = new Timeline();
@@ -51,33 +54,53 @@ public class SimulationRunner extends Application {
         animation.play();
     }
 
+    private void startButton(){
+        isSimRunning = true;
+    }
+
+    private void stopButton(){
+        isSimRunning = false;
+    }
+
     private void initializeVals() {
         currentGrid = null;
         shouldStep = false;
         isSimRunning = false;
-        simDelay = 0;
+        simDelay = 10;
     }
 
     private void initializeUI() {
         Group root = new Group();
         displayHolder = new BorderPane();
         displayHolder.setPrefSize(700,800);
+
+        HBox buttonHolder = new HBox();
+        Button startButton = new Button("Start");
+        startButton.setOnAction(event -> startButton());
+
+        Button stopButton = new Button("Stop");
+        stopButton.setOnAction(event -> stopButton());
+        buttonHolder.getChildren().addAll(startButton,stopButton);
+
+        displayHolder.setBottom(buttonHolder);
+
         root.getChildren().add(displayHolder);
         simDisplay = new Scene(root,700,800, Color.WHEAT);
+
         //TODO set up scene in simDisplay private variable - USE A BORDER PANE!
     }
 
     private void step(){
         if(currentGrid != null && (isSimRunning || shouldStep)){
-            try {
-                Thread.sleep(simDelay);
+            if(currDelayLeft > 0){
+                currDelayLeft--;
             }
-            catch(Exception e){
-                System.out.println("Couldn't Delay");
-            }
-            currentGrid.step();
-            if(shouldStep){
-                shouldStep = false;
+            else{
+                currentGrid.step();
+                if(shouldStep){
+                    shouldStep = false;
+                }
+                currDelayLeft = simDelay;
             }
         }
     }
