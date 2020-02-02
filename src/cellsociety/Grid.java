@@ -1,18 +1,17 @@
 package cellsociety;
 
 import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Shape;
 import javafx.scene.shape.Rectangle;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Grid {
 
-
     public static final double CELL_GAP = .1;
-    private static double DISPLAY_WIDTH = 600;
-    private static double DISPLAY_HEIGHT = 600;
+    public static final double DISPLAY_WIDTH = 500;
+    public static final double DISPLAY_HEIGHT = 500;
 
     private Cell[][] gridStructure;
     private GridPane gridVisual;
@@ -145,7 +144,7 @@ public class Grid {
             case SEGREGATION:
                 //currCell = new SegregationCell(width,height,status);
                 break;
-            case PREDPREY:
+            case PRED_PREY:
                 //currCell = new PredPreyCell(width,height,status);
                 break;
             //TODO: add more cases for diff simulation types and enter parameters for creating new cells as needed.
