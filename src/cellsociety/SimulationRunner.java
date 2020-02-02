@@ -174,8 +174,16 @@ public class SimulationRunner extends Application {
         isSimRunning = false; //***
 
         XMLFilename = String.format("data/%s", myTextField.getText());
-        currentGrid = fileParser.generateGrid(XMLFilename);
-        gridPane.add(currentGrid.getGridVisual(), 1, 1);
+        try{
+            gridPane.getChildren().remove(currentGrid);
+            gridPane.getChildren().remove(NO_CURR_GRID);
+            currentGrid = fileParser.generateGrid(XMLFilename);
+            gridPane.add(currentGrid.getGridVisual(), 1, 1);
+        }
+        catch(Exception e){
+            //infoText.setText("Could not find or display this XML file");
+            gridPane.add(NO_CURR_GRID,1,1);
+        }
     }
 
     private void step() {
