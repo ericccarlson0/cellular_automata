@@ -4,6 +4,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Grid {
 
@@ -19,7 +21,7 @@ public class Grid {
     private ArrayList<Double> statePercents;
     private ArrayList<String> states;
     private double miscVal;
-    private ArrayList<Cell> emptySpaces;
+    private Set<Cell> emptySpaces;
 
     public Grid(SimulationRunner.SimulationType typ, int size, ArrayList<Double> percents, ArrayList<String> associatedTypes, double misc){
         simType = typ;
@@ -27,7 +29,7 @@ public class Grid {
         states = associatedTypes;
         statePercents = percents;
         miscVal = misc;
-        emptySpaces = new ArrayList<Cell>();
+        emptySpaces = new HashSet<Cell>();
         initPercents();
         initializeGridStructure();
         initializeGridVisual();
@@ -42,6 +44,7 @@ public class Grid {
     public void step(){
         calcNewStates();
         updateCell();
+        System.out.println(emptySpaces.size());
     }
 
     public GridPane getGridVisual(){

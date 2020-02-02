@@ -4,6 +4,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class PercolationCell extends Cell {
     public static final Paint BLOCK_COLOR = Color.BLACK;
@@ -19,7 +20,7 @@ public class PercolationCell extends Cell {
         changeDisplay();
     }
 
-    public void calcNewState(ArrayList<Cell> emptySpaces){
+    public void calcNewState(Set<Cell> emptySpaces){
         if(currState == PercolationCellState.BLOCK){
             nextState = PercolationCellState.BLOCK;
         }
@@ -36,6 +37,7 @@ public class PercolationCell extends Cell {
             }
             if(numNeighborsFull > 0){
                 nextState = PercolationCellState.FULL;
+                emptySpaces.remove(this);
             }
             else{
                 nextState = PercolationCellState.EMPTY;
