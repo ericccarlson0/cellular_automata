@@ -44,7 +44,7 @@ public class SimulationRunner extends Application {
         simStage.setTitle(TITLE);
         simStage.show();
 
-        currentGrid = fileParser.generateGrid("./data/test.xml");
+        currentGrid = fileParser.generateGrid("./data/test3.xml");
         displayHolder.setCenter(currentGrid.getGridVisual());
 
         KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step());
@@ -60,6 +60,12 @@ public class SimulationRunner extends Application {
 
     private void stopButton(){
         isSimRunning = false;
+    }
+
+    private void stepButton(){
+        isSimRunning = false;
+        shouldStep = true;
+        currDelayLeft = 0;
     }
 
     private void initializeVals() {
@@ -80,7 +86,10 @@ public class SimulationRunner extends Application {
 
         Button stopButton = new Button("Stop");
         stopButton.setOnAction(event -> stopButton());
-        buttonHolder.getChildren().addAll(startButton,stopButton);
+
+        Button stepButton = new Button("Step");
+        stepButton.setOnAction(event -> stepButton());
+        buttonHolder.getChildren().addAll(startButton,stopButton,stepButton);
 
         displayHolder.setBottom(buttonHolder);
 
@@ -100,7 +109,9 @@ public class SimulationRunner extends Application {
                 if(shouldStep){
                     shouldStep = false;
                 }
-                currDelayLeft = simDelay;
+                else{
+                    currDelayLeft = simDelay;
+                }
             }
         }
     }
