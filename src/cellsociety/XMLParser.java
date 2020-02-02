@@ -6,6 +6,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,8 +34,14 @@ public class XMLParser {
         if (isValidFile(root)) {
             SimulationRunner.SimulationType simType = SimulationRunner.SimulationType.valueOf(getAttribute(root,"simType"));
             int dimensions = Integer.parseInt(getTextValue(root,"size"));
-            double percentActive = Double.parseDouble(getTextValue(root,"numActive"));
-            return new Grid(simType,dimensions,percentActive);
+            String[] percent = (getTextValue(root,"percents")).split(",");
+            ArrayList<Double> percents = new ArrayList<Double>();
+            for(int i = 0; i < percent.length; i++){
+                percents.add(Double.parseDouble(percent[i]));
+            }
+            String[] state = (getTextValue(root,"states")).split(",");
+            ArrayList<String> states = new ArrayList<>(Arrays.asList(state));
+            return new Grid(simType,dimensions,percents,states);
         }
         else{
             return null;
