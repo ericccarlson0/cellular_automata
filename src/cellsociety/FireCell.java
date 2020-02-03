@@ -22,8 +22,8 @@ public class FireCell extends Cell {
         changeDisplay();
     }
 
-    public void calcNewState(ArrayList<HashSet<Cell>> emptySpaces){
-        if (currState == FireCellState.EMPTY || currState == FireCellState.FIRE){
+    public void calcNewState(ArrayList<HashSet<Cell>> emptySpaces) {
+        if (currState == FireCellState.EMPTY || currState == FireCellState.FIRE) {
             nextState = FireCellState.EMPTY;
             emptySpaces.get(1).add(this);
         } else {
@@ -37,16 +37,16 @@ public class FireCell extends Cell {
                 }
                 index += 2;
             }
-            if (couldCatch && (Math.random() < catchProb)){
+            if (couldCatch && (Math.random() < catchProb)) {
                 nextState = FireCellState.FIRE;
             }
         }
     }
 
-    public void changeDisplay(){
-        if (currState == FireCellState.FIRE){
+    public void changeDisplay() {
+        if (currState == FireCellState.FIRE) {
             visual.setFill(FIRE_COLOR);
-        } else if (currState == FireCellState.EMPTY){
+        } else if (currState == FireCellState.EMPTY) {
             visual.setFill(EMPTY_COLOR);
         } else {
             visual.setFill(TREE_COLOR);

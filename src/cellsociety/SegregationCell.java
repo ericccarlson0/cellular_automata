@@ -13,7 +13,7 @@ public class SegregationCell extends Cell {
 
     private double threshold;
 
-    enum SegregationCellState{
+    enum SegregationCellState {
         EMPTY, ONE, TWO
     }
 
@@ -23,7 +23,7 @@ public class SegregationCell extends Cell {
         changeDisplay();
     }
 
-    public void calcNewState(ArrayList<HashSet<Cell>> emptySpaces){
+    public void calcNewState(ArrayList<HashSet<Cell>> emptySpaces) {
         // System.out.println("THIS CELL:" + this);
         // System.out.println("-----------BEFORE--------------");
         // System.out.println("CurrentlyEmpty: - " + emptySpaces.get(0));
@@ -44,7 +44,7 @@ public class SegregationCell extends Cell {
             emptySpaces.get(1).add(this);
             // System.out.println("adding new empty cell to list 2 - " + this);
         }
-        else if (currState != SegregationCellState.EMPTY){
+        else if (currState != SegregationCellState.EMPTY) {
             nextState = currState;
         }
         // System.out.println("-----------After--------------");
@@ -55,20 +55,18 @@ public class SegregationCell extends Cell {
         // System.out.println("");
     }
 
-    public void changeDisplay(){
+    public void changeDisplay() {
         if(currState == SegregationCellState.EMPTY) {
             visual.setFill(EMPTY_COLOR);
-        }
-        else if(currState == SegregationCellState.ONE) {
+        } else if(currState == SegregationCellState.ONE) {
             visual.setFill(ONE_COLOR);
-        }
-        else {
+        } else {
             visual.setFill(TWO_COLOR);
         }
     }
 
     private boolean isSatisfied() {
-        if(currState == SegregationCellState.EMPTY){
+        if (currState == SegregationCellState.EMPTY){
             return true;
         }
         int numSame = 0;
@@ -77,8 +75,7 @@ public class SegregationCell extends Cell {
             if(currNeighbor != null && currNeighbor.getCurrState() == currState){
                 numSame += 1;
                 numTotal += 1;
-            }
-            else if(currNeighbor != null && !(currNeighbor.getCurrState() == SegregationCellState.EMPTY)) {
+            } else if (currNeighbor != null && !(currNeighbor.getCurrState() == SegregationCellState.EMPTY)) {
                 numTotal += 1;
             }
         }

@@ -11,46 +11,42 @@ public class PercolationCell extends Cell {
     public static final Paint FULL_COLOR = Color.color(0.5, 0.75, 1.0);
     public static final Paint EMPTY_COLOR = Color.color(1.0, 1.0, 1.0);
 
-    enum PercolationCellState{
-        BLOCK,EMPTY,FULL;
+    enum PercolationCellState {
+        BLOCK, EMPTY, FULL;
     }
 
     public PercolationCell(double width, double height, String currState){
-        super(width,height,PercolationCellState.valueOf(currState));
+        super(width, height, PercolationCellState.valueOf(currState));
         changeDisplay();
     }
 
-    public void calcNewState(ArrayList<HashSet<Cell>> emptySpaces){
+    public void calcNewState(ArrayList<HashSet<Cell>> emptySpaces) {
         if(currState == PercolationCellState.BLOCK){
             nextState = PercolationCellState.BLOCK;
-        }
-        else if(currState == PercolationCellState.FULL){
+        } else if(currState == PercolationCellState.FULL) {
             nextState = PercolationCellState.FULL;
-        }
-        else
-        {
+        } else {
             int numNeighborsFull = 0;
             for(Cell currNeighbor : neighbors){
                 if(currNeighbor != null && currNeighbor.getCurrState() == PercolationCellState.FULL){
                     numNeighborsFull += 1;
                 }
             }
-            if(numNeighborsFull > 0){
+            if(numNeighborsFull > 0) {
                 nextState = PercolationCellState.FULL;
                 emptySpaces.get(0).remove(this);
-            }
-            else{
+            } else {
                 nextState = PercolationCellState.EMPTY;
             }
         }
     }
 
-    public void changeDisplay(){
-        if(currState == PercolationCellState.BLOCK)
+    public void changeDisplay() {
+        if (currState == PercolationCellState.BLOCK) {
             visual.setFill(BLOCK_COLOR);
-        else if(currState == PercolationCellState.EMPTY)
+        } else if (currState == PercolationCellState.EMPTY) {
             visual.setFill(EMPTY_COLOR);
-        else{
+        } else {
             visual.setFill(FULL_COLOR);
         }
     }

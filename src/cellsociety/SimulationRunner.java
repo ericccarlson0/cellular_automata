@@ -8,6 +8,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
@@ -34,6 +35,7 @@ public class SimulationRunner extends Application {
     public static final int PADDING = 5;
     public static final int V_GAP = 10;
     public static final int H_GAP = 50;
+    public static final int BOX_WIDTH = 100;
     public static final int TOTAL_WIDTH = 800;
     public static final int TOTAL_HEIGHT = 800;
 
@@ -174,25 +176,26 @@ public class SimulationRunner extends Application {
     }
 
     private StackPane createStatsBox() {
-        StackPane statsBox = createMessageBox("STATS Box", 100);
+        StackPane statsBox = createMessageBox("STATS Box", BOX_WIDTH);
         myStatsBox = statsBox;
         return statsBox;
     }
     private StackPane createInfoBox() {
-        StackPane infoBox = createMessageBox("INFO Box", 100);
+        StackPane infoBox = createMessageBox("INFO Box", BOX_WIDTH);
         myInfoBox = infoBox;
         return infoBox;
     }
     private StackPane createMessageBox(String message, int size) {
         StackPane sp = new StackPane();
         Rectangle background = new Rectangle(size*2, size, Color.color(1.0, 1.0, 1.0));
-        background.setArcWidth(10);
-        background.setArcHeight(10);
-        Text text = new Text(message);
-        text.setFont(new Font("Menlo", FONT_SIZE));
-        text.setFill(FONT_COLOR);
+        background.setArcWidth(BOX_WIDTH/10);
+        background.setArcHeight(BOX_WIDTH/10);
+        Label l = new Label(message);
+        l.setFont(new Font("Menlo", FONT_SIZE));
+        l.setWrapText(true);
+        l.setMaxWidth(BOX_WIDTH-2);
         sp.getChildren().add(background); //***
-        sp.getChildren().add(text);
+        sp.getChildren().add(l);
 
         return sp;
     }
@@ -212,26 +215,33 @@ public class SimulationRunner extends Application {
         isSimRunning = false; //***
 
         XMLFilename = String.format("data/%s", myTextField.getText());
-        gridPane.getChildren().remove(currentGrid);
-        gridPane.getChildren().remove(noCurrGrid);
-        currentGrid = fileParser.generateGrid(XMLFilename);
-        gridPane.add(currentGrid.getGridVisual(), 1, 1);
+        try {
+            gridPane.getChildren().remove(currentGrid);
+            gridPane.getChildren().remove(noCurrGrid);
+            currentGrid = fileParser.generateGrid(XMLFilename);
+            gridPane.add(currentGrid.getGridVisual(), 1, 1);
+        } catch (Exception e) {
+            clearMessage(myInfoBox);
+            addMessage(myInfoBox, "The filename you entered could not be found.");
+            gridPane.add(noCurrGrid, 1, 1);
+        }
     }
 
-    private void clearMessage (Pane mp) {
+    private void clearMessage (Pane messageBox) {
         Node message = new Text("");
-        for (Node child: mp.getChildren()) {
-            if (child instanceof Text) {
+        for (Node child: messageBox.getChildren()) {
+            if (child instanceof Label) { //***
                 message = child;
             }
         }
-        mp.getChildren().remove(message);
+        messageBox.getChildren().remove(message);
     }
-    private void addMessage (Pane mp, String message) {
-        Text text = new Text(message);
-        text.setFont(new Font("Menlo", FONT_SIZE));
-        text.setFill(Color.color(0.4, 0.0, 0.0));
-        mp.getChildren().add(text);
+    private void addMessage (Pane messageBox, String message) {
+        Label l = new Label(message);
+        l.setFont(new Font("Menlo", FONT_SIZE / 2)); //***
+        l.setWrapText(true);
+        l.setMaxWidth(BOX_WIDTH-2);
+        messageBox.getChildren().add(l);
     }
 
     private void step () {
