@@ -7,13 +7,9 @@ import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -28,6 +24,7 @@ public class SimulationRunner extends Application {
 
     public static final String RESOURCE_FOLDER = "/resources/";
     public static final String STYLESHEET = "default.css";
+    public static final String XML_FOLDER = "./data/";
     public static final Color DISPLAY_COLOR = Color.color(0.9, 0.9, 1.0);
     public static final Color FONT_COLOR = Color.color(0.0, 0.0, 0.4);
     public static final int FONT_SIZE = 16;
@@ -40,6 +37,7 @@ public class SimulationRunner extends Application {
     public static final int TOTAL_HEIGHT = 800;
 
     private Rectangle noCurrGrid = new Rectangle(500,500, Color.color(0.2, 0.2, .6));
+    private String myShape = "SQUARE";
 
     private Grid currentGrid;
     private boolean shouldStep;
@@ -56,6 +54,7 @@ public class SimulationRunner extends Application {
     private Slider mySlider;
     private StackPane myInfoBox;
     private StackPane myStatsBox;
+    private ToggleGroup myShapeButtons;
 
     enum SimulationType {
         LIFE, FIRE, PERCOLATION, SEGREGATION, PRED_PREY;
@@ -76,10 +75,9 @@ public class SimulationRunner extends Application {
         title.setFill(Color.BLACK);
 
         gridPane.add(title, 1, 0);
-
         gridPane.add(noCurrGrid, 1, 1);
-        noCurrGrid.setArcWidth(10.0);
-        noCurrGrid.setArcHeight(10.0);
+        noCurrGrid.setArcWidth(20.0);
+        noCurrGrid.setArcHeight(20.0);
 
         KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step());
         Timeline animation = new Timeline();
@@ -101,20 +99,22 @@ public class SimulationRunner extends Application {
         displayPane = new BorderPane();
 
         HBox upperButtons = setupTopButtons();
-        HBox centerButtons = setupCenterButtons();
-        HBox bottomButtons = setupBottomButtons();
         gridPane.add(upperButtons, 1, 2);
+        HBox centerButtons = setupCenterButtons();
         gridPane.add(centerButtons, 1, 3);
+        HBox bottomButtons = setupBottomButtons();
         gridPane.add(bottomButtons, 1, 4);
 
-        BorderPane boxes = new BorderPane();
-        boxes.setTop(createStatsBox());
-        boxes.setBottom(createInfoBox());
+        GridPane boxes = new GridPane();
+        boxes.add(createStatsBox(), 0, 0);
+        boxes.add(setupShapeButtons(), 0, 1);
+        boxes.add(createInfoBox(), 0, 2);
+
         gridPane.add(boxes, 2, 1);
 
         displayPane.setCenter(gridPane);
         root.getChildren().add(displayPane);
-        simDisplay = new Scene(root,TOTAL_WIDTH,TOTAL_HEIGHT, DISPLAY_COLOR);
+        simDisplay = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
         simDisplay.getStylesheets().add(getClass().getResource(RESOURCE_FOLDER + STYLESHEET).toExternalForm());
     }
 
@@ -131,16 +131,15 @@ public class SimulationRunner extends Application {
 
         Button startButton = new Button("Start");
         startButton.setOnAction(event -> startButton());
-
         Button stopButton = new Button("Stop");
         stopButton.setOnAction(event -> stopButton());
-
         Button stepButton = new Button("Step");
         stepButton.setOnAction(event -> stepButton());
 
         buttonHolder.getChildren().addAll(startButton, stopButton, stepButton);
         return buttonHolder;
     }
+
     private HBox setupCenterButtons() {
         HBox buttonHolder = new HBox();
 
@@ -159,6 +158,7 @@ public class SimulationRunner extends Application {
         buttonHolder.getChildren().addAll(prompt, mySlider);
         return buttonHolder;
     }
+
     private HBox setupBottomButtons() {
         HBox buttonHolder = new HBox();
 
@@ -175,16 +175,45 @@ public class SimulationRunner extends Application {
         return buttonHolder;
     }
 
+    private GridPane setupShapeButtons() {
+        GridPane buttonHolder = new GridPane();
+        ToggleGroup group = new ToggleGroup();
+        myShapeButtons = group;
+
+        RadioButton square = new RadioButton("SQUARE");
+        square.setUserData("SQUARE");
+        square.setToggleGroup(group);
+        square.setSelected(true);
+        square.setOnAction(event -> shapeButton());
+        buttonHolder.add(square, 0, 0);
+
+        RadioButton diamond = new RadioButton("DIAMOND");
+        diamond.setUserData("DIAMOND");
+        diamond.setToggleGroup(group);
+        diamond.setOnAction(event -> shapeButton());
+        buttonHolder.add(diamond, 0, 1);
+
+        RadioButton circle = new RadioButton("CIRCLE");
+        circle.setUserData("CIRCLE");
+        circle.setToggleGroup(group);
+        circle.setOnAction(event -> shapeButton());
+        buttonHolder.add(circle, 0, 2);
+
+        return buttonHolder;
+    }
+
     private StackPane createStatsBox() {
         StackPane statsBox = createMessageBox("STATS Box", BOX_WIDTH);
         myStatsBox = statsBox;
         return statsBox;
     }
+
     private StackPane createInfoBox() {
         StackPane infoBox = createMessageBox("INFO Box", BOX_WIDTH);
         myInfoBox = infoBox;
         return infoBox;
     }
+
     private StackPane createMessageBox(String message, int size) {
         StackPane sp = new StackPane();
         Rectangle background = new Rectangle(size*2, size, Color.color(1.0, 1.0, 1.0));
@@ -203,28 +232,45 @@ public class SimulationRunner extends Application {
     private void startButton() {
         isSimRunning = true;
     }
+
     private void stopButton() {
         isSimRunning = false;
     }
+
     private void stepButton() {
         isSimRunning = false;
         shouldStep = true;
         currDelayLeft = 0;
     }
+
+    private void shapeButton() {
+        String shape = myShapeButtons.getSelectedToggle().getUserData().toString();
+        if (shape == "SQUARE") {
+            myShape = "SQUARE";
+        } else if (shape == "DIAMOND") {
+            myShape = "DIAMOND";
+        } else if (shape == "CIRCLE") {
+            myShape = "CIRCLE";
+        }
+    }
+
     private void loadButton() {
         isSimRunning = false; //***
 
-        XMLFilename = String.format("data/%s", myTextField.getText());
-        try {
-            gridPane.getChildren().remove(currentGrid);
-            gridPane.getChildren().remove(noCurrGrid);
-            currentGrid = fileParser.generateGrid(XMLFilename);
-            gridPane.add(currentGrid.getGridVisual(), 1, 1);
-        } catch (Exception e) {
-            clearMessage(myInfoBox);
-            addMessage(myInfoBox, "The filename you entered could not be found.");
-            gridPane.add(noCurrGrid, 1, 1);
+        XMLFilename = String.format(XML_FOLDER + myTextField.getText());
+        // try {
+        gridPane.getChildren().remove(noCurrGrid);
+        if (currentGrid != null) {
+            gridPane.getChildren().remove(currentGrid.getGridVisual());
         }
+        currentGrid = fileParser.generateGrid(XMLFilename, myShape);
+        gridPane.add(currentGrid.getGridVisual(), 1, 1);
+
+         // } catch (Exception e) {
+         //   clearMessage(myInfoBox);
+         //   addMessage(myInfoBox, "The filename you entered could not be found.");
+         //   gridPane.add(noCurrGrid, 1, 1);
+        // } //***
     }
 
     private void clearMessage (Pane messageBox) {

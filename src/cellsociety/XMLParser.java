@@ -27,7 +27,7 @@ public class XMLParser {
         }
     }
 
-    public Grid generateGrid (String xmlFilename) {
+    public Grid generateGrid (String xmlFilename, String mode) {
         File dataFile = new File(xmlFilename);
         Element root = getRootElement(dataFile);
         if (isValidFile(root)) {
@@ -37,7 +37,7 @@ public class XMLParser {
             ArrayList<Double> percents = getPercents(root);
             ArrayList<String> states = getStates(root);
             double misc = Double.parseDouble(getTextValue(root,"misc"));
-            return new Grid(simType, dimensions, percents, states, misc);
+            return new Grid(simType, dimensions, percents, states, misc, mode);
         } else {
             return null;
         }
@@ -105,5 +105,4 @@ public class XMLParser {
             throw new XMLException(e);
         }
     }
-
 }

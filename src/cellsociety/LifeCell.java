@@ -15,8 +15,8 @@ public class LifeCell extends Cell {
         ALIVE, EMPTY;
     }
 
-    public LifeCell(double width, double height, String currState) {
-        super(width, height, LifeCellState.valueOf(currState));
+    public LifeCell(double width, double height, String currState, String shape) {
+        super(width, height, LifeCellState.valueOf(currState), shape);
         changeDisplay();
     }
 
