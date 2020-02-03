@@ -6,7 +6,6 @@ import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 public class LifeCell extends Cell {
     public static final Paint ALIVE_COLOR = Color.BLACK;
