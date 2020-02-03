@@ -18,18 +18,18 @@ public class Grid {
     private int size;
     private ArrayList<Double> statePercents;
     private ArrayList<String> states;
-    private double miscValue;
+    private ArrayList<Double> miscValue;
     private ArrayList<HashSet<Cell>> emptySpaces;
 
     public Grid(SimulationRunner.SimulationType type, int size, ArrayList<Double> percents,
-                ArrayList<String> states, double misc, String shape) {
+                ArrayList<String> states, ArrayList<Double> misc, String shape) {
         this.simType = type;
         this.size = size;
         this.states = states;
         this.statePercents = percents;
         this.miscValue = misc;
 
-        emptySpaces = new ArrayList<>(); //***
+        emptySpaces = new ArrayList<>();
         HashSet<Cell> currEmpty = new HashSet<>();
         HashSet<Cell> nextEmpty = new HashSet<>();
 
@@ -90,19 +90,19 @@ public class Grid {
                 currCell = new LifeCell(width, height, initialState, shape);
                 break;
             case FIRE:
-                currCell = new FireCell(width, height, initialState, shape, miscValue);
+                currCell = new FireCell(width, height, initialState, shape, miscValue.get(0));
                 break;
             case PERCOLATION:
-                if (row == 0 && Math.random() < miscValue) {
+                if (row == 0 && Math.random() < miscValue.get(0)) {
                     currCell = new PercolationCell(width, height,"FULL", shape);
                 } else {
                     currCell = new PercolationCell(width, height, initialState, shape);
                 } break;
             case SEGREGATION:
-                currCell = new SegregationCell(width, height, initialState, shape, miscValue);
+                currCell = new SegregationCell(width, height, initialState, shape, miscValue.get(0));
                 break;
             case PRED_PREY:
-                currCell = new PredPreyCell(width, height, initialState, shape, miscValue);
+                currCell = new PredPreyCell(width, height, initialState, shape, miscValue.get(0), miscValue.get(1), miscValue.get(2));
                 break;
         }
         if (initialState.equals("EMPTY")) {
