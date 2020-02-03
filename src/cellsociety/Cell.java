@@ -1,24 +1,25 @@
 package cellsociety;
 
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-
+import javafx.scene.shape.Shape;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public abstract class Cell{
-    protected Rectangle vis;
-    //TODO: use enums for states - need to figure out how to declare that they are needed and then override diff set of state types in each.
+public abstract class Cell {
+    protected Shape visual;
     protected Object currState;
     protected Object nextState;
     protected Cell[] neighbors;
 
-    public Cell(double width, double height, Object currState){
-        vis = new Rectangle(width,height);
+    public Cell (double width, double height, Object currState) {
+        // visual = new Rectangle(width, height);
+        visual = new Circle(width/2);
         this.currState = currState;
-        nextState = null;
+        this.nextState = null;
     }
 
-    public abstract void calcNewState(ArrayList<HashSet<Cell>> emptySpots);
+    public abstract void calcNewState (ArrayList<HashSet<Cell>> emptySpots);
 
     public void updateState() {
         currState = nextState;
@@ -27,8 +28,8 @@ public abstract class Cell{
 
     public abstract void changeDisplay();
 
-    public Rectangle getVis() {
-        return vis;
+    public Shape getVisual() {
+        return visual;
     }
 
     public void setNeighbors(Cell[] neighbors) {

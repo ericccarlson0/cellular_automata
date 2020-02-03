@@ -6,7 +6,6 @@ import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 public class LifeCell extends Cell {
     public static final Paint ALIVE_COLOR = Color.BLACK;
@@ -43,9 +42,9 @@ public class LifeCell extends Cell {
 
     public void changeDisplay(){
         if(currState == LifeCellState.ALIVE)
-            vis.setFill(ALIVE_COLOR);
+            visual.setFill(ALIVE_COLOR);
         else{
-            vis.setFill(EMPTY_COLOR);
+            visual.setFill(EMPTY_COLOR);
         }
     }
 }
