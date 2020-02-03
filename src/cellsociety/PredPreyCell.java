@@ -11,16 +11,20 @@ public class PredPreyCell extends Cell {
     public static final Paint FISH_COLOR = Color.LIGHTSEAGREEN;
     public static final Paint EMPTY_COLOR = Color.SKYBLUE;
 
-    private double reproductionRate;
+    private int fishReproduction;
+    private int sharkReproduction;
+    private int sharkDeathRate;
     private double lifeSpan = 0;
 
     enum PredPreyCellState{
         SHARK, FISH, EMPTY
     }
 
-    public PredPreyCell(double width, double height, String currState, String shape, double fertility){
+    public PredPreyCell(double width, double height, String currState, String shape, double sharkFertility, double fishFertility, double sharkDeathRate){
         super(width,height,PredPreyCellState.valueOf(currState), shape);
-        this.reproductionRate = fertility;
+        fishReproduction = (int)fishFertility;
+        sharkReproduction = (int)sharkFertility;
+        this.sharkDeathRate = (int)sharkDeathRate;
         changeDisplay();
     }
 
