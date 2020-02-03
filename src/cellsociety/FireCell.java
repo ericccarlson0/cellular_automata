@@ -16,8 +16,8 @@ public class FireCell extends Cell {
         EMPTY, TREE, FIRE;
     }
 
-    public FireCell(double width, double height, String currState, double catchProb) {
-        super(width, height, FireCellState.valueOf(currState));
+    public FireCell(double width, double height, String currState, String shape, double catchProb) {
+        super(width, height, FireCellState.valueOf(currState), shape);
         this.catchProb = catchProb;
         changeDisplay();
     }

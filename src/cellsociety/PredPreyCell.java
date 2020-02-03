@@ -18,9 +18,9 @@ public class PredPreyCell extends Cell {
         SHARK, FISH, EMPTY
     }
 
-    public PredPreyCell(double width, double height, String currState, double reproductionRate){
-        super(width,height,PredPreyCellState.valueOf(currState));
-        this.reproductionRate = reproductionRate;
+    public PredPreyCell(double width, double height, String currState, String shape, double fertility){
+        super(width,height,PredPreyCellState.valueOf(currState), shape);
+        this.reproductionRate = fertility;
         changeDisplay();
     }
 

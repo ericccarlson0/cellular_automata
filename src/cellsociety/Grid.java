@@ -22,7 +22,7 @@ public class Grid {
     private ArrayList<HashSet<Cell>> emptySpaces;
 
     public Grid(SimulationRunner.SimulationType type, int size, ArrayList<Double> percents,
-                ArrayList<String> states, double misc) {
+                ArrayList<String> states, double misc, String shape) {
         this.simType = type;
         this.size = size;
         this.states = states;
@@ -37,7 +37,7 @@ public class Grid {
         emptySpaces.add(nextEmpty);
 
         initPercents();
-        initGridStructure();
+        initGridStructure(shape);
         initGridVisual();
     }
 
@@ -47,9 +47,9 @@ public class Grid {
         }
     }
 
-    private void initGridStructure() {
+    private void initGridStructure(String shape) {
         gridStructure = new Cell[size][size];
-        createCells();
+        createCells(shape);
         initCellNeighbors();
     }
 
@@ -70,40 +70,39 @@ public class Grid {
         calcNewStates();
         updateCell();
         updateEmpty();
-        // System.out.println(emptySpaces.get(0).size());
     }
 
-    private void createCells() {
+    private void createCells(String shape) {
         double cellWidth = DISPLAY_WIDTH / size - 2*CELL_GAP;
         double cellHeight = DISPLAY_HEIGHT / size - 2*CELL_GAP;
-        for(int row = 0; row < size; row++) {
-            for(int col = 0; col < size; col++) {
-                gridStructure[row][col] = makeCellOfType(row, col, cellWidth, cellHeight);
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                gridStructure[row][col] = makeCellOfType(row, col, cellWidth, cellHeight, shape);
             }
         }
     }
 
-    private Cell makeCellOfType(int row, int col, double width, double height) {
+    private Cell makeCellOfType(int row, int col, double width, double height, String shape) {
         Cell currCell = null;
         String initialState = generateState();
         switch (simType) {
             case LIFE:
-                currCell = new LifeCell(width, height, initialState);
+                currCell = new LifeCell(width, height, initialState, shape);
                 break;
             case FIRE:
-                currCell = new FireCell(width, height, initialState, miscValue);
+                currCell = new FireCell(width, height, initialState, shape, miscValue);
                 break;
             case PERCOLATION:
                 if (row == 0 && Math.random() < miscValue) {
-                    currCell = new PercolationCell(width, height,"FULL");
+                    currCell = new PercolationCell(width, height,"FULL", shape);
                 } else {
-                    currCell = new PercolationCell(width, height, initialState);
+                    currCell = new PercolationCell(width, height, initialState, shape);
                 } break;
             case SEGREGATION:
-                currCell = new SegregationCell(width, height, initialState, miscValue);
+                currCell = new SegregationCell(width, height, initialState, shape, miscValue);
                 break;
             case PRED_PREY:
-                currCell = new PredPreyCell(width, height, initialState, miscValue);
+                currCell = new PredPreyCell(width, height, initialState, shape, miscValue);
                 break;
         }
         if (initialState.equals("EMPTY")) {

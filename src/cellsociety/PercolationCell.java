@@ -15,12 +15,12 @@ public class PercolationCell extends Cell {
         BLOCK, EMPTY, FULL;
     }
 
-    public PercolationCell(double width, double height, String currState){
-        super(width, height, PercolationCellState.valueOf(currState));
+    public PercolationCell(double width, double height, String currState, String shape) {
+        super(width, height, PercolationCellState.valueOf(currState), shape);
         changeDisplay();
     }
 
-    public void calcNewState(ArrayList<HashSet<Cell>> emptySpaces) {
+    public void calcNewState (ArrayList<HashSet<Cell>> emptySpaces) {
         if(currState == PercolationCellState.BLOCK){
             nextState = PercolationCellState.BLOCK;
         } else if(currState == PercolationCellState.FULL) {

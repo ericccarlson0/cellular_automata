@@ -12,9 +12,18 @@ public abstract class Cell {
     protected Object nextState;
     protected Cell[] neighbors;
 
-    public Cell (double width, double height, Object currState) {
-        // visual = new Rectangle(width, height);
-        visual = new Circle(width/2);
+    enum CellShape {
+        SQUARE, DIAMOND, CIRCLE;
+    }
+
+    public Cell (double width, double height, Object currState, String shape) {
+        CellShape cm = CellShape.valueOf(shape);
+        visual = new Rectangle(width, height);
+        if (cm == CellShape.DIAMOND) {
+            visual.setRotate(45);
+        } else if (cm == CellShape.CIRCLE) {
+            visual = new Circle(width / 2);
+        }
         this.currState = currState;
         this.nextState = null;
     }
