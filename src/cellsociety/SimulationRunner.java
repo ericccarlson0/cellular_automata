@@ -12,6 +12,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -27,7 +28,8 @@ public class SimulationRunner extends Application {
     public static final String RESOURCE_FOLDER = "/resources/";
     public static final String STYLESHEET = "default.css";
     public static final Color DISPLAY_COLOR = Color.color(0.9, 0.9, 1.0);
-    public static final int FONT_SIZE = 12;
+    public static final Color FONT_COLOR = Color.color(0.0, 0.0, 0.4);
+    public static final int FONT_SIZE = 16;
 
     public static final int PADDING = 5;
     public static final int V_GAP = 10;
@@ -142,6 +144,7 @@ public class SimulationRunner extends Application {
 
         Text prompt = new Text("Speed: ");
         prompt.setFont(new Font("Menlo", FONT_SIZE));
+        prompt.setFill(FONT_COLOR);
 
         mySlider = new Slider(-4, 4, 0);
         mySlider.setLayoutX(200);
@@ -159,6 +162,7 @@ public class SimulationRunner extends Application {
 
         Text prompt = new Text("Enter filename: ");
         prompt.setFont(new Font("Menlo", FONT_SIZE));
+        prompt.setFill(FONT_COLOR);
         myTextField = new TextField();
         // myTextField.setPrefColumnCount(20); //***
 
@@ -186,6 +190,7 @@ public class SimulationRunner extends Application {
         background.setArcHeight(10);
         Text text = new Text(message);
         text.setFont(new Font("Menlo", FONT_SIZE));
+        text.setFill(FONT_COLOR);
         sp.getChildren().add(background); //***
         sp.getChildren().add(text);
 
@@ -207,17 +212,10 @@ public class SimulationRunner extends Application {
         isSimRunning = false; //***
 
         XMLFilename = String.format("data/%s", myTextField.getText());
-        try {
-            gridPane.getChildren().remove(currentGrid);
-            gridPane.getChildren().remove(noCurrGrid);
-            currentGrid = fileParser.generateGrid(XMLFilename);
-            gridPane.add(currentGrid.getGridVisual(), 1, 1);
-        }
-        catch(Exception e) {
-            clearMessage(myInfoBox);
-            addMessage(myInfoBox, "The file could not be found.");
-            gridPane.add(noCurrGrid,1,1);
-        }
+        gridPane.getChildren().remove(currentGrid);
+        gridPane.getChildren().remove(noCurrGrid);
+        currentGrid = fileParser.generateGrid(XMLFilename);
+        gridPane.add(currentGrid.getGridVisual(), 1, 1);
     }
 
     private void clearMessage (Pane mp) {
@@ -232,6 +230,7 @@ public class SimulationRunner extends Application {
     private void addMessage (Pane mp, String message) {
         Text text = new Text(message);
         text.setFont(new Font("Menlo", FONT_SIZE));
+        text.setFill(Color.color(0.4, 0.0, 0.0));
         mp.getChildren().add(text);
     }
 
