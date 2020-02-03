@@ -106,9 +106,9 @@ public class SimulationRunner extends Application {
         gridPane.add(bottomButtons, 1, 4);
 
         GridPane boxes = new GridPane();
-        boxes.add(createStatsBox(), 0, 0);
+        boxes.add(createInfoBox(), 0, 0);
         boxes.add(setupShapeButtons(), 0, 1);
-        boxes.add(createInfoBox(), 0, 2);
+        boxes.add(createStatsBox(), 0, 2);
 
         gridPane.add(boxes, 2, 1);
 
@@ -116,6 +116,8 @@ public class SimulationRunner extends Application {
         root.getChildren().add(displayPane);
         simDisplay = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
         simDisplay.getStylesheets().add(getClass().getResource(RESOURCE_FOLDER + STYLESHEET).toExternalForm());
+
+        addMessage(myInfoBox,"Load a simulation by entering its filename");
     }
 
     private GridPane initializePane() {
@@ -203,28 +205,28 @@ public class SimulationRunner extends Application {
     }
 
     private StackPane createStatsBox() {
-        StackPane statsBox = createMessageBox("STATS Box", BOX_WIDTH);
+        StackPane statsBox = createMessageBox(BOX_WIDTH);
         myStatsBox = statsBox;
         return statsBox;
     }
 
     private StackPane createInfoBox() {
-        StackPane infoBox = createMessageBox("INFO Box", BOX_WIDTH);
+        StackPane infoBox = createMessageBox(BOX_WIDTH);
         myInfoBox = infoBox;
         return infoBox;
     }
 
-    private StackPane createMessageBox(String message, int size) {
+    private StackPane createMessageBox(int size) {
         StackPane sp = new StackPane();
         Rectangle background = new Rectangle(size*2, size, Color.color(1.0, 1.0, 1.0));
         background.setArcWidth(BOX_WIDTH/10);
         background.setArcHeight(BOX_WIDTH/10);
-        Label l = new Label(message);
-        l.setFont(new Font("Menlo", FONT_SIZE));
-        l.setWrapText(true);
-        l.setMaxWidth(BOX_WIDTH-2);
+//        Label l = new Label(message);
+//        l.setFont(new Font("Menlo", FONT_SIZE));
+//        l.setWrapText(true);
+//        l.setMaxWidth(BOX_WIDTH-2);
         sp.getChildren().add(background); //***
-        sp.getChildren().add(l);
+//        sp.getChildren().add(l);
 
         return sp;
     }
@@ -256,21 +258,22 @@ public class SimulationRunner extends Application {
 
     private void loadButton() {
         isSimRunning = false; //***
-
-        XMLFilename = String.format(XML_FOLDER + myTextField.getText());
-        // try {
         gridPane.getChildren().remove(noCurrGrid);
-        if (currentGrid != null) {
+        if(currentGrid != null)
             gridPane.getChildren().remove(currentGrid.getGridVisual());
+        clearMessage(myInfoBox);
+        clearMessage(myStatsBox);
+        try{
+            XMLFilename = String.format(XML_FOLDER + myTextField.getText());
+            currentGrid = fileParser.generateGrid(XMLFilename, myShape);
+            gridPane.add(currentGrid.getGridVisual(), 1, 1);
+            addMessage(myInfoBox,"Press Start to enjoy the Simulation!");
         }
-        currentGrid = fileParser.generateGrid(XMLFilename, myShape);
-        gridPane.add(currentGrid.getGridVisual(), 1, 1);
-
-         // } catch (Exception e) {
-         //   clearMessage(myInfoBox);
-         //   addMessage(myInfoBox, "The filename you entered could not be found.");
-         //   gridPane.add(noCurrGrid, 1, 1);
-        // } //***
+        catch(Exception e){
+            currentGrid = null;
+            gridPane.getChildren().add(noCurrGrid);
+            addMessage(myInfoBox, "The filename you entered is either invalid or could not be found.");
+        }
     }
 
     private void clearMessage (Pane messageBox) {
