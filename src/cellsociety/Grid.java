@@ -103,7 +103,7 @@ public class Grid {
                 currCell = new SegregationCell(width, height, initialState, miscValue);
                 break;
             case PRED_PREY:
-                //currCell = new PredPreyCell(width,height,status);
+                currCell = new PredPreyCell(width, height, initialState, miscValue);
                 break;
         }
         if (initialState.equals("EMPTY")) {
