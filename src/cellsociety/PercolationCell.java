@@ -5,7 +5,6 @@ import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 public class PercolationCell extends Cell {
     public static final Paint BLOCK_COLOR = Color.BLACK;
@@ -48,11 +47,11 @@ public class PercolationCell extends Cell {
 
     public void changeDisplay(){
         if(currState == PercolationCellState.BLOCK)
-            vis.setFill(BLOCK_COLOR);
+            visual.setFill(BLOCK_COLOR);
         else if(currState == PercolationCellState.EMPTY)
-            vis.setFill(EMPTY_COLOR);
+            visual.setFill(EMPTY_COLOR);
         else{
-            vis.setFill(FULL_COLOR);
+            visual.setFill(FULL_COLOR);
         }
     }
 }

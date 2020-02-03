@@ -5,13 +5,12 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -50,6 +49,8 @@ public class SimulationRunner extends Application {
     private String XMLFilename;
     private TextField myTextField;
     private Slider mySlider;
+    private StackPane myInfoBox;
+    private StackPane myStatsBox;
 
     enum SimulationType {
         LIFE, FIRE, PERCOLATION, SEGREGATION, PRED_PREY;
@@ -92,13 +93,17 @@ public class SimulationRunner extends Application {
         gridPane = initializePane();
         displayPane = new BorderPane();
 
-        HBox upperButtons = setupUpperButtons();
+        HBox upperButtons = setupTopButtons();
         HBox centerButtons = setupCenterButtons();
         HBox bottomButtons = setupBottomButtons();
-
         gridPane.add(upperButtons, 1, 2);
         gridPane.add(centerButtons, 1, 3);
         gridPane.add(bottomButtons, 1, 4);
+
+        BorderPane boxes = new BorderPane();
+        boxes.setTop(createStatsBox());
+        boxes.setBottom(createInfoBox());
+        gridPane.add(boxes, 2, 1);
 
         displayPane.setCenter(gridPane);
         root.getChildren().add(displayPane);
@@ -114,7 +119,7 @@ public class SimulationRunner extends Application {
         return pane;
     }
 
-    private HBox setupUpperButtons() {
+    private HBox setupTopButtons() {
         HBox buttonHolder = new HBox();
 
         Button startButton = new Button("START");
@@ -159,6 +164,26 @@ public class SimulationRunner extends Application {
         return buttonHolder;
     }
 
+    private StackPane createStatsBox() {
+        StackPane statsBox = createMessageBox("STATS Box", 100);
+        myStatsBox = statsBox;
+        return statsBox;
+    }
+    private StackPane createInfoBox() {
+        StackPane infoBox = createMessageBox("INFO Box", 100);
+        myInfoBox = infoBox;
+        return infoBox;
+    }
+    private StackPane createMessageBox(String message, int size) {
+        StackPane sp = new StackPane();
+        Rectangle background = new Rectangle(size, size, Color.WHITESMOKE);
+        Text text = new Text(message);
+        sp.getChildren().add(background); //***
+        sp.getChildren().add(text);
+
+        return sp;
+    }
+
     private void startButton() {
         isSimRunning = true;
     }
@@ -174,19 +199,35 @@ public class SimulationRunner extends Application {
         isSimRunning = false; //***
 
         XMLFilename = String.format("data/%s", myTextField.getText());
-        try{
+        try {
             gridPane.getChildren().remove(currentGrid);
             gridPane.getChildren().remove(NO_CURR_GRID);
             currentGrid = fileParser.generateGrid(XMLFilename);
             gridPane.add(currentGrid.getGridVisual(), 1, 1);
         }
-        catch(Exception e){
-            //infoText.setText("Could not find or display this XML file");
+        catch(Exception e) {
+            clearMessage(myInfoBox);
+            addMessage(myInfoBox, "The file could not be found.");
             gridPane.add(NO_CURR_GRID,1,1);
         }
     }
 
-    private void step() {
+    private void clearMessage (Pane mp) {
+        Node message = new Text("");
+        for (Node child: mp.getChildren()) {
+            if (child instanceof Text) {
+                message = child;
+            }
+        }
+        mp.getChildren().remove(message);
+    }
+    private void addMessage (Pane mp, String message) {
+        Text text = new Text(message);
+        text.setFont(new Font("Menlo", 10));
+        mp.getChildren().add(text);
+    }
+
+    private void step () {
         if (currentGrid != null && (isSimRunning || shouldStep)){
             if (currDelayLeft > 0){
                 currDelayLeft--;

@@ -2,7 +2,7 @@ package cellsociety;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
+
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
@@ -59,13 +59,13 @@ public class SegregationCell extends Cell {
 
     public void changeDisplay(){
         if(currState == SegregationCellState.EMPTY) {
-            vis.setFill(EMPTY_COLOR);
+            visual.setFill(EMPTY_COLOR);
         }
         else if(currState == SegregationCellState.ONE) {
-            vis.setFill(ONE_COLOR);
+            visual.setFill(ONE_COLOR);
         }
         else {
-            vis.setFill(TWO_COLOR);
+            visual.setFill(TWO_COLOR);
         }
     }
 

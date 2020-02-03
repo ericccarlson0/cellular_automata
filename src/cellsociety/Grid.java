@@ -2,16 +2,15 @@ package cellsociety;
 
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Shape;
-import javafx.scene.shape.Rectangle;
+
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 public class Grid {
 
     public static final double CELL_GAP = .1;
-    public static final double DISPLAY_WIDTH = 500;
-    public static final double DISPLAY_HEIGHT = 500;
+    public static final int DISPLAY_WIDTH = 500;
+    public static final int DISPLAY_HEIGHT = 500;
 
     private Cell[][] gridStructure;
     private GridPane gridVisual;
@@ -19,17 +18,18 @@ public class Grid {
     private int size;
     private ArrayList<Double> statePercents;
     private ArrayList<String> states;
-    private double miscVal;
+    private double miscValue;
     private ArrayList<HashSet<Cell>> emptySpaces;
 
-    public Grid(SimulationRunner.SimulationType typ, int size, ArrayList<Double> percents, ArrayList<String> associatedTypes, double misc){
-        simType = typ;
+    public Grid(SimulationRunner.SimulationType type, int size, ArrayList<Double> percents,
+                ArrayList<String> states, double misc) {
+        this.simType = type;
         this.size = size;
-        states = associatedTypes;
-        statePercents = percents;
-        miscVal = misc;
+        this.states = states;
+        this.statePercents = percents;
+        this.miscValue = misc;
 
-        emptySpaces = new ArrayList<HashSet<Cell>>();
+        emptySpaces = new ArrayList<>(); //***
         HashSet<Cell> currEmpty = new HashSet<>();
         HashSet<Cell> nextEmpty = new HashSet<>();
 
@@ -37,54 +37,85 @@ public class Grid {
         emptySpaces.add(nextEmpty);
 
         initPercents();
-        initializeGridStructure();
-        initializeGridVisual();
+        initGridStructure();
+        initGridVisual();
     }
 
-    private void initPercents(){
-        for(int index = 1; index < statePercents.size(); index++){
-            statePercents.set(index,statePercents.get(index) + statePercents.get(index - 1));
+    private void initPercents() {
+        for (int index = 1; index < statePercents.size(); index++){
+            statePercents.set(index, statePercents.get(index) + statePercents.get(index - 1));
         }
     }
 
-    public void step(){
-        calcNewStates();
-        updateCell();
-        updateEmpty();
-        System.out.println(emptySpaces.get(0).size());
-    }
-
-    private void updateEmpty() {
-        HashSet<Cell> nowEmpty = new HashSet<>();
-        nowEmpty.addAll(emptySpaces.get(0));
-        nowEmpty.addAll(emptySpaces.get(1));
-        emptySpaces.set(0,nowEmpty);
-        emptySpaces.get(1).clear();
-    }
-
-    public GridPane getGridVisual(){
-        return gridVisual;
-    }
-
-    private void initializeGridStructure() {
+    private void initGridStructure() {
         gridStructure = new Cell[size][size];
         createCells();
-        populateCellNeighbors();
+        initCellNeighbors();
     }
 
-    private void populateCellNeighbors() {
-        for(int row = 0; row < size; row++){
-            for(int col = 0; col < size; col++){
-                Cell[] neighbors = getNeighbors(row,col);
-                gridStructure[row][col].setNeighbors(neighbors);
+    private void initGridVisual() {
+        gridVisual = new GridPane();
+        gridVisual.setGridLinesVisible(false);
+        gridVisual.setHgap(CELL_GAP);
+        gridVisual.setVgap(CELL_GAP);
+        for (int row = 0; row < size; row++){
+            for (int col = 0; col < size; col++){
+                Shape currCell = gridStructure[row][col].getVisual();
+                gridVisual.add(currCell, col, row,1,1);
             }
         }
     }
 
-    private String determineInitState() {
+    public void step() {
+        calcNewStates();
+        updateCell();
+        updateEmpty();
+        // System.out.println(emptySpaces.get(0).size());
+    }
+
+    private void createCells() {
+        double cellWidth = DISPLAY_WIDTH / size - 2*CELL_GAP;
+        double cellHeight = DISPLAY_HEIGHT / size - 2*CELL_GAP;
+        for(int row = 0; row < size; row++) {
+            for(int col = 0; col < size; col++) {
+                gridStructure[row][col] = makeCellOfType(row, col, cellWidth, cellHeight);
+            }
+        }
+    }
+
+    private Cell makeCellOfType(int row, int col, double width, double height) {
+        Cell currCell = null;
+        String initialState = generateState();
+        switch (simType) {
+            case LIFE:
+                currCell = new LifeCell(width, height, initialState);
+                break;
+            case FIRE:
+                currCell = new FireCell(width, height, initialState, miscValue);
+                break;
+            case PERCOLATION:
+                if (row == 0 && Math.random() < miscValue) {
+                    currCell = new PercolationCell(width, height,"FULL");
+                } else {
+                    currCell = new PercolationCell(width, height, initialState);
+                } break;
+            case SEGREGATION:
+                currCell = new SegregationCell(width, height, initialState, miscValue);
+                break;
+            case PRED_PREY:
+                //currCell = new PredPreyCell(width,height,status);
+                break;
+        }
+        if (initialState.equals("EMPTY")) {
+            emptySpaces.get(0).add(currCell);
+        }
+        return currCell;
+    }
+
+    private String generateState() {
         double val = Math.random() * 100;
         int index = 0;
-        while(index < statePercents.size()){
+        while (index < statePercents.size()){
             if (val < statePercents.get(index)) {
                 return states.get(index);
             }
@@ -93,7 +124,27 @@ public class Grid {
         return states.get(-1);
     }
 
-    //gives array of neighbor cells starting in NE corner and moving clockwise
+    private void updateEmpty() {
+        HashSet<Cell> nowEmpty = new HashSet<>();
+        nowEmpty.addAll(emptySpaces.get(0));
+        nowEmpty.addAll(emptySpaces.get(1));
+        emptySpaces.set(0, nowEmpty);
+        emptySpaces.get(1).clear();
+    }
+
+    public GridPane getGridVisual(){
+        return gridVisual;
+    }
+
+    private void initCellNeighbors() {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                Cell[] neighbors = getNeighbors(row, col);
+                gridStructure[row][col].setNeighbors(neighbors);
+            }
+        }
+    }
+
     private Cell[] getNeighbors(int row, int col) {
         Cell[] neighbors = new Cell[8];
         neighbors[0] = isValidCoords(row - 1, col - 1);
@@ -107,81 +158,26 @@ public class Grid {
         return neighbors;
     }
 
-    private Cell isValidCoords(int row, int col){
-        boolean rowValid = row >= 0 && row <= size - 1;
-        boolean colValid = col >= 0 && col <= size - 1;
-        if(rowValid && colValid){
+    private Cell isValidCoords(int row, int col) {
+        boolean rowValid = (row >= 0) && (row < size);
+        boolean colValid = (col >= 0) && (col < size);
+        if (rowValid && colValid){
             return gridStructure[row][col];
         }
         return null;
     }
 
-    private void createCells() {
-        double cellWidth = DISPLAY_WIDTH / size - 2*(CELL_GAP);
-        double cellHeight = DISPLAY_HEIGHT / size - 2*(CELL_GAP);
-        for(int row = 0; row < size; row++){
-            for(int col = 0; col < size; col++){
-                gridStructure[row][col] = makeCellOfType(row, col, cellWidth, cellHeight);
-            }
-        }
-    }
-
-    private Cell makeCellOfType(int row, int col, double width, double height){
-        Cell currCell = null;
-        String initState = determineInitState();
-        switch(simType){
-            case LIFE:
-                currCell = new LifeCell(width,height,initState);
-                break;
-            case FIRE:
-                currCell = new FireCell(width,height,initState,miscVal);
-                break;
-            case PERCOLATION:
-                if(row == 0 && Math.random() < miscVal){
-                    currCell = new PercolationCell(width,height,"FULL");
-                }
-                else{
-                    currCell = new PercolationCell(width,height,initState);
-                }
-                break;
-            case SEGREGATION:
-                currCell = new SegregationCell(width,height,initState,miscVal);
-                break;
-            case PRED_PREY:
-                //currCell = new PredPreyCell(width,height,status);
-                break;
-            //TODO: add more cases for diff simulation types and enter parameters for creating new cells as needed.
-        }
-        if(initState.equals("EMPTY")){
-            emptySpaces.get(0).add(currCell);
-        }
-        return currCell;
-    }
-
-    private void initializeGridVisual() {
-        gridVisual = new GridPane();
-        gridVisual.setGridLinesVisible(true);
-        gridVisual.setHgap(CELL_GAP);
-        gridVisual.setVgap(CELL_GAP);
-        for(int row = 0; row < size; row++){
-            for(int col = 0; col < size; col++){
-                Rectangle currCell = gridStructure[row][col].getVis();
-                gridVisual.add(currCell,col,row,1,1);
-            }
-        }
-    }
-
     private void calcNewStates(){
-        for(int row = 0; row < size; row++) {
-            for(int col = 0; col < size; col++){
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
                 gridStructure[row][col].calcNewState(emptySpaces);
             }
         }
     }
 
     private void updateCell(){
-        for(int row = 0; row < size; row++) {
-            for(int col = 0; col < size; col++){
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
                 gridStructure[row][col].updateState();
                 gridStructure[row][col].changeDisplay();
             }
