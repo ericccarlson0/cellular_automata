@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class PercolationCell extends Cell {
-    public static final Paint BLOCK_COLOR = Color.BLACK;
-    public static final Paint EMPTY_COLOR = Color.WHITE;
-    public static final Paint FULL_COLOR = Color.SKYBLUE;
+    public static final Paint BLOCK_COLOR = Color.color(0.4, 0.2, 0.2);
+    public static final Paint FULL_COLOR = Color.color(0.5, 0.75, 1.0);
+    public static final Paint EMPTY_COLOR = Color.color(1.0, 1.0, 1.0);
 
     enum PercolationCellState{
         BLOCK,EMPTY,FULL;

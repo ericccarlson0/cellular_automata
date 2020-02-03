@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <data simType="PERCOLATION">
-    <size>100</size>
-    <percents>60,40</percents>
-    <states>BLOCK,EMPTY</states>
+    <size>50</size>
+    <percents>55, 45</percents>
+    <states>BLOCK, EMPTY</states>
     <misc>.1</misc>
 </data>
