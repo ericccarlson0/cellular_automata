@@ -5,54 +5,49 @@ import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 public class PercolationCell extends Cell {
-    public static final Paint BLOCK_COLOR = Color.BLACK;
-    public static final Paint EMPTY_COLOR = Color.WHITE;
-    public static final Paint FULL_COLOR = Color.SKYBLUE;
+    public static final Paint BLOCK_COLOR = Color.color(0.4, 0.2, 0.2);
+    public static final Paint FULL_COLOR = Color.color(0.5, 0.75, 1.0);
+    public static final Paint EMPTY_COLOR = Color.color(1.0, 1.0, 1.0);
 
-    enum PercolationCellState{
-        BLOCK,EMPTY,FULL;
+    enum PercolationCellState {
+        BLOCK, EMPTY, FULL;
     }
 
-    public PercolationCell(double width, double height, String currState){
-        super(width,height,PercolationCellState.valueOf(currState));
+    public PercolationCell(double width, double height, String currState, String shape) {
+        super(width, height, PercolationCellState.valueOf(currState), shape);
         changeDisplay();
     }
 
-    public void calcNewState(ArrayList<HashSet<Cell>> emptySpaces){
+    public void calcNewState (ArrayList<HashSet<Cell>> emptySpaces) {
         if(currState == PercolationCellState.BLOCK){
             nextState = PercolationCellState.BLOCK;
-        }
-        else if(currState == PercolationCellState.FULL){
+        } else if(currState == PercolationCellState.FULL) {
             nextState = PercolationCellState.FULL;
-        }
-        else
-        {
+        } else {
             int numNeighborsFull = 0;
             for(Cell currNeighbor : neighbors){
                 if(currNeighbor != null && currNeighbor.getCurrState() == PercolationCellState.FULL){
                     numNeighborsFull += 1;
                 }
             }
-            if(numNeighborsFull > 0){
+            if(numNeighborsFull > 0) {
                 nextState = PercolationCellState.FULL;
                 emptySpaces.get(0).remove(this);
-            }
-            else{
+            } else {
                 nextState = PercolationCellState.EMPTY;
             }
         }
     }
 
-    public void changeDisplay(){
-        if(currState == PercolationCellState.BLOCK)
-            vis.setFill(BLOCK_COLOR);
-        else if(currState == PercolationCellState.EMPTY)
-            vis.setFill(EMPTY_COLOR);
-        else{
-            vis.setFill(FULL_COLOR);
+    public void changeDisplay() {
+        if (currState == PercolationCellState.BLOCK) {
+            visual.setFill(BLOCK_COLOR);
+        } else if (currState == PercolationCellState.EMPTY) {
+            visual.setFill(EMPTY_COLOR);
+        } else {
+            visual.setFill(FULL_COLOR);
         }
     }
 }
