@@ -36,16 +36,26 @@ public class XMLParser {
             int dimensions = getDimensions(root);
             ArrayList<Double> percents = getPercents(root);
             ArrayList<String> states = getStates(root);
-            double misc = Double.parseDouble(getTextValue(root,"misc"));
+            ArrayList<Double> misc = getMisc(root);
             return new Grid(simType, dimensions, percents, states, misc, mode);
         } else {
             return null;
         }
     }
 
+    private ArrayList<Double> getMisc(Element root) {
+        String[] misc = getTextValue(root,"misc").split(",");
+        ArrayList<Double> mList = new ArrayList<Double>();
+        for(String m : misc){
+            m = m.strip();
+            mList.add(Double.parseDouble(m));
+        }
+        return mList;
+    }
+
     private int getDimensions(Element root) {
         String dimString = getTextValue(root, "size");
-        dimString.strip();
+        dimString = dimString.strip();
         return Integer.parseInt(dimString);
     }
 
@@ -53,7 +63,7 @@ public class XMLParser {
         String[] percentages = getTextValue(root, "percents").split(",");
         ArrayList<Double> percentList = new ArrayList<Double>();
         for (String percent: percentages) {
-            percent.strip();
+            percent = percent.strip();
             percentList.add(Double.parseDouble(percent));
         }
         return percentList;
@@ -63,7 +73,7 @@ public class XMLParser {
         String[] states = getTextValue(root,"states").split(",");
         ArrayList<String> stateList = new ArrayList<>();
         for (String state: states) {
-            state.strip();
+            state = state.strip();
             stateList.add(state);
         }
         return stateList;
