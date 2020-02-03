@@ -2,6 +2,7 @@ package cellsociety;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -29,7 +30,7 @@ public class PredPreyCell extends Cell {
             nextState = PredPreyCellState.EMPTY;
             emptySpaces.get(1).add(this);
         }
-        else if(currState == PredPreyCellState.SHARK) {
+        else if(currState == PredPreyCellState.FISH) {
             int index = 1;
 
         }
@@ -45,5 +46,19 @@ public class PredPreyCell extends Cell {
         else {
             visual.setFill(FISH_COLOR);
         }
+    }
+
+    private Cell selectMovement(){
+        int index = 1;
+        ArrayList<Cell> eligibleNeighbors = new ArrayList<Cell>();
+        while(index < neighbors.length) {
+            if(neighbors[index] != null &&
+                    neighbors[index].getCurrState() == PredPreyCellState.EMPTY) {
+                eligibleNeighbors.add(neighbors[index]);
+            }
+            index += 2;
+        }
+
+        return null;
     }
 }
