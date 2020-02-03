@@ -6,54 +6,56 @@
 }
 
 .button {
-    -fx-font-size: 12pt;
+    -fx-font-size: 10pt;
     -fx-font-family: "Menlo";
-    -fx-text-fill: #440002;
-    -fx-background-color: #e6ceb9;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
+    -fx-text-fill: #000071;
+    -fx-background-color: #fcfcfc;
+    -fx-border-radius: 0;
+    -fx-background-radius: 5;
     -fx-padding: 5;
 }
 
 .button:hover {
-    -fx-background-color: #bd906e;
+    -fx-background-color: #bd856f;
 }
 
 .slider {
-    -fx-font-size: 12pt;
+    -fx-font-size: 10pt;
     -fx-font-family: "Menlo";
-    -fx-text-fill: #440002;
-    -fx-background-color: #e6ceb9;
+    -fx-text-fill: #000071;
+    -fx-background-color: #fcfcfc;
     -fx-border-radius: 10;
     -fx-background-radius: 10;
     -fx-padding: 5;
 }
 
 .combo-box-base {
-    -fx-font-size: 12pt;
+    -fx-font-size: 10pt;
     -fx-font-family: "Menlo";
-    -fx-text-base-color: #440002;
-    -fx-background-color: #f8fcf8;
+    -fx-text-base-color: #000071;
+    -fx-background-color: #fcfcfc;
     -fx-border-radius: 10;
     -fx-background-radius: 10;
 }
 .combo-box-base:hover {
-    -fx-background-color: #000000;
+    -fx-background-color: #bd856f;
 }
 
 .label {
-    -fx-font-size: 12pt;
+    -fx-font-size: 10pt;
     -fx-font-family: "Menlo";
-    -fx-text-fill: #440002;
+    -fx-text-fill: #000071;
     -fx-opacity: 0.6;
 }
 
 .text {
-    -fx-font-size: 12pt;
+    -fx-font-size: 10pt;
     -fx-font-family: "Menlo";
+    -fx-text-fill: #000071;
 }
 
 .text-field {
-    -fx-font-size: 12pt;
+    -fx-font-size: 10pt;
     -fx-font-family: "Menlo";
+    -fx-text-fill: #000071;
 }

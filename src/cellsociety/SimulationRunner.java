@@ -20,21 +20,22 @@ import javafx.util.Duration;
 
 public class SimulationRunner extends Application {
 
-    public static final String TITLE = "SIMULATION -- TEAM 12";
+    public static final String TITLE = "Cellular Automata";
     public static final int FRAMES_PER_SECOND = 60;
     public static final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
 
     public static final String RESOURCE_FOLDER = "/resources/";
     public static final String STYLESHEET = "default.css";
-    public static final Color DISPLAY_COLOR = Color.WHEAT;
-    public static final Rectangle NO_CURR_GRID = new Rectangle(500,500,
-            Color.color(0.2, 0.2, .2));
+    public static final Color DISPLAY_COLOR = Color.color(0.9, 0.9, 1.0);
+    public static final int FONT_SIZE = 12;
 
     public static final int PADDING = 5;
     public static final int V_GAP = 10;
     public static final int H_GAP = 50;
     public static final int TOTAL_WIDTH = 800;
     public static final int TOTAL_HEIGHT = 800;
+
+    private Rectangle noCurrGrid = new Rectangle(500,500, Color.color(0.2, 0.2, .6));
 
     private Grid currentGrid;
     private boolean shouldStep;
@@ -72,7 +73,9 @@ public class SimulationRunner extends Application {
 
         gridPane.add(title, 1, 0);
 
-        gridPane.add(NO_CURR_GRID, 1, 1);
+        gridPane.add(noCurrGrid, 1, 1);
+        noCurrGrid.setArcWidth(10.0);
+        noCurrGrid.setArcHeight(10.0);
 
         KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step());
         Timeline animation = new Timeline();
@@ -122,13 +125,13 @@ public class SimulationRunner extends Application {
     private HBox setupTopButtons() {
         HBox buttonHolder = new HBox();
 
-        Button startButton = new Button("START");
+        Button startButton = new Button("Start");
         startButton.setOnAction(event -> startButton());
 
-        Button stopButton = new Button("STOP");
+        Button stopButton = new Button("Stop");
         stopButton.setOnAction(event -> stopButton());
 
-        Button stepButton = new Button("STEP");
+        Button stepButton = new Button("Step");
         stepButton.setOnAction(event -> stepButton());
 
         buttonHolder.getChildren().addAll(startButton, stopButton, stepButton);
@@ -137,7 +140,8 @@ public class SimulationRunner extends Application {
     private HBox setupCenterButtons() {
         HBox buttonHolder = new HBox();
 
-        Text prompt = new Text("SPEED: ");
+        Text prompt = new Text("Speed: ");
+        prompt.setFont(new Font("Menlo", FONT_SIZE));
 
         mySlider = new Slider(-4, 4, 0);
         mySlider.setLayoutX(200);
@@ -153,11 +157,12 @@ public class SimulationRunner extends Application {
     private HBox setupBottomButtons() {
         HBox buttonHolder = new HBox();
 
-        Text prompt = new Text("FILENAME: ");
+        Text prompt = new Text("Enter filename: ");
+        prompt.setFont(new Font("Menlo", FONT_SIZE));
         myTextField = new TextField();
-        myTextField.setPrefColumnCount(10);
+        // myTextField.setPrefColumnCount(20); //***
 
-        Button loadButton = new Button("LOAD");
+        Button loadButton = new Button("Load");
         loadButton.setOnAction(event -> loadButton());
 
         buttonHolder.getChildren().addAll(prompt, myTextField, loadButton);
@@ -176,8 +181,11 @@ public class SimulationRunner extends Application {
     }
     private StackPane createMessageBox(String message, int size) {
         StackPane sp = new StackPane();
-        Rectangle background = new Rectangle(size, size, Color.WHITESMOKE);
+        Rectangle background = new Rectangle(size*2, size, Color.color(1.0, 1.0, 1.0));
+        background.setArcWidth(10);
+        background.setArcHeight(10);
         Text text = new Text(message);
+        text.setFont(new Font("Menlo", FONT_SIZE));
         sp.getChildren().add(background); //***
         sp.getChildren().add(text);
 
@@ -201,14 +209,14 @@ public class SimulationRunner extends Application {
         XMLFilename = String.format("data/%s", myTextField.getText());
         try {
             gridPane.getChildren().remove(currentGrid);
-            gridPane.getChildren().remove(NO_CURR_GRID);
+            gridPane.getChildren().remove(noCurrGrid);
             currentGrid = fileParser.generateGrid(XMLFilename);
             gridPane.add(currentGrid.getGridVisual(), 1, 1);
         }
         catch(Exception e) {
             clearMessage(myInfoBox);
             addMessage(myInfoBox, "The file could not be found.");
-            gridPane.add(NO_CURR_GRID,1,1);
+            gridPane.add(noCurrGrid,1,1);
         }
     }
 
@@ -223,7 +231,7 @@ public class SimulationRunner extends Application {
     }
     private void addMessage (Pane mp, String message) {
         Text text = new Text(message);
-        text.setFont(new Font("Menlo", 10));
+        text.setFont(new Font("Menlo", FONT_SIZE));
         mp.getChildren().add(text);
     }
 
