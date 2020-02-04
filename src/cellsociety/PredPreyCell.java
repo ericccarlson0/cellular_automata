@@ -7,6 +7,8 @@ import java.util.Random;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
+import javax.swing.*;
+
 public class PredPreyCell extends Cell {
     public static final Paint SHARK_COLOR = Color.LIGHTSLATEGRAY;
     public static final Paint FISH_COLOR = Color.LIGHTCORAL;
@@ -18,6 +20,9 @@ public class PredPreyCell extends Cell {
     private int sharkEnergyLeft;
     private int sharkLeftBeforeBabies;
     private int fishLeftBeforeBabies;
+    private int nextSharkEnergyLeft;
+    private int nextSharkLeftBeforeBabies;
+    private int nextFishLeftBeforeBabies;
 
     enum PredPreyCellState{
         SHARK, FISH, EMPTY
@@ -53,15 +58,99 @@ public class PredPreyCell extends Cell {
     public void calcNewState(ArrayList<HashSet<Cell>> emptySpaces){
         if(currState == PredPreyCellState.EMPTY && nextState == null){
             nextState = PredPreyCellState.EMPTY;
-            emptySpaces.get(1).add(this);
         }
-        else if(currState == PredPreyCellState.FISH){
+        else if(currState == PredPreyCellState.FISH && nextState != PredPreyCellState.SHARK){
             adjustVals();
-            Cell whereToMove = canMove();
+            PredPreyCell whereToMove = (PredPreyCell) canMove();
+            if(whereToMove != null){
+                moveCell(whereToMove);
+            }
+            else{
+                if(nextState != PredPreyCellState.SHARK)
+                    nextState = currState;
+                    setNextVals(fishLeftBeforeBabies,sharkLeftBeforeBabies,sharkEnergyLeft);
+            }
         }
         else if(currState == PredPreyCellState.SHARK){
-
+            adjustVals();
+            PredPreyCell whereToMove = (PredPreyCell) canMove();
+            if(whereToMove != null){
+                moveCell(whereToMove);
+            }
+            else{
+                if(sharkEnergyLeft == 0){
+                    nextState = PredPreyCellState.EMPTY;
+                    setNextVals(-1,-1,-1);
+                }
+                else{
+                    nextState = currState;
+                    setNextVals(fishLeftBeforeBabies,sharkLeftBeforeBabies,sharkEnergyLeft);
+                }
+            }
         }
+    }
+
+    private void moveCell(PredPreyCell whereToMove) {
+        if(currState == PredPreyCellState.FISH){
+            if(whereToMove.getNextState() != PredPreyCellState.SHARK){
+                if(fishLeftBeforeBabies == 0)
+                    whereToMove.setNextVals(fishReproduction,sharkLeftBeforeBabies,sharkEnergyLeft);
+                else
+                    whereToMove.setNextVals(fishLeftBeforeBabies,sharkLeftBeforeBabies,sharkEnergyLeft);
+                whereToMove.setNextState(PredPreyCellState.FISH);
+            }
+            if(fishLeftBeforeBabies == 0 && nextState != PredPreyCellState.SHARK){
+                nextState = PredPreyCellState.FISH;
+                setNextVals(fishReproduction,-1,-1);
+            }
+            else if(nextState != PredPreyCellState.SHARK){
+                nextState = PredPreyCellState.EMPTY;
+                setNextVals(-1,-1,-1);
+            }
+            if(nextState == PredPreyCellState.SHARK){
+                nextSharkEnergyLeft = sharkDeathRate;
+            }
+            if(whereToMove.getNextState() == PredPreyCellState.SHARK)
+                whereToMove.setNextVals(-1,whereToMove.getNextSharkBabies(),sharkDeathRate);
+        }
+        else if(currState == PredPreyCellState.SHARK){
+            if(sharkEnergyLeft != 0){
+                boolean ateFish = false;
+                if(whereToMove.getNextState()==PredPreyCellState.FISH)
+                    ateFish = true;
+                whereToMove.setNextState(PredPreyCellState.SHARK);
+                if(sharkLeftBeforeBabies == 0){
+                    nextState = PredPreyCellState.SHARK;
+                    setNextVals(-1,sharkReproduction,sharkDeathRate);
+                    if(ateFish)
+                        whereToMove.setNextVals(fishLeftBeforeBabies,sharkReproduction,sharkDeathRate);
+                    else
+                        whereToMove.setNextVals(fishLeftBeforeBabies,sharkReproduction,sharkEnergyLeft);
+                }
+                else{
+                    nextState = PredPreyCellState.EMPTY;
+                    setNextVals(-1,-1,-1);
+                    if(ateFish)
+                        whereToMove.setNextVals(fishLeftBeforeBabies,sharkLeftBeforeBabies,sharkDeathRate);
+                    else
+                        whereToMove.setNextVals(fishLeftBeforeBabies,sharkLeftBeforeBabies,sharkEnergyLeft);
+                }
+            }
+            else{
+                nextState = PredPreyCellState.EMPTY;
+                setNextVals(-1,-1,-1);
+            }
+        }
+    }
+
+    private int getNextSharkBabies() {
+        return nextSharkLeftBeforeBabies;
+    }
+
+    private void setNextVals(int fBabies, int sBabies, int eLeft){
+        nextFishLeftBeforeBabies = fBabies;
+        nextSharkLeftBeforeBabies = sBabies;
+        nextSharkEnergyLeft = eLeft;
     }
 
     private Cell canMove() {
@@ -93,15 +182,27 @@ public class PredPreyCell extends Cell {
         Cell whereToMove = null;
         if(currState == PredPreyCellState.SHARK){
             if(!fish.isEmpty()){
-                whereToMove = fish.get(0);
+                int ind = (int)Math.random() * fish.size();
+                whereToMove = fish.remove(ind);
+                if(whereToMove.getNextState() == PredPreyCellState.SHARK){
+                    return selectSpotToMove(sharks,fish,empties);
+                }
             }
             else if(!empties.isEmpty()){
-                whereToMove = empties.get(0);
+                int ind = (int)Math.random() * empties.size();
+                whereToMove = empties.remove(ind);
+                if(whereToMove.getNextState() == PredPreyCellState.SHARK){
+                    return selectSpotToMove(sharks,fish,empties);
+                }
             }
         }
         else if(currState == PredPreyCellState.FISH){
             if(!empties.isEmpty()){
-                whereToMove = empties.get(0);
+                int ind = (int)Math.random() * empties.size();
+                whereToMove = empties.remove(ind);
+                if(whereToMove.getNextState() == PredPreyCellState.FISH){
+                    return selectSpotToMove(sharks,fish,empties);
+                }
             }
         }
         return whereToMove;
@@ -116,42 +217,6 @@ public class PredPreyCell extends Cell {
             sharkLeftBeforeBabies--;
         }
     }
-//    public void calcNewState(ArrayList<HashSet<Cell>> emptySpaces){
-//        if(currState == PredPreyCellState.EMPTY && nextState == null) {
-//            nextState = PredPreyCellState.EMPTY;
-//            emptySpaces.get(1).add(this);
-//            lifeSpan = 0;
-//        }
-//        //fish
-//        else if(currState == PredPreyCellState.FISH) {
-//            Cell newSpace = selectMovement(emptySpaces);
-//            if(newSpace != null) {
-//                newSpace.setNextState(PredPreyCellState.FISH);
-//                //need to set newspace lifespan to current lifespan
-//                emptySpaces.get(1).remove(newSpace);
-//                if(lifeSpan >= fishReproduction) {
-//                    this.nextState = PredPreyCellState.FISH;
-//                    this.lifeSpan = 0;
-//                }
-//                else{
-//                    this.nextState = PredPreyCellState.EMPTY;
-//                    emptySpaces.get(1).add(this);
-//                }
-//            }
-//            else {
-//                nextState = PredPreyCellState.FISH;
-//                lifeSpan += 1;
-//            }
-//        }
-//        //shark
-//        else {
-//            if(sharkEnergy == 0) {
-//                nextState = PredPreyCellState.EMPTY;
-//                emptySpaces.get(1).add(this);
-//                lifeSpan = 0;
-//            }
-//        }
-//    }
 
     public void changeDisplay(){
         if(currState == PredPreyCellState.EMPTY) {
@@ -165,23 +230,16 @@ public class PredPreyCell extends Cell {
         }
     }
 
-//    private Cell selectMovement(ArrayList<HashSet<Cell>> emptySpaces){
-//        int index = 1;
-//        ArrayList<Cell> eligibleNeighbors = new ArrayList<Cell>();
-//        while(index < neighbors.length) {
-//            if(neighbors[index] != null &&
-//                    neighbors[index].getCurrState() == PredPreyCellState.EMPTY &&
-//                        emptySpaces.get(0).contains(neighbors[index])) {
-//                eligibleNeighbors.add(neighbors[index]);
-//            }
-//            index += 2;
-//        }
-//        if(eligibleNeighbors.size() == 0){
-//            return null;
-//        }
-//        else {
-//            return eligibleNeighbors.get(new Random().nextInt(eligibleNeighbors.size()));
-//        }
-//    }
+    @Override
+    public void updateState(){
+        currState = nextState;
+        nextState = null;
+        sharkEnergyLeft = nextSharkEnergyLeft;
+        sharkLeftBeforeBabies = nextSharkLeftBeforeBabies;
+        fishLeftBeforeBabies = nextFishLeftBeforeBabies;
+        nextFishLeftBeforeBabies = -1;
+        nextSharkEnergyLeft = -1;
+        nextSharkLeftBeforeBabies = -1;
+    }
 
 }
