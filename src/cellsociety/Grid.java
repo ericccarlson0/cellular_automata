@@ -20,6 +20,9 @@ public class Grid {
     private ArrayList<String> states;
     private ArrayList<Double> miscValue;
     private ArrayList<HashSet<Cell>> emptySpaces;
+    private ArrayList<Cell> sharks;
+    private ArrayList<Cell> fishes;
+    private ArrayList<Cell> empties;
 
     public Grid(SimulationRunner.SimulationType type, int size, ArrayList<Double> percents,
                 ArrayList<String> states, ArrayList<Double> misc, String shape) {
@@ -32,6 +35,10 @@ public class Grid {
         emptySpaces = new ArrayList<>();
         HashSet<Cell> currEmpty = new HashSet<>();
         HashSet<Cell> nextEmpty = new HashSet<>();
+
+        sharks = new ArrayList<>();
+        fishes = new ArrayList<>();
+        empties = new ArrayList<>();
 
         emptySpaces.add(currEmpty);
         emptySpaces.add(nextEmpty);
@@ -103,6 +110,12 @@ public class Grid {
                 break;
             case PRED_PREY:
                 currCell = new PredPreyCell(width, height, initialState, shape, miscValue.get(0), miscValue.get(1), miscValue.get(2));
+                if(initialState.equals("SHARK"))
+                    sharks.add(currCell);
+                else if(initialState.equals("FISH"))
+                    fishes.add(currCell);
+                else
+                    empties.add(currCell);
                 break;
         }
         if (initialState.equals("EMPTY")) {
@@ -167,6 +180,27 @@ public class Grid {
     }
 
     private void calcNewStates(){
+        if(simType == SimulationRunner.SimulationType.PRED_PREY){
+            calcNewStatesPredPrey();
+        }
+        else{
+            calcNewStatesNormal();
+        }
+    }
+
+    private void calcNewStatesPredPrey() {
+        for (Cell shark : sharks){
+            shark.calcNewState(emptySpaces);
+        }
+        for(Cell fish: fishes){
+            fish.calcNewState(emptySpaces);
+        }
+        for(Cell empty: empties){
+            empty.calcNewState(emptySpaces);
+        }
+    }
+
+    private void calcNewStatesNormal(){
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
                 gridStructure[row][col].calcNewState(emptySpaces);
