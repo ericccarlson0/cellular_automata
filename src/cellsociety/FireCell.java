@@ -13,7 +13,7 @@ public class FireCell extends Cell {
     private double catchProb;
 
     enum FireCellState {
-        EMPTY, TREE, FIRE;
+        EMPTY, TREE, FIRE
     }
 
     public FireCell(double width, double height, String currState, String shape, double catchProb) {

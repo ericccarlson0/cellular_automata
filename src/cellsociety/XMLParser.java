@@ -6,7 +6,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

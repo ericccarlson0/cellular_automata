@@ -13,7 +13,7 @@ public abstract class Cell {
     protected Cell[] neighbors;
 
     enum CellShape {
-        SQUARE, DIAMOND, CIRCLE;
+        SQUARE, DIAMOND, CIRCLE
     }
 
     public Cell (double width, double height, Object currState, String shape) {
