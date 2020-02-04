@@ -3,15 +3,15 @@ simulation
 
 This project implements a cellular automata simulator.
 
-Names:
+Names: Charles Papandreou, Eric Carlson, Turner Jordan
 
 ### Timeline
 
-Start Date: 
+Start Date: 02/04/2020
 
 Finish Date: 
 
-Hours Spent:
+Hours Spent: 50
 
 ### Primary Roles
 
@@ -21,11 +21,11 @@ Hours Spent:
 
 ### Running the Program
 
-Main class:
+Main class: run the simulationrunner.java class and follow prompt on screen to load and start simulations
 
-Data files needed: 
+Data files needed: files needed are the xml specification files that are in data folder. SET THE DATA FOLDER AS RESOURCES ROOT. these include fire_test.xml, life_test.xml, percolation_test.xml, segregation_test.xml, and wator_test.xml.
 
-Features implemented:
+Features implemented: basic implementation
 
 
 

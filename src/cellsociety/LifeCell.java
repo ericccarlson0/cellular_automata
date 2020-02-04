@@ -11,7 +11,7 @@ public class LifeCell extends Cell {
     public static final Paint EMPTY_COLOR = Color.WHITE;
 
     enum LifeCellState {
-        ALIVE, EMPTY;
+        ALIVE, EMPTY
     }
 
     public LifeCell(double width, double height, String currState, String shape) {

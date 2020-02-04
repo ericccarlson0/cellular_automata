@@ -12,7 +12,7 @@ public class PercolationCell extends Cell {
     public static final Paint EMPTY_COLOR = Color.color(1.0, 1.0, 1.0);
 
     enum PercolationCellState {
-        BLOCK, EMPTY, FULL;
+        BLOCK, EMPTY, FULL
     }
 
     public PercolationCell(double width, double height, String currState, String shape) {

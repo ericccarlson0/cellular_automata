@@ -2,12 +2,9 @@ package cellsociety;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Random;
 
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-
-import javax.swing.*;
 
 public class PredPreyCell extends Cell {
     public static final Paint SHARK_COLOR = Color.BLACK;
