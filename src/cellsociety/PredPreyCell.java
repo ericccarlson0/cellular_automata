@@ -55,6 +55,22 @@ public class PredPreyCell extends Cell {
             nextState = PredPreyCellState.EMPTY;
             emptySpaces.get(1).add(this);
         }
+        else if(currState == PredPreyCellState.FISH){
+            adjustVals();
+        }
+        else if(currState == PredPreyCellState.SHARK){
+
+        }
+    }
+
+    private void adjustVals() {
+        if(currState == PredPreyCellState.FISH){
+            fishLeftBeforeBabies--;
+        }
+        else{
+            sharkEnergyLeft--;
+            sharkLeftBeforeBabies--;
+        }
     }
 //    public void calcNewState(ArrayList<HashSet<Cell>> emptySpaces){
 //        if(currState == PredPreyCellState.EMPTY && nextState == null) {
