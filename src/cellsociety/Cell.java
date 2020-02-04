@@ -45,11 +45,15 @@ public abstract class Cell {
         this.neighbors = neighbors;
     }
 
-    public Object getCurrState(){
+    protected Object getCurrState(){
         return currState;
     }
 
-    public void setNextState(Object state){
+    protected void setNextState(Object state){
         nextState = state;
+    }
+
+    protected Object getNextState(){
+        return nextState;
     }
 }

@@ -10,9 +10,9 @@ import javafx.scene.paint.Paint;
 import javax.swing.*;
 
 public class PredPreyCell extends Cell {
-    public static final Paint SHARK_COLOR = Color.LIGHTSLATEGRAY;
+    public static final Paint SHARK_COLOR = Color.BLACK;
     public static final Paint FISH_COLOR = Color.LIGHTCORAL;
-    public static final Paint EMPTY_COLOR = Color.SEAGREEN;
+    public static final Paint EMPTY_COLOR = Color.TURQUOISE;
 
     private int fishReproduction;
     private int sharkReproduction;
@@ -39,19 +39,19 @@ public class PredPreyCell extends Cell {
 
     private void initVals() {
         if(currState == PredPreyCellState.FISH){
-            sharkLeftBeforeBabies = -1;
-            sharkEnergyLeft = -1;
+            sharkLeftBeforeBabies = Integer.MAX_VALUE;
+            sharkEnergyLeft = Integer.MAX_VALUE;
             fishLeftBeforeBabies = fishReproduction;
         }
         else if(currState == PredPreyCellState.SHARK){
             sharkLeftBeforeBabies = sharkReproduction;
             sharkEnergyLeft = sharkDeathRate;
-            fishLeftBeforeBabies = -1;
+            fishLeftBeforeBabies = Integer.MAX_VALUE;
         }
         else{
-            sharkLeftBeforeBabies = -1;
-            sharkEnergyLeft = -1;
-            fishLeftBeforeBabies = -1;
+            sharkLeftBeforeBabies =Integer.MAX_VALUE;
+            sharkEnergyLeft =Integer.MAX_VALUE;
+            fishLeftBeforeBabies =Integer.MAX_VALUE;
         }
     }
 
@@ -66,9 +66,10 @@ public class PredPreyCell extends Cell {
                 moveCell(whereToMove);
             }
             else{
-                if(nextState != PredPreyCellState.SHARK)
+                if(nextState != PredPreyCellState.SHARK){
                     nextState = currState;
                     setNextVals(fishLeftBeforeBabies,sharkLeftBeforeBabies,sharkEnergyLeft);
+                }
             }
         }
         else if(currState == PredPreyCellState.SHARK){
@@ -78,9 +79,9 @@ public class PredPreyCell extends Cell {
                 moveCell(whereToMove);
             }
             else{
-                if(sharkEnergyLeft == 0){
+                if(sharkEnergyLeft <= 0){
                     nextState = PredPreyCellState.EMPTY;
-                    setNextVals(-1,-1,-1);
+                    setNextVals(Integer.MAX_VALUE,Integer.MAX_VALUE,Integer.MAX_VALUE);
                 }
                 else{
                     nextState = currState;
@@ -93,35 +94,35 @@ public class PredPreyCell extends Cell {
     private void moveCell(PredPreyCell whereToMove) {
         if(currState == PredPreyCellState.FISH){
             if(whereToMove.getNextState() != PredPreyCellState.SHARK){
-                if(fishLeftBeforeBabies == 0)
+                if(fishLeftBeforeBabies <= 0)
                     whereToMove.setNextVals(fishReproduction,sharkLeftBeforeBabies,sharkEnergyLeft);
                 else
                     whereToMove.setNextVals(fishLeftBeforeBabies,sharkLeftBeforeBabies,sharkEnergyLeft);
                 whereToMove.setNextState(PredPreyCellState.FISH);
             }
-            if(fishLeftBeforeBabies == 0 && nextState != PredPreyCellState.SHARK){
+            if(fishLeftBeforeBabies <= 0 && nextState != PredPreyCellState.SHARK){
                 nextState = PredPreyCellState.FISH;
-                setNextVals(fishReproduction,-1,-1);
+                setNextVals(fishReproduction,Integer.MAX_VALUE,Integer.MAX_VALUE);
             }
             else if(nextState != PredPreyCellState.SHARK){
                 nextState = PredPreyCellState.EMPTY;
-                setNextVals(-1,-1,-1);
+                setNextVals(Integer.MAX_VALUE,Integer.MAX_VALUE,Integer.MAX_VALUE);
             }
             if(nextState == PredPreyCellState.SHARK){
                 nextSharkEnergyLeft = sharkDeathRate;
             }
             if(whereToMove.getNextState() == PredPreyCellState.SHARK)
-                whereToMove.setNextVals(-1,whereToMove.getNextSharkBabies(),sharkDeathRate);
+                whereToMove.setNextVals(Integer.MAX_VALUE,whereToMove.getNextSharkBabies(),sharkDeathRate);
         }
         else if(currState == PredPreyCellState.SHARK){
-            if(sharkEnergyLeft != 0){
+            if(sharkEnergyLeft > 0){
                 boolean ateFish = false;
                 if(whereToMove.getNextState()==PredPreyCellState.FISH)
                     ateFish = true;
                 whereToMove.setNextState(PredPreyCellState.SHARK);
-                if(sharkLeftBeforeBabies == 0){
+                if(sharkLeftBeforeBabies <= 0){
                     nextState = PredPreyCellState.SHARK;
-                    setNextVals(-1,sharkReproduction,sharkDeathRate);
+                    setNextVals(Integer.MAX_VALUE,sharkReproduction,sharkDeathRate);
                     if(ateFish)
                         whereToMove.setNextVals(fishLeftBeforeBabies,sharkReproduction,sharkDeathRate);
                     else
@@ -129,7 +130,7 @@ public class PredPreyCell extends Cell {
                 }
                 else{
                     nextState = PredPreyCellState.EMPTY;
-                    setNextVals(-1,-1,-1);
+                    setNextVals(Integer.MAX_VALUE,Integer.MAX_VALUE,Integer.MAX_VALUE);
                     if(ateFish)
                         whereToMove.setNextVals(fishLeftBeforeBabies,sharkLeftBeforeBabies,sharkDeathRate);
                     else
@@ -138,7 +139,7 @@ public class PredPreyCell extends Cell {
             }
             else{
                 nextState = PredPreyCellState.EMPTY;
-                setNextVals(-1,-1,-1);
+                setNextVals(Integer.MAX_VALUE,Integer.MAX_VALUE,Integer.MAX_VALUE);
             }
         }
     }
@@ -182,14 +183,14 @@ public class PredPreyCell extends Cell {
         Cell whereToMove = null;
         if(currState == PredPreyCellState.SHARK){
             if(!fish.isEmpty()){
-                int ind = (int)Math.random() * fish.size();
+                int ind = (int)(Math.random() * fish.size());
                 whereToMove = fish.remove(ind);
                 if(whereToMove.getNextState() == PredPreyCellState.SHARK){
                     return selectSpotToMove(sharks,fish,empties);
                 }
             }
             else if(!empties.isEmpty()){
-                int ind = (int)Math.random() * empties.size();
+                int ind = (int)(Math.random() * empties.size());
                 whereToMove = empties.remove(ind);
                 if(whereToMove.getNextState() == PredPreyCellState.SHARK){
                     return selectSpotToMove(sharks,fish,empties);
@@ -198,7 +199,7 @@ public class PredPreyCell extends Cell {
         }
         else if(currState == PredPreyCellState.FISH){
             if(!empties.isEmpty()){
-                int ind = (int)Math.random() * empties.size();
+                int ind = (int)(Math.random() * empties.size());
                 whereToMove = empties.remove(ind);
                 if(whereToMove.getNextState() == PredPreyCellState.FISH){
                     return selectSpotToMove(sharks,fish,empties);
@@ -237,9 +238,9 @@ public class PredPreyCell extends Cell {
         sharkEnergyLeft = nextSharkEnergyLeft;
         sharkLeftBeforeBabies = nextSharkLeftBeforeBabies;
         fishLeftBeforeBabies = nextFishLeftBeforeBabies;
-        nextFishLeftBeforeBabies = -1;
-        nextSharkEnergyLeft = -1;
-        nextSharkLeftBeforeBabies = -1;
+        nextFishLeftBeforeBabies =Integer.MAX_VALUE;
+        nextSharkEnergyLeft =Integer.MAX_VALUE;
+        nextSharkLeftBeforeBabies =Integer.MAX_VALUE;
     }
 
 }
