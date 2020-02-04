@@ -57,10 +57,54 @@ public class PredPreyCell extends Cell {
         }
         else if(currState == PredPreyCellState.FISH){
             adjustVals();
+            Cell whereToMove = canMove();
         }
         else if(currState == PredPreyCellState.SHARK){
 
         }
+    }
+
+    private Cell canMove() {
+        Cell whereToMove = null;
+        int index = 1;
+        ArrayList<Cell> sharks = new ArrayList<Cell>();
+        ArrayList<Cell> fish = new ArrayList<Cell>();
+        ArrayList<Cell> empties = new ArrayList<Cell>();
+        while (index < neighbors.length){
+            Cell currCellToCheck = neighbors[index];
+            if(currCellToCheck != null){
+                if(currCellToCheck.getCurrState() == PredPreyCellState.FISH){
+                    fish.add(currCellToCheck);
+                }
+                else if(currCellToCheck.getCurrState() == PredPreyCellState.SHARK){
+                    sharks.add(currCellToCheck);
+                }
+                else{
+                    empties.add(currCellToCheck);
+                }
+            }
+            index += 2;
+        }
+        whereToMove = selectSpotToMove(sharks,fish,empties);
+        return whereToMove;
+    }
+
+    private Cell selectSpotToMove(ArrayList<Cell> sharks, ArrayList<Cell> fish, ArrayList<Cell> empties) {
+        Cell whereToMove = null;
+        if(currState == PredPreyCellState.SHARK){
+            if(!fish.isEmpty()){
+                whereToMove = fish.get(0);
+            }
+            else if(!empties.isEmpty()){
+                whereToMove = empties.get(0);
+            }
+        }
+        else if(currState == PredPreyCellState.FISH){
+            if(!empties.isEmpty()){
+                whereToMove = empties.get(0);
+            }
+        }
+        return whereToMove;
     }
 
     private void adjustVals() {
