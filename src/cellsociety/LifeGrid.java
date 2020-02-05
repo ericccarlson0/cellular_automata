@@ -15,6 +15,7 @@ public class LifeGrid extends GridStructure{
 
     public LifeGrid(int size, ArrayList<Double> percents, ArrayList<String> states, String shape, int numNeighbors){
         super(size,percents,states,shape,numNeighbors);
+        this.init(shape);
     }
 
     protected void calcNewStates(){
@@ -41,7 +42,7 @@ public class LifeGrid extends GridStructure{
         }
     }
 
-    protected Cell makeCellOfType(double width, double height, String shape){
+    protected Cell makeCellOfType(double width, double height, String shape, int row, int col){
         LifeCellStates selectedState = LifeCellStates.valueOf(generateState());
         return new Cell(width,height,selectedState,shape);
     }

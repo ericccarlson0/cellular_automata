@@ -22,8 +22,6 @@ public abstract class GridStructure {
         this.states = states;
         this.statePercents = percents;
         this.numNeighbors = numNeighbors;
-        initPercents();
-        initGridStructure(shape);
     }
 
     protected abstract void calcNewStates();
@@ -31,7 +29,7 @@ public abstract class GridStructure {
     //TODO: SHOULD PROB GET MOVED to GridDisplay
     protected abstract void updateColor(Cell c);
 
-    protected abstract Cell makeCellOfType(double width, double height, String shape);
+    protected abstract Cell makeCellOfType(double width, double height, String shape, int row, int col);
 
     private void initPercents() {
         for (int index = 1; index < statePercents.size(); index++){
@@ -46,6 +44,10 @@ public abstract class GridStructure {
         initCellNeighbors(numNeighbors);
     }
 
+    protected void init(String shape) {
+        initPercents();
+        initGridStructure(shape);
+    }
     public void step() {
         Collections.shuffle(allCells);
         calcNewStates();
@@ -57,7 +59,7 @@ public abstract class GridStructure {
         double cellHeight = DISPLAY_HEIGHT / size - 2*CELL_GAP;
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                Cell curr = makeCellOfType(cellWidth,cellHeight,shape);
+                Cell curr = makeCellOfType(cellWidth,cellHeight,shape,row,col);
                 gridStructure[row][col] = curr;
                 allCells.add(curr);
                 updateColor(curr);

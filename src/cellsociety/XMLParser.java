@@ -52,6 +52,7 @@ public class XMLParser {
             case FIRE:
                 break;
             case PERCOLATION:
+                grid = new PercolationGrid(dimensions,percents,states,mode,8,misc.get(0));
                 break;
             case SEGREGATION:
                 break;
