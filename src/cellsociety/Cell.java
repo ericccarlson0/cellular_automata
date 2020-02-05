@@ -1,11 +1,12 @@
 package cellsociety;
 
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import java.util.ArrayList;
 
-public class Cell {
+public class Cell{
     protected Shape visual;
     protected Object currState;
     protected Object nextState;
@@ -32,6 +33,10 @@ public class Cell {
         nextState = null;
     }
 
+    public void setColor(Paint p){
+        visual.setFill(p);
+    }
+
     public Shape getVisual() {
         return visual;
     }
@@ -50,5 +55,9 @@ public class Cell {
 
     protected Object getNextState(){
         return nextState;
+    }
+
+    public ArrayList<Cell> getNeighbors() {
+        return neighbors;
     }
 }

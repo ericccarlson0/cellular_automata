@@ -1,13 +1,15 @@
 package cellsociety;
 
 import java.util.ArrayList;
-
+import java.util.Collections;
 
 public abstract class GridStructure {
 
     public static final double CELL_GAP = .1;
     public static final int DISPLAY_WIDTH = 500;
     public static final int DISPLAY_HEIGHT = 500;
+
+    protected ArrayList<Cell> allCells;
 
     private Cell[][] gridStructure;
     private int size;
@@ -27,7 +29,8 @@ public abstract class GridStructure {
 
     protected abstract void calcNewStates();
 
-    protected abstract void updateCellStates();
+    //TODO: SHOULD PROB GET MOVED to GridDisplay
+    protected abstract void updateColor(Cell c);
 
     protected abstract Cell makeCellOfType(double width, double height, String shape);
 
@@ -44,6 +47,7 @@ public abstract class GridStructure {
     }
 
     public void step() {
+        Collections.shuffle(allCells);
         calcNewStates();
         updateCellStates();
     }
@@ -53,12 +57,14 @@ public abstract class GridStructure {
         double cellHeight = DISPLAY_HEIGHT / size - 2*CELL_GAP;
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                gridStructure[row][col] = makeCellOfType(cellWidth,cellHeight,shape);
+                Cell curr = makeCellOfType(cellWidth,cellHeight,shape);
+                gridStructure[row][col] = curr;
+                allCells.add(curr);
             }
         }
     }
 
-    private String generateState() {
+    protected String generateState() {
         double val = Math.random() * 100;
         int index = 0;
         while (index < statePercents.size()){
@@ -105,6 +111,17 @@ public abstract class GridStructure {
             return gridStructure[row][col];
         }
         return null;
+    }
+
+    private void updateCellStates(){
+        for(Cell c : allCells){
+            updateState(c);
+            updateColor(c);
+        }
+    }
+
+    private void updateState(Cell c){
+        c.setNextState(c.getCurrState());
     }
 
 }

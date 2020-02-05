@@ -33,7 +33,7 @@ public class LifeGrid extends GridStructure{
             if(currCell.getCurrState() == LifeCellStates.ALIVE && (numNeighborsAlive == 2 || numNeighborsAlive == 3)) {
                 currCell.setNextState(LifeCellStates.ALIVE);
             }
-            else if(currCell.getCurrState() == LifeCell.LifeCellState.EMPTY && numNeighborsAlive == 3) {
+            else if(currCell.getCurrState() == LifeCellStates.EMPTY && numNeighborsAlive == 3) {
                 currCell.setNextState(LifeCellStates.ALIVE);
             } else {
                 currCell.setNextState(LifeCellStates.EMPTY);
