@@ -50,6 +50,7 @@ public class XMLParser {
                 grid = new LifeGrid(dimensions,percents,states,mode,8);
                 break;
             case FIRE:
+                grid = new FireGrid(dimensions,percents,states,mode,8, misc.get(0));
                 break;
             case PERCOLATION:
                 grid = new PercolationGrid(dimensions,percents,states,mode,8,misc.get(0));
