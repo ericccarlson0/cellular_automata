@@ -39,7 +39,8 @@ public class SimulationRunner extends Application {
     private Rectangle noCurrGrid = new Rectangle(500,500, Color.color(0.2, 0.2, .6));
     private String myShape = "SQUARE";
 
-    private Grid currentGrid;
+    private GridStructure currentGridStruct;
+    private GridDisplay currentGridDisplay;
     private boolean shouldStep;
     private boolean isSimRunning;
     private int simDelay;
@@ -87,7 +88,8 @@ public class SimulationRunner extends Application {
     }
 
     private void initializeVariables() {
-        currentGrid = null;
+        currentGridStruct = null;
+        currentGridDisplay = null;
         shouldStep = false;
         isSimRunning = false;
         simDelay = 10;
@@ -221,12 +223,7 @@ public class SimulationRunner extends Application {
         Rectangle background = new Rectangle(size*2, size, Color.color(1.0, 1.0, 1.0));
         background.setArcWidth(BOX_WIDTH/10);
         background.setArcHeight(BOX_WIDTH/10);
-//        Label l = new Label(message);
-//        l.setFont(new Font("Menlo", FONT_SIZE));
-//        l.setWrapText(true);
-//        l.setMaxWidth(BOX_WIDTH-2);
-        sp.getChildren().add(background); //***
-//        sp.getChildren().add(l);
+        sp.getChildren().add(background);
 
         return sp;
     }
@@ -259,18 +256,20 @@ public class SimulationRunner extends Application {
     private void loadButton() {
         isSimRunning = false; //***
         gridPane.getChildren().remove(noCurrGrid);
-        if(currentGrid != null)
-            gridPane.getChildren().remove(currentGrid.getGridVisual());
+        if(currentGridStruct != null)
+            gridPane.getChildren().remove(currentGridDisplay.getDisplay());
         clearMessage(myInfoBox);
         clearMessage(myStatsBox);
         try{
             XMLFilename = String.format(XML_FOLDER + myTextField.getText());
-            currentGrid = fileParser.generateGrid(XMLFilename, myShape);
-            gridPane.add(currentGrid.getGridVisual(), 1, 1);
+            currentGridStruct = fileParser.generateGrid(XMLFilename, myShape);
+            currentGridDisplay = new GridDisplay(myShape,currentGridStruct.getConfig());
+            gridPane.add(currentGridDisplay.getDisplay(), 1, 1);
             addMessage(myInfoBox,"Press Start to enjoy the Simulation!");
         }
         catch(Exception e){
-            currentGrid = null;
+            currentGridDisplay = null;
+            currentGridStruct = null;
             gridPane.getChildren().add(noCurrGrid);
             addMessage(myInfoBox, "The filename you entered is either invalid or could not be found.");
         }
@@ -294,12 +293,12 @@ public class SimulationRunner extends Application {
     }
 
     private void step () {
-        if (currentGrid != null && (isSimRunning || shouldStep)){
+        if (currentGridStruct != null && (isSimRunning || shouldStep)){
             if (currDelayLeft > 0){
                 currDelayLeft--;
             } else {
                 checkSlider();
-                currentGrid.step();
+                currentGridStruct.step();
                 if (shouldStep) {
                     shouldStep = false;
                 } else {

@@ -124,4 +124,8 @@ public abstract class GridStructure {
         c.setNextState(c.getCurrState());
     }
 
+    public Cell[][] getConfig(){
+        return gridStructure;
+    }
+
 }

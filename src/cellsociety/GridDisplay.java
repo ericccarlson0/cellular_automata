@@ -37,6 +37,9 @@ public class GridDisplay {
                 display.add(config[row][col].getVisual(), col, row,1,1);
             }
         }
+    }
 
+    public GridPane getDisplay(){
+        return display;
     }
 }
