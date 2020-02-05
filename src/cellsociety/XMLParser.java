@@ -26,7 +26,7 @@ public class XMLParser {
         }
     }
 
-    public Grid generateGrid (String xmlFilename, String mode) {
+    public GridStructure generateGrid (String xmlFilename, String mode) {
         File dataFile = new File(xmlFilename);
         Element root = getRootElement(dataFile);
         if (isValidFile(root)) {
@@ -36,10 +36,29 @@ public class XMLParser {
             ArrayList<Double> percents = getPercents(root);
             ArrayList<String> states = getStates(root);
             ArrayList<Double> misc = getMisc(root);
-            return new Grid(simType, dimensions, percents, states, misc, mode);
+            return generateGridStructure(simType,dimensions,percents,states,misc,mode);
         } else {
             return null;
         }
+    }
+
+    private GridStructure generateGridStructure(SimulationRunner.SimulationType simType, int dimensions, ArrayList<Double> percents, ArrayList<String> states, ArrayList<Double> misc, String mode) {
+        GridStructure grid = null;
+        switch(simType){
+            case LIFE:
+                //TODO figure out how to specify number of neighbors based on shape of cells
+                grid = new LifeGrid(dimensions,percents,states,mode,8);
+                break;
+            case FIRE:
+                break;
+            case PERCOLATION:
+                break;
+            case SEGREGATION:
+                break;
+            case PRED_PREY:
+                break;
+        }
+        return grid;
     }
 
     private ArrayList<Double> getMisc(Element root) {

@@ -35,6 +35,8 @@ public class SimulationRunner extends Application {
     public static final int BOX_WIDTH = 100;
     public static final int TOTAL_WIDTH = 800;
     public static final int TOTAL_HEIGHT = 800;
+    private static final String FILE_ERROR_MESSAGE = "The filename you entered is either invalid or could not be found.";
+    private static final String START_SIM_MESSAGE = "Press Start to enjoy the Simulation!";
 
     private Rectangle noCurrGrid = new Rectangle(500,500, Color.color(0.2, 0.2, .6));
     private String myShape = "SQUARE";
@@ -254,25 +256,29 @@ public class SimulationRunner extends Application {
     }
 
     private void loadButton() {
-        isSimRunning = false; //***
+        isSimRunning = false;
         gridPane.getChildren().remove(noCurrGrid);
-        if(currentGridStruct != null)
+        if(currentGridDisplay != null)
             gridPane.getChildren().remove(currentGridDisplay.getDisplay());
         clearMessage(myInfoBox);
         clearMessage(myStatsBox);
         try{
             XMLFilename = String.format(XML_FOLDER + myTextField.getText());
-            currentGridStruct = fileParser.generateGrid(XMLFilename, myShape);
-            currentGridDisplay = new GridDisplay(myShape,currentGridStruct.getConfig());
+            generateGrids();
             gridPane.add(currentGridDisplay.getDisplay(), 1, 1);
-            addMessage(myInfoBox,"Press Start to enjoy the Simulation!");
+            addMessage(myInfoBox,START_SIM_MESSAGE);
         }
         catch(Exception e){
             currentGridDisplay = null;
             currentGridStruct = null;
             gridPane.getChildren().add(noCurrGrid);
-            addMessage(myInfoBox, "The filename you entered is either invalid or could not be found.");
+            addMessage(myInfoBox, FILE_ERROR_MESSAGE);
         }
+    }
+
+    private void generateGrids() {
+        currentGridStruct = fileParser.generateGrid(XMLFilename, myShape);
+        currentGridDisplay = new GridDisplay(myShape,currentGridStruct.getConfig());
     }
 
     private void clearMessage (Pane messageBox) {

@@ -22,7 +22,6 @@ public abstract class GridStructure {
         this.states = states;
         this.statePercents = percents;
         this.numNeighbors = numNeighbors;
-
         initPercents();
         initGridStructure(shape);
     }
@@ -42,6 +41,7 @@ public abstract class GridStructure {
 
     private void initGridStructure(String shape) {
         gridStructure = new Cell[size][size];
+        allCells = new ArrayList<>();
         createCells(shape);
         initCellNeighbors(numNeighbors);
     }
@@ -60,6 +60,7 @@ public abstract class GridStructure {
                 Cell curr = makeCellOfType(cellWidth,cellHeight,shape);
                 gridStructure[row][col] = curr;
                 allCells.add(curr);
+                updateColor(curr);
             }
         }
     }
@@ -86,9 +87,15 @@ public abstract class GridStructure {
                         neighbors = getNeighborsEight(row, col);
                         break;
                 }
+                removeNulls(neighbors);
                 gridStructure[row][col].setNeighbors(neighbors);
             }
         }
+    }
+
+    private void removeNulls(ArrayList<Cell> neighbors) {
+        //found at https://stackoverflow.com/questions/4819635/how-to-remove-all-null-elements-from-a-arraylist-or-string-array
+        neighbors.removeAll(Collections.singleton(null));
     }
 
     private ArrayList<Cell> getNeighborsEight(int row, int col) {
@@ -115,13 +122,15 @@ public abstract class GridStructure {
 
     private void updateCellStates(){
         for(Cell c : allCells){
-            updateState(c);
+            c.updateState();
             updateColor(c);
         }
     }
 
-    private void updateState(Cell c){
-        c.setNextState(c.getCurrState());
+    protected void setInitColors(){
+        for(Cell c : allCells){
+            updateColor(c);
+        }
     }
 
     public Cell[][] getConfig(){
