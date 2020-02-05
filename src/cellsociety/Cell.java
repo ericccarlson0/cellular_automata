@@ -4,13 +4,12 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import java.util.ArrayList;
-import java.util.HashSet;
 
-public abstract class Cell {
+public class Cell {
     protected Shape visual;
     protected Object currState;
     protected Object nextState;
-    protected Cell[] neighbors;
+    protected ArrayList<Cell> neighbors;
 
     enum CellShape {
         SQUARE, DIAMOND, CIRCLE
@@ -28,28 +27,24 @@ public abstract class Cell {
         this.nextState = null;
     }
 
-    public abstract void calcNewState (ArrayList<HashSet<Cell>> emptySpots);
-
     public void updateState() {
         currState = nextState;
         nextState = null;
     }
 
-    public abstract void changeDisplay();
-
     public Shape getVisual() {
         return visual;
     }
 
-    public void setNeighbors(Cell[] neighbors) {
+    public void setNeighbors(ArrayList<Cell> neighbors) {
         this.neighbors = neighbors;
     }
 
-    protected Object getCurrState(){
+    public Object getCurrState(){
         return currState;
     }
 
-    protected void setNextState(Object state){
+    public void setNextState(Object state){
         nextState = state;
     }
 
