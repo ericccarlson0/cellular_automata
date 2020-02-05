@@ -1,10 +1,7 @@
 package cellsociety;
 
-import javafx.scene.layout.GridPane;
-import javafx.scene.shape.Shape;
-
 import java.util.ArrayList;
-import java.util.HashSet;
+
 
 public abstract class GridStructure {
 
@@ -18,7 +15,7 @@ public abstract class GridStructure {
     private ArrayList<String> states;
     private int numNeighbors;
 
-    public Grid(int size, ArrayList<Double> percents, ArrayList<String> states, String shape, int numNeighbors) {
+    public GridStructure(int size, ArrayList<Double> percents, ArrayList<String> states, String shape, int numNeighbors) {
         this.size = size;
         this.states = states;
         this.statePercents = percents;
@@ -30,7 +27,7 @@ public abstract class GridStructure {
 
     protected abstract void calcNewStates();
 
-    protected abstract void updateCell();
+    protected abstract void updateCellStates();
 
     protected abstract Cell makeCellOfType(double width, double height, String shape);
 
@@ -43,12 +40,12 @@ public abstract class GridStructure {
     private void initGridStructure(String shape) {
         gridStructure = new Cell[size][size];
         createCells(shape);
-        initCellNeighbors();
+        initCellNeighbors(numNeighbors);
     }
 
     public void step() {
         calcNewStates();
-        updateCell();
+        updateCellStates();
     }
 
     private void createCells(String shape) {
@@ -74,10 +71,15 @@ public abstract class GridStructure {
     }
 
     //TODO: set up so that supports creating neighborhoods of different amounts for individual cells
-    private void initCellNeighbors() {
+    private void initCellNeighbors(int numNeighbors) {
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                ArrayList<Cell> neighbors = getNeighborsEight(row, col);
+                ArrayList<Cell> neighbors = new ArrayList<>();
+                switch(numNeighbors){
+                    case 8:
+                        neighbors = getNeighborsEight(row, col);
+                        break;
+                }
                 gridStructure[row][col].setNeighbors(neighbors);
             }
         }
