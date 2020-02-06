@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <data simType="SEGREGATION">
-    <size>50</size>
-    <percents>10,45,45</percents>
+    <size>100</size>
+    <percents>10,60,30</percents>
     <states>EMPTY,ONE,TWO</states>
-    <misc>.56</misc>
+    <misc>.77</misc>
 </data>
