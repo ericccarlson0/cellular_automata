@@ -53,7 +53,7 @@ public class SegregationGrid extends GridStructure{
     }
 
     private void segregationSimStateRules(Cell currCell) {
-        if(currCell.getCurrState() == SegregationCellStates.EMPTY && currCell.getNeighbors() == null) {
+        if(currCell.getCurrState() == SegregationCellStates.EMPTY) {
             currCell.setNextState(SegregationCellStates.EMPTY);
         } else if(!isSatisfied(currCell) && !allEmpties.isEmpty()) {
             Cell currEmpty = getRandomEmpty();

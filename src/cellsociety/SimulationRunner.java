@@ -129,7 +129,7 @@ public class SimulationRunner extends Application {
         root.getChildren().add(displayPane);
         simDisplay = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
         simDisplay.getStylesheets().add(getClass().getResource(RESOURCE_FOLDER + STYLESHEET).toExternalForm());
-
+        myInfoBox.getChildren().add(new Label(""));
         addMessage(myInfoBox,"Load a simulation by entering its filename.");
     }
 
@@ -235,7 +235,6 @@ public class SimulationRunner extends Application {
         background.setArcWidth(BOX_WIDTH/10);
         background.setArcHeight(BOX_WIDTH/10);
         sp.getChildren().add(background);
-
         return sp;
     }
 
@@ -289,7 +288,17 @@ public class SimulationRunner extends Application {
 
     private void generateGrids() {
         currGridStruct = fileParser.generateGrid(XMLFilename, myShape);
-        currGridDisplay = new GridDisplay(myShape, currGridStruct.getConfig());
+        initDisplay(myShape, currGridStruct.getSize());
+    }
+
+    private void initDisplay(String myShape, int size) {
+        currGridDisplay = new GridDisplay(myShape,size);
+        for(int row = 0; row < size; row++){
+            for(int col = 0; col < size; col++){
+                Cell currCell = currGridStruct.getCellAtIndex(row,col);
+                currGridDisplay.addCellToDisplay(row,col,currCell);
+            }
+        }
     }
 
     private void clearMessage (Pane messageBox) {
@@ -306,6 +315,7 @@ public class SimulationRunner extends Application {
         l.setFont(new Font("Menlo", FONT_SIZE / 2)); //***
         l.setWrapText(true);
         l.setMaxWidth(BOX_WIDTH-2);
+        messageBox.getChildren().remove(1);
         messageBox.getChildren().add(l);
     }
 

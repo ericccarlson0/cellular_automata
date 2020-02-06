@@ -44,20 +44,25 @@ public class GridDisplay {
         return null;
     }
 
+<<<<<<< HEAD
     public GridDisplay(String cellShape, Cell[][] initCellConfig){
+=======
+    public GridDisplay(String cellShape,int size){
+>>>>>>> master
         this.cellShape = CellShape.valueOf(cellShape);
-        size = initCellConfig.length;
-        initializeDisplay(initCellConfig);
+        this.size = size;
+        initializeDisplay();
     }
 
-    private void initializeDisplay(Cell[][] config) {
+    private void initializeDisplay() {
         switch(cellShape){
             case SQUARE:
-                initSquareCellDisplay(config);
+                initSquareCellDisplay();
                 break;
         }
     }
 
+<<<<<<< HEAD
     private void initSquareCellDisplay(Cell[][] config) {
         gridDisplay = new GridPane();
         gridDisplay.setGridLinesVisible(false);
@@ -68,6 +73,17 @@ public class GridDisplay {
                 gridDisplay.add(config[row][col].getVisual(), col, row,1,1);
             }
         }
+=======
+    public void addCellToDisplay(int row, int col, Cell c){
+        display.add(c.getVisual(), col, row,1,1);
+    }
+
+    private void initSquareCellDisplay() {
+        display = new GridPane();
+        display.setGridLinesVisible(false);
+        display.setHgap(CELL_GAP);
+        display.setVgap(CELL_GAP);
+>>>>>>> master
     }
 
     public GridPane getDisplay(){
