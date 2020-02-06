@@ -1,5 +1,6 @@
-package cellsociety;
+package cellsociety.frontend;
 
+import cellsociety.backend.Cell;
 import javafx.scene.layout.GridPane;
 
 public class GridDisplay {

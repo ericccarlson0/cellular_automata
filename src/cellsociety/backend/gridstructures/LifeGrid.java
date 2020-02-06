@@ -1,9 +1,11 @@
-package cellsociety;
+package cellsociety.backend.gridstructures;
 
+import cellsociety.backend.Cell;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class LifeGrid extends GridStructure{
     public static final Paint ALIVE_COLOR = Color.BLACK;
@@ -25,7 +27,7 @@ public class LifeGrid extends GridStructure{
     }
 
     private void lifeSimStateRules(Cell currCell) {
-        ArrayList<Cell> allNeighbors = currCell.getNeighbors();
+        List<Cell> allNeighbors = currCell.getNeighbors();
         int numNeighborsAlive = 0;
         for(Cell currNeighbor: allNeighbors){
             if(currNeighbor.getCurrState() == LifeCellStates.ALIVE){
