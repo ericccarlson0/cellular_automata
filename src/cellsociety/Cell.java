@@ -5,12 +5,13 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Cell{
     protected Shape visual;
     protected Object currState;
     protected Object nextState;
-    protected ArrayList<Cell> neighbors;
+    protected List<Cell> neighbors;
 
     enum CellShape {
         SQUARE, DIAMOND, CIRCLE
@@ -41,7 +42,7 @@ public class Cell{
         return visual;
     }
 
-    public void setNeighbors(ArrayList<Cell> neighbors) {
+    public void setNeighbors(List<Cell> neighbors) {
         this.neighbors = neighbors;
     }
 
@@ -61,7 +62,7 @@ public class Cell{
         return nextState;
     }
 
-    public ArrayList<Cell> getNeighbors() {
+    public List<Cell> getNeighbors() {
         return neighbors;
     }
 }

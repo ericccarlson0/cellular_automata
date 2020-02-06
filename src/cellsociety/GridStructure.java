@@ -2,6 +2,7 @@ package cellsociety;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public abstract class GridStructure {
 
@@ -13,11 +14,11 @@ public abstract class GridStructure {
 
     private Cell[][] gridStructure;
     private int size;
-    private ArrayList<Double> statePercents;
-    private ArrayList<String> states;
+    private List<Double> statePercents;
+    private List<String> states;
     private int numNeighbors;
 
-    public GridStructure(int size, ArrayList<Double> percents, ArrayList<String> states, String shape, int numNeighbors) {
+    public GridStructure(int size, List<Double> percents, List<String> states, String shape, int numNeighbors) {
         this.size = size;
         this.states = states;
         this.statePercents = percents;
