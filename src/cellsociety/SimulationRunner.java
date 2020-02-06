@@ -28,6 +28,9 @@ public class SimulationRunner extends Application {
     public static final Color DISPLAY_COLOR = Color.color(0.9, 0.9, 1.0);
     public static final Color FONT_COLOR = Color.color(0.0, 0.0, 0.4);
     public static final int FONT_SIZE = 16;
+    public static final String SQUARE = Cell.CellShape.SQUARE.name();
+    public static final String CIRCLE = Cell.CellShape.CIRCLE.name();
+    public static final String DIAMOND = Cell.CellShape.DIAMOND.name();
 
     public static final int PADDING = 5;
     public static final int V_GAP = 10;
@@ -39,7 +42,7 @@ public class SimulationRunner extends Application {
     private static final String START_SIM_MESSAGE = "Press Start to enjoy the Simulation!";
 
     private Rectangle noCurrGrid = new Rectangle(500,500, Color.color(0.2, 0.2, .6));
-    private String myShape = "SQUARE";
+    private String myShape = SQUARE;
 
     private GridStructure currGridStruct;
     private GridDisplay currGridDisplay;
@@ -195,21 +198,21 @@ public class SimulationRunner extends Application {
         ToggleGroup group = new ToggleGroup();
         myShapeButtons = group;
 
-        RadioButton square = new RadioButton("SQUARE");
-        square.setUserData("SQUARE");
+        RadioButton square = new RadioButton();
+        square.setUserData(SQUARE);
         square.setToggleGroup(group);
         square.setSelected(true);
         square.setOnAction(event -> shapeButton());
         buttonHolder.add(square, 0, 0);
 
-        RadioButton diamond = new RadioButton("DIAMOND");
-        diamond.setUserData("DIAMOND");
+        RadioButton diamond = new RadioButton(DIAMOND);
+        diamond.setUserData(DIAMOND);
         diamond.setToggleGroup(group);
         diamond.setOnAction(event -> shapeButton());
         buttonHolder.add(diamond, 0, 1);
 
-        RadioButton circle = new RadioButton("CIRCLE");
-        circle.setUserData("CIRCLE");
+        RadioButton circle = new RadioButton(CIRCLE);
+        circle.setUserData(CIRCLE);
         circle.setToggleGroup(group);
         circle.setOnAction(event -> shapeButton());
         buttonHolder.add(circle, 0, 2);
@@ -253,14 +256,7 @@ public class SimulationRunner extends Application {
     }
 
     private void shapeButton() {
-        String shape = myShapeButtons.getSelectedToggle().getUserData().toString();
-        if (shape == "SQUARE") {
-            myShape = "SQUARE";
-        } else if (shape == "DIAMOND") {
-            myShape = "DIAMOND";
-        } else if (shape == "CIRCLE") {
-            myShape = "CIRCLE";
-        }
+        myShape = myShapeButtons.getSelectedToggle().getUserData().toString();
     }
 
     private void loadButton() {
