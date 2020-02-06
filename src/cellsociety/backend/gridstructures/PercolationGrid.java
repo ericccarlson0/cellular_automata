@@ -1,9 +1,11 @@
-package cellsociety;
+package cellsociety.backend.gridstructures;
 
+import cellsociety.backend.Cell;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PercolationGrid extends GridStructure {
     public static final Paint BLOCK_COLOR = Color.color(0.4, 0.2, 0.2);
@@ -29,7 +31,7 @@ public class PercolationGrid extends GridStructure {
     }
 
     private void percolationSimStateRules(Cell currCell){
-        ArrayList<Cell> allNeighbors = currCell.getNeighbors();
+        List<Cell> allNeighbors = currCell.getNeighbors();
 
         if(currCell.getCurrState() == PercolationCellStates.BLOCK){
             currCell.setNextState(PercolationCellStates.BLOCK);

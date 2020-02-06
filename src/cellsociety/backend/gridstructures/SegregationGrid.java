@@ -1,11 +1,12 @@
-package cellsociety;
+package cellsociety.backend.gridstructures;
 
+import cellsociety.backend.Cell;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Random;
+import java.util.List;
 
 public class SegregationGrid extends GridStructure{
     public static final Paint ONE_COLOR = Color.color(1.0, 0.5, 0.5);
@@ -67,7 +68,7 @@ public class SegregationGrid extends GridStructure{
     }
 
     private boolean isSatisfied(Cell currCell) {
-        ArrayList<Cell> allNeighbors = currCell.getNeighbors();
+        List<Cell> allNeighbors = currCell.getNeighbors();
         if(currCell.getCurrState() == SegregationCellStates.EMPTY) {
             return true;
         }
