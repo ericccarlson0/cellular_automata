@@ -41,8 +41,8 @@ public class SimulationRunner extends Application {
     private Rectangle noCurrGrid = new Rectangle(500,500, Color.color(0.2, 0.2, .6));
     private String myShape = "SQUARE";
 
-    private GridStructure currentGridStruct;
-    private GridDisplay currentGridDisplay;
+    private GridStructure currGridStruct;
+    private GridDisplay currGridDisplay;
     private boolean shouldStep;
     private boolean isSimRunning;
     private int simDelay;
@@ -50,7 +50,9 @@ public class SimulationRunner extends Application {
     private Stage simStage;
     private Scene simDisplay;
     private BorderPane displayPane;
-    private GridPane gridPane;
+    private GridPane topGrid;
+    private ScrollPane scrollPane;
+
     private XMLParser fileParser;
     private String XMLFilename;
     private TextField myTextField;
@@ -67,20 +69,26 @@ public class SimulationRunner extends Application {
     public void start (Stage stage) {
         fileParser = new XMLParser();
         simStage = stage;
+
         initializeUI();
         initializeVariables();
-
-        simStage.setScene(simDisplay);
-        simStage.setTitle(TITLE);
-        simStage.show();
 
         Text title = new Text(TITLE);
         title.setFill(Color.BLACK);
 
-        gridPane.add(title, 1, 0);
-        gridPane.add(noCurrGrid, 1, 1);
+        scrollPane = new ScrollPane();
+        scrollPane.setContent(noCurrGrid);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+
+        topGrid.add(title, 1, 0);
+        topGrid.add(scrollPane, 1, 1);
         noCurrGrid.setArcWidth(20.0);
         noCurrGrid.setArcHeight(20.0);
+
+        simStage.setScene(simDisplay);
+        simStage.setTitle(TITLE);
+        simStage.show();
 
         KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step());
         Timeline animation = new Timeline();
@@ -90,8 +98,8 @@ public class SimulationRunner extends Application {
     }
 
     private void initializeVariables() {
-        currentGridStruct = null;
-        currentGridDisplay = null;
+        currGridStruct = null;
+        currGridDisplay = null;
         shouldStep = false;
         isSimRunning = false;
         simDelay = 10;
@@ -99,29 +107,30 @@ public class SimulationRunner extends Application {
 
     private void initializeUI() {
         Group root = new Group();
-        gridPane = initializePane();
+        topGrid = initializePane();
         displayPane = new BorderPane();
 
-        HBox upperButtons = setupTopButtons();
-        gridPane.add(upperButtons, 1, 2);
+        HBox topButtons = setupTopButtons();
+        topGrid.add(topButtons, 1, 2);
         HBox centerButtons = setupCenterButtons();
-        gridPane.add(centerButtons, 1, 3);
+        topGrid.add(centerButtons, 1, 3);
         HBox bottomButtons = setupBottomButtons();
-        gridPane.add(bottomButtons, 1, 4);
+        topGrid.add(bottomButtons, 1, 4);
 
         GridPane boxes = new GridPane();
         boxes.add(createInfoBox(), 0, 0);
         boxes.add(setupShapeButtons(), 0, 1);
         boxes.add(createStatsBox(), 0, 2);
 
-        gridPane.add(boxes, 2, 1);
+        topGrid.add(boxes, 2, 1);
 
-        displayPane.setCenter(gridPane);
+
+        displayPane.setCenter(topGrid);
         root.getChildren().add(displayPane);
         simDisplay = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
         simDisplay.getStylesheets().add(getClass().getResource(RESOURCE_FOLDER + STYLESHEET).toExternalForm());
 
-        addMessage(myInfoBox,"Load a simulation by entering its filename");
+        addMessage(myInfoBox,"Load a simulation by entering its filename.");
     }
 
     private GridPane initializePane() {
@@ -257,28 +266,30 @@ public class SimulationRunner extends Application {
 
     private void loadButton() {
         isSimRunning = false;
-        gridPane.getChildren().remove(noCurrGrid);
-        if(currentGridDisplay != null)
-            gridPane.getChildren().remove(currentGridDisplay.getDisplay());
+        // topGrid.getChildren().remove(noCurrGrid);
+        if (currGridDisplay != null)
+            // topGrid.getChildren().remove(currentGridDisplay.getDisplay());
         clearMessage(myInfoBox);
         clearMessage(myStatsBox);
-        try{
+        try {
             XMLFilename = String.format(XML_FOLDER + myTextField.getText());
             generateGrids();
-            gridPane.add(currentGridDisplay.getDisplay(), 1, 1);
-            addMessage(myInfoBox,START_SIM_MESSAGE);
+            // topGrid.add(currentGridDisplay.getDisplay(), 1, 1);
+            scrollPane.setContent(currGridDisplay.getDisplay());
+            addMessage(myInfoBox, START_SIM_MESSAGE);
         }
-        catch(Exception e){
-            currentGridDisplay = null;
-            currentGridStruct = null;
-            gridPane.getChildren().add(noCurrGrid);
+        catch (Exception e) {
+            currGridDisplay = null;
+            currGridStruct = null;
+            // topGrid.getChildren().add(noCurrGrid);
+            scrollPane.setContent(noCurrGrid);
             addMessage(myInfoBox, FILE_ERROR_MESSAGE);
         }
     }
 
     private void generateGrids() {
-        currentGridStruct = fileParser.generateGrid(XMLFilename, myShape);
-        currentGridDisplay = new GridDisplay(myShape,currentGridStruct.getConfig());
+        currGridStruct = fileParser.generateGrid(XMLFilename, myShape);
+        currGridDisplay = new GridDisplay(myShape, currGridStruct.getConfig());
     }
 
     private void clearMessage (Pane messageBox) {
@@ -299,12 +310,12 @@ public class SimulationRunner extends Application {
     }
 
     private void step () {
-        if (currentGridStruct != null && (isSimRunning || shouldStep)){
+        if (currGridStruct != null && (isSimRunning || shouldStep)){
             if (currDelayLeft > 0){
                 currDelayLeft--;
             } else {
                 checkSlider();
-                currentGridStruct.step();
+                currGridStruct.step();
                 if (shouldStep) {
                     shouldStep = false;
                 } else {
