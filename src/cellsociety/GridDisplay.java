@@ -4,7 +4,7 @@ import javafx.scene.layout.GridPane;
 
 public class GridDisplay {
     public static final double CELL_GAP = .1;
-    private GridPane gridDisplay;
+    private GridPane display;
     private CellShape cellShape;
     private int size;
 
@@ -44,11 +44,8 @@ public class GridDisplay {
         return null;
     }
 
-<<<<<<< HEAD
-    public GridDisplay(String cellShape, Cell[][] initCellConfig){
-=======
-    public GridDisplay(String cellShape,int size){
->>>>>>> master
+
+    public GridDisplay(String cellShape, int size){
         this.cellShape = CellShape.valueOf(cellShape);
         this.size = size;
         initializeDisplay();
@@ -62,18 +59,6 @@ public class GridDisplay {
         }
     }
 
-<<<<<<< HEAD
-    private void initSquareCellDisplay(Cell[][] config) {
-        gridDisplay = new GridPane();
-        gridDisplay.setGridLinesVisible(false);
-        gridDisplay.setHgap(CELL_GAP);
-        gridDisplay.setVgap(CELL_GAP);
-        for (int row = 0; row < size; row++){
-            for (int col = 0; col < size; col++){
-                gridDisplay.add(config[row][col].getVisual(), col, row,1,1);
-            }
-        }
-=======
     public void addCellToDisplay(int row, int col, Cell c){
         display.add(c.getVisual(), col, row,1,1);
     }
@@ -83,10 +68,9 @@ public class GridDisplay {
         display.setGridLinesVisible(false);
         display.setHgap(CELL_GAP);
         display.setVgap(CELL_GAP);
->>>>>>> master
     }
 
     public GridPane getDisplay(){
-        return gridDisplay;
+        return display;
     }
 }
