@@ -1,9 +1,11 @@
-package cellsociety;
+package cellsociety.backend.gridstructures;
 
+import cellsociety.backend.Cell;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FireGrid extends GridStructure {
     public static final Paint TREE_COLOR = Color.color(0.2, 0.75, 0.2);
@@ -50,7 +52,7 @@ public class FireGrid extends GridStructure {
 
     /* assumes 8 neighbors are given, only uses the 4 neighbors directly connecting */
     private void fireSimStateRules(Cell currCell) {
-        ArrayList<Cell> allNeighbors = currCell.getNeighbors();
+        List<Cell> allNeighbors = currCell.getNeighbors();
 
         if(currCell.getCurrState() == FireCellStates.EMPTY || currCell.getCurrState() == FireCellStates.FIRE) {
             currCell.setNextState(FireCellStates.EMPTY);

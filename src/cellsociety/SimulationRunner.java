@@ -1,5 +1,8 @@
 package cellsociety;
 
+import cellsociety.backend.Cell;
+import cellsociety.backend.gridstructures.GridStructure;
+import cellsociety.frontend.GridDisplay;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -28,9 +31,9 @@ public class SimulationRunner extends Application {
     public static final Color DISPLAY_COLOR = Color.color(0.9, 0.9, 1.0);
     public static final Color FONT_COLOR = Color.color(0.0, 0.0, 0.4);
     public static final int FONT_SIZE = 16;
-    public static final String SQUARE = Cell.CellShape.SQUARE.name();
-    public static final String CIRCLE = Cell.CellShape.CIRCLE.name();
-    public static final String DIAMOND = Cell.CellShape.DIAMOND.name();
+    public static final String SQUARE = cellsociety.backend.Cell.CellShape.SQUARE.name();
+    public static final String CIRCLE = cellsociety.backend.Cell.CellShape.CIRCLE.name();
+    public static final String DIAMOND = cellsociety.backend.Cell.CellShape.DIAMOND.name();
 
     public static final int PADDING = 5;
     public static final int V_GAP = 10;

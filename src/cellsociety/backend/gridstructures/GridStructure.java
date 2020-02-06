@@ -1,4 +1,6 @@
-package cellsociety;
+package cellsociety.backend.gridstructures;
+
+import cellsociety.backend.Cell;
 
 import java.util.ArrayList;
 import java.util.Collections;

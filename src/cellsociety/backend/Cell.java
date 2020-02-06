@@ -1,10 +1,10 @@
-package cellsociety;
+package cellsociety.backend;
 
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class Cell{
