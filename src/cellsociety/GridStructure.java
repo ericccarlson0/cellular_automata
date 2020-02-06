@@ -136,8 +136,11 @@ public abstract class GridStructure {
         }
     }
 
-    public Cell[][] getConfig(){
-        return gridStructure;
+    public Cell getCellAtIndex(int row, int col){
+        return gridStructure[row][col];
     }
 
+    public int getSize() {
+        return size;
+    }
 }
