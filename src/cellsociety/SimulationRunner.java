@@ -129,7 +129,7 @@ public class SimulationRunner extends Application {
         root.getChildren().add(displayPane);
         simDisplay = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
         simDisplay.getStylesheets().add(getClass().getResource(RESOURCE_FOLDER + STYLESHEET).toExternalForm());
-
+        myInfoBox.getChildren().add(new Label(""));
         addMessage(myInfoBox,"Load a simulation by entering its filename.");
     }
 
@@ -306,6 +306,7 @@ public class SimulationRunner extends Application {
         l.setFont(new Font("Menlo", FONT_SIZE / 2)); //***
         l.setWrapText(true);
         l.setMaxWidth(BOX_WIDTH-2);
+        messageBox.getChildren().remove(1);
         messageBox.getChildren().add(l);
     }
 
