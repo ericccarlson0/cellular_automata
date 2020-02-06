@@ -53,6 +53,10 @@ public class Cell{
         nextState = state;
     }
 
+    public void setCurrState(Object state){
+        currState = state;
+    }
+
     protected Object getNextState(){
         return nextState;
     }

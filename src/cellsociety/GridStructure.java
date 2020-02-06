@@ -48,6 +48,7 @@ public abstract class GridStructure {
         initPercents();
         initGridStructure(shape);
     }
+
     public void step() {
         Collections.shuffle(allCells);
         calcNewStates();

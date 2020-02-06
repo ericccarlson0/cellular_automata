@@ -56,6 +56,7 @@ public class XMLParser {
                 grid = new PercolationGrid(dimensions,percents,states,mode,8,misc.get(0));
                 break;
             case SEGREGATION:
+                grid = new SegregationGrid(dimensions,percents,states,mode,8,misc.get(0));
                 break;
             case PRED_PREY:
                 break;
