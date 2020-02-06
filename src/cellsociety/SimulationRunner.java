@@ -235,7 +235,6 @@ public class SimulationRunner extends Application {
         background.setArcWidth(BOX_WIDTH/10);
         background.setArcHeight(BOX_WIDTH/10);
         sp.getChildren().add(background);
-
         return sp;
     }
 
@@ -289,7 +288,17 @@ public class SimulationRunner extends Application {
 
     private void generateGrids() {
         currGridStruct = fileParser.generateGrid(XMLFilename, myShape);
-        currGridDisplay = new GridDisplay(myShape, currGridStruct.getConfig());
+        initDisplay(myShape, currGridStruct.getSize());
+    }
+
+    private void initDisplay(String myShape, int size) {
+        currGridDisplay = new GridDisplay(myShape,size);
+        for(int row = 0; row < size; row++){
+            for(int col = 0; col < size; col++){
+                Cell currCell = currGridStruct.getCellAtIndex(row,col);
+                currGridDisplay.addCellToDisplay(row,col,currCell);
+            }
+        }
     }
 
     private void clearMessage (Pane messageBox) {
