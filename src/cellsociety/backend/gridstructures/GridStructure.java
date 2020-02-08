@@ -25,9 +25,6 @@ public abstract class GridStructure {
 
     protected abstract void calcNewStates();
 
-    //TODO: SHOULD PROB GET MOVED to GridDisplay
-    protected abstract void updateColor(Cell c);
-
     protected abstract Cell makeCellOfType(String shape, int row, int col);
 
     private void initPercents() {
@@ -60,7 +57,6 @@ public abstract class GridStructure {
                 Cell curr = makeCellOfType(shape,row,col);
                 gridStructure[row][col] = curr;
                 allCells.add(curr);
-                updateColor(curr);
             }
         }
     }
@@ -123,13 +119,6 @@ public abstract class GridStructure {
     private void updateCellStates(){
         for(Cell c : allCells){
             c.updateState();
-            updateColor(c);
-        }
-    }
-
-    protected void setInitColors(){
-        for(Cell c : allCells){
-            updateColor(c);
         }
     }
 
