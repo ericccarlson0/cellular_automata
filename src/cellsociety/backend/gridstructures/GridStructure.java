@@ -8,31 +8,35 @@ import java.util.List;
 
 public abstract class GridStructure {
 
-    public static final double CELL_GAP = .1;
-    public static final int DISPLAY_WIDTH = 500;
-    public static final int DISPLAY_HEIGHT = 500;
+    // public static final double CELL_GAP = 0;
+    // public static final int DISPLAY_WIDTH = 500;
+    // public static final int DISPLAY_HEIGHT = 500;
 
-    protected ArrayList<Cell> allCells;
+    protected ArrayList<Cell> cellList;
 
     private Cell[][] gridStructure;
-    private int size;
+    private int rowNum;
+    private int colNum;
+    private double cellRadius;
     private List<Double> statePercents;
     private List<String> states;
-    private int numNeighbors;
+    private int neighborhoodType;
 
-    public GridStructure(int size, List<Double> percents, List<String> states, String shape, int numNeighbors) {
-        this.size = size;
+    public GridStructure(int nowNum, int colNum, List<Double> percents, List<String> states,
+                         double radius,  String shape, int neighborhoodType) {
+        this.rowNum = rowNum;
+        this.colNum = colNum;
+        this.cellRadius = radius;
         this.states = states;
         this.statePercents = percents;
-        this.numNeighbors = numNeighbors;
+        this.neighborhoodType = neighborhoodType;
     }
 
     protected abstract void calcNewStates();
 
-    //TODO: SHOULD PROB GET MOVED to GridDisplay
-    protected abstract void updateColor(Cell c);
-
-    protected abstract Cell makeCellOfType(double width, double height, String shape, int row, int col);
+    protected Cell makeCell(String shape) {
+        return new Cell(cellRadius, null, shape);
+    }
 
     private void initPercents() {
         for (int index = 1; index < statePercents.size(); index++){
@@ -41,32 +45,30 @@ public abstract class GridStructure {
     }
 
     private void initGridStructure(String shape) {
-        gridStructure = new Cell[size][size];
-        allCells = new ArrayList<>();
+        gridStructure = new Cell[rowNum][colNum];
+        cellList = new ArrayList<>();
         createCells(shape);
-        initCellNeighbors(numNeighbors);
+        initCellNeighbors(neighborhoodType);
     }
 
-    protected void init(String shape) {
+    protected void init(String shape) { // Does this do any work?
         initPercents();
         initGridStructure(shape);
     }
 
     public void step() {
-        Collections.shuffle(allCells);
+        Collections.shuffle(cellList);
         calcNewStates();
         updateCellStates();
     }
 
-    private void createCells(String shape) {
-        double cellWidth = DISPLAY_WIDTH / size - 2*CELL_GAP;
-        double cellHeight = DISPLAY_HEIGHT / size - 2*CELL_GAP;
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                Cell curr = makeCellOfType(cellWidth,cellHeight,shape,row,col);
+    private void createCells(String shape){ //***
+        for (int row = 0; row < rowNum; row++) {
+            for (int col = 0; col < rowNum; col++) {
+                Cell curr = makeCell(shape);
                 gridStructure[row][col] = curr;
-                allCells.add(curr);
-                updateColor(curr);
+                cellList.add(curr);
+                // updateColor(curr); ***
             }
         }
     }
@@ -83,29 +85,36 @@ public abstract class GridStructure {
         return states.get(-1);
     }
 
-    //TODO: set up so that supports creating neighborhoods of different amounts for individual cells
     private void initCellNeighbors(int numNeighbors) {
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                ArrayList<Cell> neighbors = new ArrayList<>();
+        for (int row = 0; row < rowNum; row++) {
+            for (int col = 0; col < rowNum; col++) {
+                List<Cell> neighbors = new ArrayList<>();
                 switch(numNeighbors){
+                    //TODO: make different configurations of neighbors
+                    case 2:
+                        break;
+                    case 4:
+                        break;
                     case 8:
                         neighbors = getNeighborsEight(row, col);
                         break;
                 }
                 removeNulls(neighbors);
-                gridStructure[row][col].setNeighbors(neighbors);
+                for (Cell neighbor: neighbors) {
+                    gridStructure[row][col].addNeighbor(neighbor);
+                }
             }
         }
     }
 
-    private void removeNulls(ArrayList<Cell> neighbors) {
-        //found at https://stackoverflow.com/questions/4819635/how-to-remove-all-null-elements-from-a-arraylist-or-string-array
+    private void removeNulls(List<Cell> neighbors) {
+        // Found at:
+        // https://stackoverflow.com/questions/4819635/how-to-remove-all-null-elements-from-a-arraylist-or-string-array
         neighbors.removeAll(Collections.singleton(null));
     }
 
-    private ArrayList<Cell> getNeighborsEight(int row, int col) {
-        ArrayList<Cell> neighbors = new ArrayList<>();
+    private List<Cell> getNeighborsEight(int row, int col) {
+        List<Cell> neighbors = new ArrayList<>();
         neighbors.add(isValidCoords(row - 1, col - 1));
         neighbors.add(isValidCoords(row - 1,col));
         neighbors.add(isValidCoords(row - 1,col + 1));
@@ -118,8 +127,8 @@ public abstract class GridStructure {
     }
 
     private Cell isValidCoords(int row, int col) {
-        boolean rowValid = (row >= 0) && (row < size);
-        boolean colValid = (col >= 0) && (col < size);
+        boolean rowValid = (row >= 0) && (row < rowNum);
+        boolean colValid = (col >= 0) && (col < rowNum);
         if (rowValid && colValid){
             return gridStructure[row][col];
         }
@@ -127,15 +136,9 @@ public abstract class GridStructure {
     }
 
     private void updateCellStates(){
-        for(Cell c : allCells){
+        for(Cell c : cellList){
             c.updateState();
-            updateColor(c);
-        }
-    }
-
-    protected void setInitColors(){
-        for(Cell c : allCells){
-            updateColor(c);
+            // updateColor(c);
         }
     }
 
@@ -143,7 +146,7 @@ public abstract class GridStructure {
         return gridStructure[row][col];
     }
 
-    public int getSize() {
-        return size;
-    }
+    public int getRowNum() { return rowNum; }
+
+    public int getColNum() { return colNum; }
 }
