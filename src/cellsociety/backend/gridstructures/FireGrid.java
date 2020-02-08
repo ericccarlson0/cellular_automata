@@ -18,10 +18,9 @@ public class FireGrid extends GridStructure {
         EMPTY, TREE, FIRE
     }
 
-    public FireGrid(int size, ArrayList<Double> percents, ArrayList<String> states, String shape, int numNeighbors, double catchProb){
-        super(size,percents,states,shape,numNeighbors);
+    public FireGrid(int size, ArrayList<Double> percents, ArrayList<String> states, int numNeighbors, double catchProb){
+        super(size,percents,states,numNeighbors);
         this.catchProb = catchProb;
-        this.init(shape);
     }
 
     @Override

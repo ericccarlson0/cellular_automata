@@ -20,10 +20,9 @@ public class SegregationGrid extends GridStructure{
         EMPTY, ONE, TWO
     }
 
-    public SegregationGrid(int size, ArrayList<Double> percents, ArrayList<String> states, String shape, int numNeighbors, double satisfactionThreshold){
-        super(size,percents,states,shape,numNeighbors);
+    public SegregationGrid(int size, ArrayList<Double> percents, ArrayList<String> states, int numNeighbors, double satisfactionThreshold){
+        super(size,percents,states,numNeighbors);
         this.satisfactionThreshold = satisfactionThreshold;
-        this.init(shape);
     }
 
     @Override

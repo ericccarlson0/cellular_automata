@@ -20,7 +20,7 @@ public abstract class GridStructure {
     private List<String> states;
     private int numNeighbors;
 
-    public GridStructure(int size, List<Double> percents, List<String> states, String shape, int numNeighbors) {
+    public GridStructure(int size, List<Double> percents, List<String> states, int numNeighbors) {
         this.size = size;
         this.states = states;
         this.statePercents = percents;
@@ -145,5 +145,9 @@ public abstract class GridStructure {
 
     public int getSize() {
         return size;
+    }
+
+    public Object getStateAtCell(int row, int col){
+        return gridStructure[row][col].getCurrState();
     }
 }

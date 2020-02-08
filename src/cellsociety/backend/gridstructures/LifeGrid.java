@@ -12,12 +12,11 @@ public class LifeGrid extends GridStructure{
     public static final Paint EMPTY_COLOR = Color.WHITE;
 
     enum LifeCellStates {
-        ALIVE, EMPTY
+        LIFE_ALIVE, LIFE_EMPTY
     }
 
-    public LifeGrid(int size, ArrayList<Double> percents, ArrayList<String> states, String shape, int numNeighbors){
-        super(size,percents,states,shape,numNeighbors);
-        this.init(shape);
+    public LifeGrid(int size, ArrayList<Double> percents, ArrayList<String> states, int numNeighbors){
+        super(size,percents,states,numNeighbors);
     }
 
     protected void calcNewStates(){
@@ -30,16 +29,16 @@ public class LifeGrid extends GridStructure{
         List<Cell> allNeighbors = currCell.getNeighbors();
         int numNeighborsAlive = 0;
         for(Cell currNeighbor: allNeighbors){
-            if(currNeighbor.getCurrState() == LifeCellStates.ALIVE){
+            if(currNeighbor.getCurrState() == LifeCellStates.LIFE_ALIVE){
                 numNeighborsAlive++;
             }
-            if(currCell.getCurrState() == LifeCellStates.ALIVE && (numNeighborsAlive == 2 || numNeighborsAlive == 3)) {
-                currCell.setNextState(LifeCellStates.ALIVE);
+            if(currCell.getCurrState() == LifeCellStates.LIFE_ALIVE && (numNeighborsAlive == 2 || numNeighborsAlive == 3)) {
+                currCell.setNextState(LifeCellStates.LIFE_ALIVE);
             }
-            else if(currCell.getCurrState() == LifeCellStates.EMPTY && numNeighborsAlive == 3) {
-                currCell.setNextState(LifeCellStates.ALIVE);
+            else if(currCell.getCurrState() == LifeCellStates.LIFE_EMPTY && numNeighborsAlive == 3) {
+                currCell.setNextState(LifeCellStates.LIFE_ALIVE);
             } else {
-                currCell.setNextState(LifeCellStates.EMPTY);
+                currCell.setNextState(LifeCellStates.LIFE_EMPTY);
             }
         }
     }
@@ -50,7 +49,7 @@ public class LifeGrid extends GridStructure{
     }
 
     protected void updateColor(Cell c){
-        if (c.getCurrState() == LifeCellStates.ALIVE) {
+        if (c.getCurrState() == LifeCellStates.LIFE_ALIVE) {
             c.setColor(ALIVE_COLOR);
         } else {
             c.setColor(EMPTY_COLOR);

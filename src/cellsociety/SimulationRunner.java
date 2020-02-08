@@ -31,9 +31,9 @@ public class SimulationRunner extends Application {
     public static final Color DISPLAY_COLOR = Color.color(0.9, 0.9, 1.0);
     public static final Color FONT_COLOR = Color.color(0.0, 0.0, 0.4);
     public static final int FONT_SIZE = 16;
-    public static final String SQUARE = cellsociety.backend.Cell.CellShape.SQUARE.name();
-    public static final String CIRCLE = cellsociety.backend.Cell.CellShape.CIRCLE.name();
-    public static final String DIAMOND = cellsociety.backend.Cell.CellShape.DIAMOND.name();
+    public static final String SQUARE = "SQUARE";
+    public static final String CIRCLE = "CIRCLE";
+    public static final String DIAMOND = "DIAMOND";
 
     public static final int PADDING = 5;
     public static final int V_GAP = 10;
@@ -47,8 +47,9 @@ public class SimulationRunner extends Application {
     private Rectangle noCurrGrid = new Rectangle(500,500, Color.color(0.2, 0.2, .6));
     private String myShape = SQUARE;
 
-    private GridStructure currGridStruct;
-    private GridDisplay currGridDisplay;
+//    private GridStructure currGridStruct;
+//    private GridDisplay currGridDisplay;
+    private Simulation currSimulation;
     private boolean shouldStep;
     private boolean isSimRunning;
     private int simDelay;
@@ -104,8 +105,7 @@ public class SimulationRunner extends Application {
     }
 
     private void initializeVariables() {
-        currGridStruct = null;
-        currGridDisplay = null;
+        currSimulation = null;
         shouldStep = false;
         isSimRunning = false;
         simDelay = 10;
@@ -265,39 +265,28 @@ public class SimulationRunner extends Application {
     private void loadButton() {
         isSimRunning = false;
         // topGrid.getChildren().remove(noCurrGrid);
-        if (currGridDisplay != null)
+        if (currSimulation != null)
             // topGrid.getChildren().remove(currentGridDisplay.getDisplay());
         clearMessage(myInfoBox);
         clearMessage(myStatsBox);
         try {
             XMLFilename = String.format(XML_FOLDER + myTextField.getText());
-            generateGrids();
+            generateSimulation();
             // topGrid.add(currentGridDisplay.getDisplay(), 1, 1);
-            scrollPane.setContent(currGridDisplay.getDisplay());
+            scrollPane.setContent(currSimulation.getDisplay());
             addMessage(myInfoBox, START_SIM_MESSAGE);
         }
         catch (Exception e) {
-            currGridDisplay = null;
-            currGridStruct = null;
+            currSimulation = null;
             // topGrid.getChildren().add(noCurrGrid);
             scrollPane.setContent(noCurrGrid);
             addMessage(myInfoBox, FILE_ERROR_MESSAGE);
         }
     }
 
-    private void generateGrids() {
-        currGridStruct = fileParser.generateGrid(XMLFilename, myShape);
-        initDisplay(myShape, currGridStruct.getSize());
-    }
-
-    private void initDisplay(String myShape, int size) {
-        currGridDisplay = new GridDisplay(myShape,size);
-        for(int row = 0; row < size; row++){
-            for(int col = 0; col < size; col++){
-                Cell currCell = currGridStruct.getCellAtIndex(row,col);
-                currGridDisplay.addCellToDisplay(row,col,currCell);
-            }
-        }
+    private void generateSimulation() {
+        GridStructure grid = fileParser.generateGrid(XMLFilename);
+        currSimulation = new Simulation(grid,myShape);
     }
 
     private void clearMessage (Pane messageBox) {
@@ -319,12 +308,12 @@ public class SimulationRunner extends Application {
     }
 
     private void step () {
-        if (currGridStruct != null && (isSimRunning || shouldStep)){
+        if (currSimulation != null && (isSimRunning || shouldStep)){
             if (currDelayLeft > 0){
                 currDelayLeft--;
             } else {
                 checkSlider();
-                currGridStruct.step();
+                currSimulation.step();
                 if (shouldStep) {
                     shouldStep = false;
                 } else {

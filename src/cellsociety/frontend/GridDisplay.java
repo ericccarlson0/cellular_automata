@@ -1,11 +1,17 @@
 package cellsociety.frontend;
 
+import cellsociety.Simulation;
 import cellsociety.backend.Cell;
+import cellsociety.backend.gridstructures.LifeGrid;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Shape;
+import javafx.scene.paint.Color;
 
 public class GridDisplay {
     public static final double CELL_GAP = .1;
     private GridPane display;
+    private Shape[][] shapeHolder;
     private CellShape cellShape;
     private int size;
 
@@ -73,5 +79,10 @@ public class GridDisplay {
 
     public GridPane getDisplay(){
         return display;
+    }
+
+    public void updateDisplayAtCell(int row, int col, Object stateAtCell) {
+        Simulation.AllStates state =( Simulation.AllStates) stateAtCell;
+        shapeHolder[row][col].setFill(state.getColor());
     }
 }

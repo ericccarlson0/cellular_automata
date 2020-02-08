@@ -27,7 +27,7 @@ public class XMLParser {
         }
     }
 
-    public GridStructure generateGrid (String xmlFilename, String mode) {
+    public GridStructure generateGrid (String xmlFilename) {
         File dataFile = new File(xmlFilename);
         Element root = getRootElement(dataFile);
         if (isValidFile(root)) {
@@ -37,27 +37,27 @@ public class XMLParser {
             ArrayList<Double> percents = getPercents(root);
             ArrayList<String> states = getStates(root);
             ArrayList<Double> misc = getMisc(root);
-            return generateGridStructure(simType,dimensions,percents,states,misc,mode);
+            return generateGridStructure(simType,dimensions,percents,states,misc);
         } else {
             return null;
         }
     }
 
-    private GridStructure generateGridStructure(SimulationRunner.SimulationType simType, int dimensions, ArrayList<Double> percents, ArrayList<String> states, ArrayList<Double> misc, String mode) {
+    private GridStructure generateGridStructure(SimulationRunner.SimulationType simType, int dimensions, ArrayList<Double> percents, ArrayList<String> states, ArrayList<Double> misc) {
         GridStructure grid = null;
         switch(simType){
             case LIFE:
                 //TODO figure out how to specify number of neighbors based on shape of cells
-                grid = new LifeGrid(dimensions,percents,states,mode,8);
+                grid = new LifeGrid(dimensions,percents,states,8);
                 break;
             case FIRE:
-                grid = new FireGrid(dimensions,percents,states,mode,8, misc.get(0));
+                grid = new FireGrid(dimensions,percents,states,8, misc.get(0));
                 break;
             case PERCOLATION:
-                grid = new PercolationGrid(dimensions,percents,states,mode,8,misc.get(0));
+                grid = new PercolationGrid(dimensions,percents,states,8,misc.get(0));
                 break;
             case SEGREGATION:
-                grid = new SegregationGrid(dimensions,percents,states,mode,8,misc.get(0));
+                grid = new SegregationGrid(dimensions,percents,states,8,misc.get(0));
                 break;
             case PRED_PREY:
                 break;
