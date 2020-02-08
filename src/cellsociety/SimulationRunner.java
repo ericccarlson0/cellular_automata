@@ -274,7 +274,7 @@ public class SimulationRunner extends Application {
             XMLFilename = String.format(XML_FOLDER + myTextField.getText());
             generateGrids();
             // topGrid.add(currentGridDisplay.getDisplay(), 1, 1);
-            scrollPane.setContent(currGridDisplay.getDisplay());
+            scrollPane.setContent(currGridDisplay.getGridDisplay());
             addMessage(myInfoBox, START_SIM_MESSAGE);
         }
         catch (Exception e) {
