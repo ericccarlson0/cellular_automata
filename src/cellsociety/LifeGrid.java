@@ -1,58 +1,56 @@
 package cellsociety;
 
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-
+import java.awt.*;
 import java.util.ArrayList;
 
-public class LifeGrid extends GridStructure{
-    public static final Paint ALIVE_COLOR = Color.BLACK;
-    public static final Paint EMPTY_COLOR = Color.WHITE;
+public class LifeGrid extends GridStructure {
+    public static final double[] ALIVE_COLOR = new double[]{0, 0, 0};
+    public static final double[] EMPTY_COLOR = new double[]{1, 1, 1};
 
-    enum LifeCellStates {
+    enum LifeCellState {
         ALIVE, EMPTY
     }
 
-    public LifeGrid(int size, ArrayList<Double> percents, ArrayList<String> states, String shape, int numNeighbors){
-        super(size,percents,states,shape,numNeighbors);
+    public LifeGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states,
+                    double radius, String shape, int neighborhoodType) {
+        super(rowNum, colNum, percents, states, radius, shape, neighborhoodType);
         this.init(shape);
     }
 
     protected void calcNewStates(){
-        for(Cell c: allCells){
-            lifeSimStateRules(c);
+        for(Cell c: cellList){
+            updateLifeCell(c);
         }
     }
 
-    private void lifeSimStateRules(Cell currCell) {
+    private void updateLifeCell(Cell currCell) {
         ArrayList<Cell> allNeighbors = currCell.getNeighbors();
         int numNeighborsAlive = 0;
         for(Cell currNeighbor: allNeighbors){
-            if(currNeighbor.getCurrState() == LifeCellStates.ALIVE){
+            if(currNeighbor.getCurrState() == LifeCellState.ALIVE){
                 numNeighborsAlive++;
             }
-            if(currCell.getCurrState() == LifeCellStates.ALIVE && (numNeighborsAlive == 2 || numNeighborsAlive == 3)) {
-                currCell.setNextState(LifeCellStates.ALIVE);
+            if(currCell.getCurrState() == LifeCellState.ALIVE && (numNeighborsAlive == 2 || numNeighborsAlive == 3)) {
+                currCell.setNextState(LifeCellState.ALIVE);
             }
-            else if(currCell.getCurrState() == LifeCellStates.EMPTY && numNeighborsAlive == 3) {
-                currCell.setNextState(LifeCellStates.ALIVE);
+            else if(currCell.getCurrState() == LifeCellState.EMPTY && numNeighborsAlive == 3) {
+                currCell.setNextState(LifeCellState.ALIVE);
             } else {
-                currCell.setNextState(LifeCellStates.EMPTY);
+                currCell.setNextState(LifeCellState.EMPTY);
             }
         }
     }
 
-    protected Cell makeCellOfType(double width, double height, String shape, int row, int col){
-        LifeCellStates selectedState = LifeCellStates.valueOf(generateState());
-        return new Cell(width,height,selectedState,shape);
+    protected Cell makeCell(double radius, String shape, int row, int col){
+        LifeCellState state = LifeCellState.valueOf(generateState());
+        return new Cell(radius, state, shape);
     }
 
     protected void updateColor(Cell c){
-        if (c.getCurrState() == LifeCellStates.ALIVE) {
+        if (c.getCurrState() == LifeCellState.ALIVE) {
             c.setColor(ALIVE_COLOR);
         } else {
             c.setColor(EMPTY_COLOR);
         }
     }
-
 }

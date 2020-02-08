@@ -5,12 +5,11 @@ import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Random;
 
 public class SegregationGrid extends GridStructure{
-    public static final Paint ONE_COLOR = Color.color(1.0, 0.5, 0.5);
-    public static final Paint TWO_COLOR = Color.color(0.5, 0.5, 1.0);
-    public static final Paint EMPTY_COLOR = Color.color(1.0, 1.0, 1.0);
+    public static final double[] ONE_COLOR = new double[]{1.0, 0.5, 0.5};
+    public static final double[] TWO_COLOR = new double[]{0.5, 0.5, 1.0};
+    public static final double[] EMPTY_COLOR = new double[]{1.0, 1.0, 1.0};
 
     private double satisfactionThreshold;
     private HashSet<Cell> allEmpties;
@@ -19,8 +18,9 @@ public class SegregationGrid extends GridStructure{
         EMPTY, ONE, TWO
     }
 
-    public SegregationGrid(int size, ArrayList<Double> percents, ArrayList<String> states, String shape, int numNeighbors, double satisfactionThreshold){
-        super(size,percents,states,shape,numNeighbors);
+    public SegregationGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states,
+                           int radius, String shape,  int neighborhoodType, double satisfactionThreshold) {
+        super(rowNum, colNum, percents, states, radius, shape, neighborhoodType);
         this.satisfactionThreshold = satisfactionThreshold;
         this.init(shape);
     }
@@ -28,12 +28,11 @@ public class SegregationGrid extends GridStructure{
     @Override
     protected void calcNewStates() {
         getAllEmpties();
-        for(Cell c: allCells){
+        for(Cell c: cellList){
             segregationSimStateRules(c);
         }
     }
 
-    @Override
     protected void updateColor(Cell c) {
         if(c.getCurrState() == SegregationCellStates.EMPTY) {
             c.setColor(EMPTY_COLOR);
@@ -46,10 +45,9 @@ public class SegregationGrid extends GridStructure{
         }
     }
 
-    @Override
-    protected Cell makeCellOfType(double width, double height, String shape, int row, int col) {
+    protected Cell makeCellOfType(double radius, String shape, int row, int col) {
         SegregationCellStates selectedState = SegregationCellStates.valueOf(generateState());
-        return new Cell(width,height,selectedState,shape);
+        return new Cell(radius, selectedState, shape);
     }
 
     private void segregationSimStateRules(Cell currCell) {
@@ -96,7 +94,7 @@ public class SegregationGrid extends GridStructure{
 
     protected void getAllEmpties(){
         HashSet<Cell> allEmpties = new HashSet<Cell>();
-        for(Cell c: allCells) {
+        for(Cell c: cellList) {
             if (c.getCurrState() == SegregationCellStates.EMPTY) {
                 allEmpties.add(c);
             }

@@ -42,21 +42,27 @@ public class XMLParser {
         }
     }
 
-    private GridStructure generateGridStructure(SimulationRunner.SimulationType simType, int dimensions, ArrayList<Double> percents, ArrayList<String> states, ArrayList<Double> misc, String mode) {
+    private GridStructure generateGridStructure(SimulationRunner.SimulationType simType, int dimensions,
+                                                ArrayList<Double> percents, ArrayList<String> states,
+                                                ArrayList<Double> misc, String shape) {
         GridStructure grid = null;
+        //TODO implement rowNum and colNum in XML (instead of "dimensions")
+        int rowNum = dimensions;
+        int colNum = dimensions;
+        int radius = 10; //***
         switch(simType){
             case LIFE:
                 //TODO figure out how to specify number of neighbors based on shape of cells
-                grid = new LifeGrid(dimensions,percents,states,mode,8);
+                grid = new LifeGrid(rowNum, colNum, percents, states, radius, shape,8);
                 break;
             case FIRE:
-                grid = new FireGrid(dimensions,percents,states,mode,8, misc.get(0));
+                grid = new FireGrid(rowNum, colNum, percents, states, radius, shape,8, misc.get(0));
                 break;
             case PERCOLATION:
-                grid = new PercolationGrid(dimensions,percents,states,mode,8,misc.get(0));
+                grid = new PercolationGrid(rowNum, colNum, percents, states, radius, shape,8, misc.get(0));
                 break;
             case SEGREGATION:
-                grid = new SegregationGrid(dimensions,percents,states,mode,8,misc.get(0));
+                grid = new SegregationGrid(rowNum, colNum, percents, states, radius, shape,8, misc.get(0));
                 break;
             case PRED_PREY:
                 break;

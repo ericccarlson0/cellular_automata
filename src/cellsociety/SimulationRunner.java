@@ -35,10 +35,12 @@ public class SimulationRunner extends Application {
     public static final int BOX_WIDTH = 100;
     public static final int TOTAL_WIDTH = 800;
     public static final int TOTAL_HEIGHT = 800;
+    public static final int DISPLAY_WIDTH = 400;
+    public static final int DISPLAY_HEIGHT = 400;
     private static final String FILE_ERROR_MESSAGE = "The filename you entered is either invalid or could not be found.";
     private static final String START_SIM_MESSAGE = "Press Start to enjoy the Simulation!";
 
-    private Rectangle noCurrGrid = new Rectangle(500,500, Color.color(0.2, 0.2, .6));
+    private Rectangle noCurrGrid = new Rectangle(DISPLAY_WIDTH,DISPLAY_HEIGHT, Color.color(0.2, 0.2, .6));
     private String myShape = "SQUARE";
 
     private GridStructure currGridStruct;
@@ -83,8 +85,8 @@ public class SimulationRunner extends Application {
 
         topGrid.add(title, 1, 0);
         topGrid.add(scrollPane, 1, 1);
-        noCurrGrid.setArcWidth(20.0);
-        noCurrGrid.setArcHeight(20.0);
+        // noCurrGrid.setArcWidth(20.0);
+        // noCurrGrid.setArcHeight(20.0);
 
         simStage.setScene(simDisplay);
         simStage.setTitle(TITLE);
@@ -271,10 +273,9 @@ public class SimulationRunner extends Application {
         clearMessage(myInfoBox);
         clearMessage(myStatsBox);
         try {
-            XMLFilename = String.format(XML_FOLDER + myTextField.getText());
+            XMLFilename = String.format("%s%s", XML_FOLDER, myTextField.getText());
             generateGrids();
-            // topGrid.add(currentGridDisplay.getDisplay(), 1, 1);
-            scrollPane.setContent(currGridDisplay.getGridDisplay());
+            scrollPane.setContent(currGridDisplay.getDisplay());
             addMessage(myInfoBox, START_SIM_MESSAGE);
         }
         catch (Exception e) {
@@ -288,17 +289,12 @@ public class SimulationRunner extends Application {
 
     private void generateGrids() {
         currGridStruct = fileParser.generateGrid(XMLFilename, myShape);
-        initDisplay(myShape, currGridStruct.getSize());
+        initGridDisplay(myShape, currGridStruct.getRowNum(), currGridStruct.getColNum());
     }
 
-    private void initDisplay(String myShape, int size) {
-        currGridDisplay = new GridDisplay(myShape,size);
-        for(int row = 0; row < size; row++){
-            for(int col = 0; col < size; col++){
-                Cell currCell = currGridStruct.getCellAtIndex(row,col);
-                currGridDisplay.addCellToDisplay(row,col,currCell);
-            }
-        }
+    private void initGridDisplay(String myShape, int rowNum, int colNum) {
+        currGridDisplay = new GridDisplay(myShape, rowNum, colNum, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+        currGridDisplay.setupFromGridStruct(currGridStruct);
     }
 
     private void clearMessage (Pane messageBox) {
