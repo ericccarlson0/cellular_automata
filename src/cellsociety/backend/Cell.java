@@ -8,7 +8,6 @@ import javafx.scene.shape.Shape;
 import java.util.List;
 
 public class Cell{
-    protected Shape visual;
     protected Object currState;
     protected Object nextState;
     protected List<Cell> neighbors;
@@ -17,14 +16,8 @@ public class Cell{
         SQUARE, DIAMOND, CIRCLE
     }
 
-    public Cell (double width, double height, Object currState, String shape) {
+    public Cell (Object currState, String shape) {
         CellShape cm = CellShape.valueOf(shape);
-        visual = new Rectangle(width, height);
-        if (cm == CellShape.DIAMOND) {
-            visual.setRotate(45);
-        } else if (cm == CellShape.CIRCLE) {
-            visual = new Circle(width / 2);
-        }
         this.currState = currState;
         this.nextState = null;
     }
@@ -32,14 +25,6 @@ public class Cell{
     public void updateState() {
         currState = nextState;
         nextState = null;
-    }
-
-    public void setColor(Paint p){
-        visual.setFill(p);
-    }
-
-    public Shape getVisual() {
-        return visual;
     }
 
     public void setNeighbors(List<Cell> neighbors) {

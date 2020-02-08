@@ -46,7 +46,7 @@ public class Simulation {
         for(int row = 0; row < size; row++){
             for(int col = 0; col < size; col++){
                 Cell currCell = gridStruct.getCellAtIndex(row,col);
-                gridDisplay.addCellToDisplay(row,col,currCell);
+                gridDisplay.addCellToDisplay(row,col,currCell.getCurrState());
             }
         }
     }

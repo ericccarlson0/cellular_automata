@@ -5,11 +5,15 @@ import cellsociety.backend.Cell;
 import cellsociety.backend.gridstructures.LifeGrid;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.paint.Color;
 
 public class GridDisplay {
     public static final double CELL_GAP = .1;
+    public static final int DISPLAY_WIDTH = 500;
+    public static final int DISPLAY_HEIGHT = 500;
+
     private GridPane display;
     private Shape[][] shapeHolder;
     private CellShape cellShape;
@@ -66,8 +70,21 @@ public class GridDisplay {
         }
     }
 
-    public void addCellToDisplay(int row, int col, Cell c){
-        display.add(c.getVisual(), col, row,1,1);
+    public void addCellToDisplay(int row, int col, Object state){
+        switch(cellShape){
+            case SQUARE:
+                addRectToDisplay(row, col, state);
+                break;
+        }
+    }
+
+    private void addRectToDisplay(int row, int col, Object state) {
+        double cellWidth = DISPLAY_WIDTH / size - 2*CELL_GAP;
+        double cellHeight = DISPLAY_HEIGHT / size - 2*CELL_GAP;
+        Shape s = new Rectangle(cellWidth, cellHeight);
+        Paint p = ((Simulation.AllStates) state).getColor();
+        s.setFill(p);
+        display.add(s, col, row,1,1);
     }
 
     private void initSquareCellDisplay() {

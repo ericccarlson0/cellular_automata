@@ -8,10 +8,6 @@ import java.util.List;
 
 public abstract class GridStructure {
 
-    public static final double CELL_GAP = .1;
-    public static final int DISPLAY_WIDTH = 500;
-    public static final int DISPLAY_HEIGHT = 500;
-
     protected ArrayList<Cell> allCells;
 
     private Cell[][] gridStructure;
@@ -32,7 +28,7 @@ public abstract class GridStructure {
     //TODO: SHOULD PROB GET MOVED to GridDisplay
     protected abstract void updateColor(Cell c);
 
-    protected abstract Cell makeCellOfType(double width, double height, String shape, int row, int col);
+    protected abstract Cell makeCellOfType(String shape, int row, int col);
 
     private void initPercents() {
         for (int index = 1; index < statePercents.size(); index++){
@@ -59,11 +55,9 @@ public abstract class GridStructure {
     }
 
     private void createCells(String shape) {
-        double cellWidth = DISPLAY_WIDTH / size - 2*CELL_GAP;
-        double cellHeight = DISPLAY_HEIGHT / size - 2*CELL_GAP;
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                Cell curr = makeCellOfType(cellWidth,cellHeight,shape,row,col);
+                Cell curr = makeCellOfType(shape,row,col);
                 gridStructure[row][col] = curr;
                 allCells.add(curr);
                 updateColor(curr);
