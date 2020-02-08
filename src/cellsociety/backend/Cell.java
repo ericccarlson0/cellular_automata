@@ -1,32 +1,22 @@
 package cellsociety.backend;
 
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-
 import java.util.List;
+import java.util.ArrayList;
 
-public class Cell{
-    protected Shape visual;
+public class Cell {
+    protected double radius;
+    protected String shape;
+    protected double[] colorRGB;
     protected Object currState;
     protected Object nextState;
     protected List<Cell> neighbors;
 
-    enum CellShape {
-        SQUARE, DIAMOND, CIRCLE
-    }
-
-    public Cell (double width, double height, Object currState, String shape) {
-        CellShape cm = CellShape.valueOf(shape);
-        visual = new Rectangle(width, height);
-        if (cm == CellShape.DIAMOND) {
-            visual.setRotate(45);
-        } else if (cm == CellShape.CIRCLE) {
-            visual = new Circle(width / 2);
-        }
+    public Cell (double radius, Object currState, String shape) {
+        this.radius = radius;
+        this.shape = shape;
         this.currState = currState;
         this.nextState = null;
+        this.neighbors = new ArrayList<>();
     }
 
     public void updateState() {
@@ -34,33 +24,30 @@ public class Cell{
         nextState = null;
     }
 
-    public void setColor(Paint p){
-        visual.setFill(p);
+    public void addNeighbor(Cell neighbor) {
+        neighbors.add(neighbor);
     }
 
-    public Shape getVisual() {
-        return visual;
+    public void setColor(double[] color) {
+        colorRGB[0] = color[0];
+        colorRGB[1] = color[1];
+        colorRGB[2] = color[2];
     }
 
-    public void setNeighbors(List<Cell> neighbors) {
-        this.neighbors = neighbors;
+    public double[] getColor() {
+        double[] ret = new double[]{colorRGB[0], colorRGB[1], colorRGB[2]};
+        return ret;
     }
 
-    public Object getCurrState(){
-        return currState;
-    }
+    // Is there any way to reduce the code smells here?
 
-    public void setNextState(Object state){
-        nextState = state;
-    }
+    public Object getCurrState(){ return currState; }
 
-    public void setCurrState(Object state){
-        currState = state;
-    }
+    public void setCurrState(Object state){ currState = state; }
 
-    protected Object getNextState(){
-        return nextState;
-    }
+    public void setNextState(Object state){ nextState = state; }
+
+    protected Object getNextState(){ return nextState; }
 
     public List<Cell> getNeighbors() {
         return neighbors;

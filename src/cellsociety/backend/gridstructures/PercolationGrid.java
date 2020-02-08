@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PercolationGrid extends GridStructure {
-    public static final Paint BLOCK_COLOR = Color.color(0.4, 0.2, 0.2);
-    public static final Paint FULL_COLOR = Color.color(0.5, 0.75, 1.0);
-    public static final Paint EMPTY_COLOR = Color.color(1.0, 1.0, 1.0);
+    public static final double[] BLOCK_COLOR = new double[]{0.4, 0.2, 0.2};
+    public static final double[] FULL_COLOR = new double[]{0.5, 0.75, 1.0};
+    public static final double[] EMPTY_COLOR = new double[]{1.0, 1.0, 1.0};
 
     private double initialFillProbability;
 
@@ -18,14 +18,15 @@ public class PercolationGrid extends GridStructure {
         BLOCK, EMPTY, FULL
     }
 
-    public PercolationGrid(int size, ArrayList<Double> percents, ArrayList<String> states, String shape, int numNeighbors, double initialFillProbability){
-        super(size,percents,states,shape,numNeighbors);
+    public PercolationGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states,
+                           int radius, String shape, int numNeighbors, double initialFillProbability){
+        super(rowNum, colNum, percents, states, radius, shape,numNeighbors);
         this.initialFillProbability = initialFillProbability;
         this.init(shape);
     }
 
     protected void calcNewStates(){
-        for(Cell c: allCells){
+        for(Cell c: cellList){
             percolationSimStateRules(c);
         }
     }
@@ -54,15 +55,14 @@ public class PercolationGrid extends GridStructure {
         }
     }
 
-    protected Cell makeCellOfType(double width, double height, String shape, int row, int col){
-        PercolationCellStates selectedState;
+    protected Cell makeCellOfType(double radius, String shape, int row, int col){
+        PercolationCellStates state;
         if(row == 0 && Math.random() < initialFillProbability){
-            selectedState = PercolationCellStates.FULL;
+            state = PercolationCellStates.FULL;
+        } else {
+            state = PercolationCellStates.valueOf(generateState());
         }
-        else{
-            selectedState = PercolationCellStates.valueOf(generateState());
-        }
-        return new Cell(width,height,selectedState,shape);
+        return new Cell(radius, state, shape);
     }
 
     protected void updateColor(Cell c){

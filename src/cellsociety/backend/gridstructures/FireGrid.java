@@ -8,30 +8,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FireGrid extends GridStructure {
-    public static final Paint TREE_COLOR = Color.color(0.2, 0.75, 0.2);
-    public static final Paint EMPTY_COLOR = Color.color(0.8, 0.8, 0.6);
-    public static final Paint FIRE_COLOR = Color.color(0.8, 0.2, 0.0);
-
+    public static final double[] TREE_COLOR = new double[]{0.2, 0.75, 0.2};
+    public static final double[] EMPTY_COLOR = new double[]{0.8, 0.8, 0.6};
+    public static final double[] FIRE_COLOR = new double[]{0.8, 0.2, 0.0};
     private double catchProb;
 
     enum FireCellStates {
         EMPTY, TREE, FIRE
     }
 
-    public FireGrid(int size, ArrayList<Double> percents, ArrayList<String> states, String shape, int numNeighbors, double catchProb){
-        super(size,percents,states,shape,numNeighbors);
+    public FireGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states,
+                    double radius, String shape, int neighborhoodType, double catchProb) {
+        super(rowNum, colNum, percents, states, radius, shape, neighborhoodType);
         this.catchProb = catchProb;
         this.init(shape);
     }
 
     @Override
     protected void calcNewStates() {
-        for(Cell c: allCells){
+        for(Cell c: cellList){
             fireSimStateRules(c);
         }
     }
 
-    @Override
     protected void updateColor(Cell c) {
         if(c.getCurrState() == FireCellStates.EMPTY) {
             c.setColor(EMPTY_COLOR);
@@ -44,10 +43,9 @@ public class FireGrid extends GridStructure {
         }
     }
 
-    @Override
-    protected Cell makeCellOfType(double width, double height, String shape, int row, int col) {
+    protected Cell makeCell(double radius, String shape, int row, int col) {
         FireCellStates selectedState = FireCellStates.valueOf(generateState());
-        return new Cell(width,height,selectedState,shape);
+        return new Cell(radius, selectedState,shape);
     }
 
     /* assumes 8 neighbors are given, only uses the 4 neighbors directly connecting */
