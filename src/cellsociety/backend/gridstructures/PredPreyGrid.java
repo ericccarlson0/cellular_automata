@@ -120,6 +120,8 @@ public class PredPreyGrid extends GridStructure {
         void updateValues(){
             energyLeft = nextEnergyLeft;
             leftBeforeBabies = nextLeftBeforeBabies;
+            nextEnergyLeft = Integer.MAX_VALUE;
+            nextLeftBeforeBabies = Integer.MAX_VALUE;
         }
 
         void decreaseEnergy(){
@@ -140,6 +142,28 @@ public class PredPreyGrid extends GridStructure {
 
         int energyLeft(){
             return energyLeft;
+        }
+    }
+
+    class Fish{
+        int leftBeforeBabies;
+        int nextLeftBeforeBabies;
+        Fish(int babyRate){
+            leftBeforeBabies = babyRate;
+            nextLeftBeforeBabies = Integer.MAX_VALUE;
+        }
+
+        void updateValues(){
+            leftBeforeBabies = nextLeftBeforeBabies;
+            nextLeftBeforeBabies = Integer.MAX_VALUE;
+        }
+
+        void resetLeftBeforeBaby(int babyRate){
+            nextLeftBeforeBabies = babyRate;
+        }
+
+        int leftBeforeBaby(){
+            return leftBeforeBabies;
         }
     }
 }
