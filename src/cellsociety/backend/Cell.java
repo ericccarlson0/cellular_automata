@@ -26,6 +26,5 @@ public class Cell {
     public Object getCurrState(){ return currState; }
     public void setCurrState(Object state){ currState = state; }
     public void setNextState(Object state){ nextState = state; }
-    protected Object getNextState(){ return nextState; }
     public List<Cell> getNeighbors() { return neighbors; }
 }
