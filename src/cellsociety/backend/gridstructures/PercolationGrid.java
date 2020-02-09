@@ -16,6 +16,11 @@ public class PercolationGrid extends GridStructure {
     public PercolationGrid(int size, ArrayList<Double> percents, ArrayList<String> states, int numNeighbors, double initialFillProbability){
         super(size,percents,states,numNeighbors);
         this.initialFillProbability = initialFillProbability;
+        this.init();
+    }
+
+    public PercolationGrid(int size, ArrayList<Double> percents, ArrayList<String> states, int numNeighbors){
+        super(size,percents,states,numNeighbors);
     }
 
     protected void calcNewStates(){
@@ -27,8 +32,8 @@ public class PercolationGrid extends GridStructure {
     private void percolationSimStateRules(Cell currCell){
         List<Cell> allNeighbors = currCell.getNeighbors();
 
-        if(currCell.getCurrState() == Simulation.AllStates.PERCOLATION_BLOCKED){
-            currCell.setNextState(Simulation.AllStates.PERCOLATION_BLOCKED);
+        if(currCell.getCurrState() == Simulation.AllStates.PERCOLATION_BLOCK){
+            currCell.setNextState(Simulation.AllStates.PERCOLATION_BLOCK);
         } else if(currCell.getCurrState() == Simulation.AllStates.PERCOLATION_FULL){
             currCell.setNextState(Simulation.AllStates.PERCOLATION_FULL);
         }
@@ -48,7 +53,7 @@ public class PercolationGrid extends GridStructure {
         }
     }
 
-    protected Cell makeCellOfType(String shape, int row, int col){
+    protected Cell makeCellOfType(int row, int col){
         Simulation.AllStates selectedState;
         if(row == 0 && Math.random() < initialFillProbability){
             selectedState = Simulation.AllStates.PERCOLATION_FULL;
@@ -56,6 +61,6 @@ public class PercolationGrid extends GridStructure {
         else{
             selectedState = Simulation.AllStates.valueOf(GRID_TYPE_STRING+generateState());
         }
-        return new Cell(selectedState,shape);
+        return new Cell(selectedState);
     }
 }

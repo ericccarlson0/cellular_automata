@@ -59,6 +59,7 @@ public class GridDisplay {
     public GridDisplay(String cellShape, int size){
         this.cellShape = CellShape.valueOf(cellShape);
         this.size = size;
+        shapeHolder = new Shape[size][size];
         initializeDisplay();
     }
 
@@ -85,6 +86,7 @@ public class GridDisplay {
         Paint p = ((Simulation.AllStates) state).getColor();
         s.setFill(p);
         display.add(s, col, row,1,1);
+        shapeHolder[row][col] = s;
     }
 
     private void initSquareCellDisplay() {

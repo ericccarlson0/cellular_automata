@@ -19,7 +19,7 @@ public class Simulation {
         FIRE_EMPTY(Color.color(0.8, 0.8, 0.6)),
         PERCOLATION_FULL(Color.color(0.5, 0.75, 1.0)),
         PERCOLATION_EMPTY(Color.color(1.0, 1.0, 1.0)),
-        PERCOLATION_BLOCKED(Color.color(0.4, 0.2, 0.2)),
+        PERCOLATION_BLOCK(Color.color(0.4, 0.2, 0.2)),
         SEGREGATION_ONE(Color.color(1.0, 0.5, 0.5)),
         SEGREGATION_TWO(Color.color(0.5, 0.5, 1.0)),
         SEGREGATION_EMPTY(Color.color(1.0, 1.0, 1.0));

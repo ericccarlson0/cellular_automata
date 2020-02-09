@@ -270,23 +270,30 @@ public class SimulationRunner extends Application {
         clearMessage(myInfoBox);
         clearMessage(myStatsBox);
         try {
+            System.out.println("try");
             XMLFilename = String.format(XML_FOLDER + myTextField.getText());
             generateSimulation();
-            // topGrid.add(currentGridDisplay.getDisplay(), 1, 1);
+            System.out.println("generated");
+            //topGrid.add(currSimulation.getDisplay(), 1, 1);
             scrollPane.setContent(currSimulation.getDisplay());
             addMessage(myInfoBox, START_SIM_MESSAGE);
+            System.out.println("tried");
         }
         catch (Exception e) {
             currSimulation = null;
             // topGrid.getChildren().add(noCurrGrid);
             scrollPane.setContent(noCurrGrid);
             addMessage(myInfoBox, FILE_ERROR_MESSAGE);
+            System.out.println("caught");
         }
     }
 
     private void generateSimulation() {
+        System.out.println("trying grid");
         GridStructure grid = fileParser.generateGrid(XMLFilename);
+        System.out.println("got grid");
         currSimulation = new Simulation(grid,myShape);
+        System.out.println("got sim");
     }
 
     private void clearMessage (Pane messageBox) {

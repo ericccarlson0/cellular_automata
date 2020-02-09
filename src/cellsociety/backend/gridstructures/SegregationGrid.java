@@ -18,6 +18,7 @@ public class SegregationGrid extends GridStructure{
     public SegregationGrid(int size, ArrayList<Double> percents, ArrayList<String> states, int numNeighbors, double satisfactionThreshold){
         super(size,percents,states,numNeighbors);
         this.satisfactionThreshold = satisfactionThreshold;
+        this.init();
     }
 
     @Override
@@ -29,9 +30,9 @@ public class SegregationGrid extends GridStructure{
     }
 
     @Override
-    protected Cell makeCellOfType(String shape, int row, int col) {
+    protected Cell makeCellOfType(int row, int col) {
         Simulation.AllStates selectedState = Simulation.AllStates.valueOf(GRID_TYPE_STRING+generateState());
-        return new Cell(selectedState,shape);
+        return new Cell(selectedState);
     }
 
     private void segregationSimStateRules(Cell currCell) {

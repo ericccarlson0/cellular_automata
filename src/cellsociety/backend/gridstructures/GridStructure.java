@@ -25,7 +25,7 @@ public abstract class GridStructure {
 
     protected abstract void calcNewStates();
 
-    protected abstract Cell makeCellOfType(String shape, int row, int col);
+    protected abstract Cell makeCellOfType(int row, int col);
 
     private void initPercents() {
         for (int index = 1; index < statePercents.size(); index++){
@@ -33,16 +33,16 @@ public abstract class GridStructure {
         }
     }
 
-    private void initGridStructure(String shape) {
+    private void initGridStructure() {
         gridStructure = new Cell[size][size];
         allCells = new ArrayList<>();
-        createCells(shape);
+        createCells();
         initCellNeighbors(numNeighbors);
     }
 
-    protected void init(String shape) {
+    protected void init() {
         initPercents();
-        initGridStructure(shape);
+        initGridStructure();
     }
 
     public void step() {
@@ -51,10 +51,10 @@ public abstract class GridStructure {
         updateCellStates();
     }
 
-    private void createCells(String shape) {
+    private void createCells() {
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                Cell curr = makeCellOfType(shape,row,col);
+                Cell curr = makeCellOfType(row,col);
                 gridStructure[row][col] = curr;
                 allCells.add(curr);
             }

@@ -12,12 +12,7 @@ public class Cell{
     protected Object nextState;
     protected List<Cell> neighbors;
 
-    enum CellShape {
-        SQUARE, DIAMOND, CIRCLE
-    }
-
-    public Cell (Object currState, String shape) {
-        CellShape cm = CellShape.valueOf(shape);
+    public Cell (Object currState) {
         this.currState = currState;
         this.nextState = null;
     }

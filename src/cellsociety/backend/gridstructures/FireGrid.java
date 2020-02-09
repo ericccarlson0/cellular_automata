@@ -2,8 +2,6 @@ package cellsociety.backend.gridstructures;
 
 import cellsociety.Simulation;
 import cellsociety.backend.Cell;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +14,7 @@ public class FireGrid extends GridStructure {
     public FireGrid(int size, ArrayList<Double> percents, ArrayList<String> states, int numNeighbors, double catchProb){
         super(size,percents,states,numNeighbors);
         this.catchProb = catchProb;
+        this.init();
     }
 
     @Override
@@ -26,9 +25,9 @@ public class FireGrid extends GridStructure {
     }
 
     @Override
-    protected Cell makeCellOfType(String shape, int row, int col) {
+    protected Cell makeCellOfType(int row, int col) {
         Simulation.AllStates selectedState = Simulation.AllStates.valueOf(GRID_TYPE_STRING+generateState());
-        return new Cell(selectedState,shape);
+        return new Cell(selectedState);
     }
 
     /* assumes 8 neighbors are given, only uses the 4 neighbors directly connecting */
