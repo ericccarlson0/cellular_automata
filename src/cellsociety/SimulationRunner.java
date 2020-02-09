@@ -47,8 +47,6 @@ public class SimulationRunner extends Application {
     private Rectangle noCurrGrid = new Rectangle(500,500, Color.color(0.2, 0.2, .6));
     private String myShape = SQUARE;
 
-//    private GridStructure currGridStruct;
-//    private GridDisplay currGridDisplay;
     private Simulation currSimulation;
     private boolean shouldStep;
     private boolean isSimRunning;
@@ -264,36 +262,26 @@ public class SimulationRunner extends Application {
 
     private void loadButton() {
         isSimRunning = false;
-        // topGrid.getChildren().remove(noCurrGrid);
-        if (currSimulation != null)
-            // topGrid.getChildren().remove(currentGridDisplay.getDisplay());
         clearMessage(myInfoBox);
         clearMessage(myStatsBox);
         try {
-            System.out.println("try");
             XMLFilename = String.format(XML_FOLDER + myTextField.getText());
             generateSimulation();
-            System.out.println("generated");
             //topGrid.add(currSimulation.getDisplay(), 1, 1);
             scrollPane.setContent(currSimulation.getDisplay());
             addMessage(myInfoBox, START_SIM_MESSAGE);
-            System.out.println("tried");
         }
         catch (Exception e) {
             currSimulation = null;
             // topGrid.getChildren().add(noCurrGrid);
             scrollPane.setContent(noCurrGrid);
             addMessage(myInfoBox, FILE_ERROR_MESSAGE);
-            System.out.println("caught");
         }
     }
 
     private void generateSimulation() {
-        System.out.println("trying grid");
         GridStructure grid = fileParser.generateGrid(XMLFilename);
-        System.out.println("got grid");
         currSimulation = new Simulation(grid,myShape);
-        System.out.println("got sim");
     }
 
     private void clearMessage (Pane messageBox) {
@@ -310,7 +298,6 @@ public class SimulationRunner extends Application {
         l.setFont(new Font("Menlo", FONT_SIZE / 2)); //***
         l.setWrapText(true);
         l.setMaxWidth(BOX_WIDTH-2);
-        messageBox.getChildren().remove(1);
         messageBox.getChildren().add(l);
     }
 
