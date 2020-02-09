@@ -19,10 +19,6 @@ public class PercolationGrid extends GridStructure {
         this.init();
     }
 
-    public PercolationGrid(int size, ArrayList<Double> percents, ArrayList<String> states, int numNeighbors){
-        super(size,percents,states,numNeighbors);
-    }
-
     protected void calcNewStates(){
         for(Cell c: cellList){
             percolationSimStateRules(c);

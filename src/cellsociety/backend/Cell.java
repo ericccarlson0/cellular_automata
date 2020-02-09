@@ -23,8 +23,6 @@ public class Cell{
         this.neighbors = neighbors;
     }
 
-    // Is there any way to reduce the code smells here?
-
     public Object getCurrState(){ return currState; }
 
     public void setCurrState(Object state){ currState = state; }
