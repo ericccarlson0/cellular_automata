@@ -1,8 +1,6 @@
 package cellsociety.backend.gridstructures;
 
 import cellsociety.backend.Cell;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,19 +12,41 @@ public class PercolationGrid extends GridStructure {
 
     private double initialFillProbability;
 
-    enum PercolationCellStates {
+    enum PercolationCellState {
         BLOCK, EMPTY, FULL
     }
 
     public PercolationGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states,
-                           int radius, String shape, int numNeighbors, double initialFillProbability){
-        super(rowNum, colNum, percents, states, radius, shape,numNeighbors);
+                           int radius, String shape, int neighborhoodType, double initialFillProbability){
+        super(rowNum, colNum, percents, states, radius, shape, neighborhoodType);
         this.initialFillProbability = initialFillProbability;
         this.init(shape);
     }
 
+    @Override
+    protected Cell createCell(double radius, int row, int col){
+        PercolationCellState state;
+        if (row == 0 && Math.random() < initialFillProbability) {
+            state = PercolationCellState.FULL;
+        } else {
+            state = PercolationCellState.valueOf(generateState());
+        }
+        return new Cell(radius, state);
+    }
+
+    protected void updateColorRGB(Cell c){
+        if (c.getCurrState() == PercolationCellState.EMPTY) {
+            c.setColor(EMPTY_COLOR);
+        } else if (c.getCurrState() == PercolationCellState.FULL) {
+            c.setColor(FULL_COLOR);
+        } else {
+            c.setColor(BLOCK_COLOR);
+        }
+    }
+
+    @Override
     protected void calcNewStates(){
-        for(Cell c: cellList){
+        for (Cell c: cellList){
             percolationSimStateRules(c);
         }
     }
@@ -34,46 +54,24 @@ public class PercolationGrid extends GridStructure {
     private void percolationSimStateRules(Cell currCell){
         List<Cell> allNeighbors = currCell.getNeighbors();
 
-        if(currCell.getCurrState() == PercolationCellStates.BLOCK){
-            currCell.setNextState(PercolationCellStates.BLOCK);
-        } else if(currCell.getCurrState() == PercolationCellStates.FULL){
-            currCell.setNextState(PercolationCellStates.FULL);
+        if(currCell.getCurrState() == PercolationCellState.BLOCK){
+            currCell.setNextState(PercolationCellState.BLOCK);
+        } else if(currCell.getCurrState() == PercolationCellState.FULL){
+            currCell.setNextState(PercolationCellState.FULL);
         }
         else{
             int numNeighborsFull = 0;
             for(Cell currNeighbor: allNeighbors) {
-                if(currNeighbor != null && currNeighbor.getCurrState() == PercolationCellStates.FULL){
+                if(currNeighbor != null && currNeighbor.getCurrState() == PercolationCellState.FULL){
                     numNeighborsFull++;
                 }
             }
             if(numNeighborsFull > 0){
-                currCell.setNextState(PercolationCellStates.FULL);
+                currCell.setNextState(PercolationCellState.FULL);
             }
             else{
-                currCell.setNextState(PercolationCellStates.EMPTY);
+                currCell.setNextState(PercolationCellState.EMPTY);
             }
-        }
-    }
-
-    protected Cell makeCellOfType(double radius, String shape, int row, int col){
-        PercolationCellStates state;
-        if(row == 0 && Math.random() < initialFillProbability){
-            state = PercolationCellStates.FULL;
-        } else {
-            state = PercolationCellStates.valueOf(generateState());
-        }
-        return new Cell(radius, state, shape);
-    }
-
-    protected void updateColor(Cell c){
-        if(c.getCurrState() == PercolationCellStates.EMPTY){
-            c.setColor(EMPTY_COLOR);
-        }
-        else if(c.getCurrState() == PercolationCellStates.FULL){
-            c.setColor(FULL_COLOR);
-        }
-        else{
-            c.setColor(BLOCK_COLOR);
         }
     }
 }

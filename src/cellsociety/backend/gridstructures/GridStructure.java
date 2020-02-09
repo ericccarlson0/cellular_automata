@@ -33,10 +33,8 @@ public abstract class GridStructure {
     }
 
     protected abstract void calcNewStates();
-
-    protected Cell makeCell(String shape) {
-        return new Cell(cellRadius, null, shape);
-    }
+    protected abstract void updateColorRGB(Cell cell);
+    protected abstract Cell createCell(double radius, int row, int col);
 
     private void initPercents() {
         for (int index = 1; index < statePercents.size(); index++){
@@ -51,7 +49,7 @@ public abstract class GridStructure {
         initCellNeighbors(neighborhoodType);
     }
 
-    protected void init(String shape) { // Does this do any work?
+    protected void init(String shape) { // Where is this called?
         initPercents();
         initGridStructure(shape);
     }
@@ -62,13 +60,13 @@ public abstract class GridStructure {
         updateCellStates();
     }
 
-    private void createCells(String shape){ //***
-        for (int row = 0; row < rowNum; row++) {
-            for (int col = 0; col < rowNum; col++) {
-                Cell curr = makeCell(shape);
+    private void createCells(String shape) {
+        for(int row=0; row < rowNum; row++) {
+            for(int col=0; col < colNum; col++) {
+                Cell curr = createCell(cellRadius, row, col);
                 gridStructure[row][col] = curr;
                 cellList.add(curr);
-                // updateColor(curr); ***
+                updateColorRGB(curr);
             }
         }
     }
@@ -136,9 +134,9 @@ public abstract class GridStructure {
     }
 
     private void updateCellStates(){
-        for(Cell c : cellList){
-            c.updateState();
-            // updateColor(c);
+        for (Cell cell : cellList){
+            cell.updateState();
+            updateColorRGB(cell);
         }
     }
 
@@ -147,6 +145,6 @@ public abstract class GridStructure {
     }
 
     public int getRowNum() { return rowNum; }
-
     public int getColNum() { return colNum; }
+    public double getRadius() { return cellRadius; }
 }

@@ -22,8 +22,21 @@ public class LifeGrid extends GridStructure {
         this.init(shape);
     }
 
+    protected Cell createCell(double radius, int row, int col){
+        LifeCellState state = LifeCellState.valueOf(generateState());
+        return new Cell(radius, state);
+    }
+
+    protected void updateColorRGB(Cell c){
+        if (c.getCurrState() == LifeCellState.ALIVE) {
+            c.setColor(ALIVE_COLOR);
+        } else {
+            c.setColor(EMPTY_COLOR);
+        }
+    }
+
     protected void calcNewStates(){
-        for(Cell c: cellList){
+        for (Cell c: cellList){
             updateLifeCell(c);
         }
     }
@@ -43,19 +56,6 @@ public class LifeGrid extends GridStructure {
             } else {
                 currCell.setNextState(LifeCellState.EMPTY);
             }
-        }
-    }
-
-    protected Cell makeCell(double radius, String shape, int row, int col){
-        LifeCellState state = LifeCellState.valueOf(generateState());
-        return new Cell(radius, state, shape);
-    }
-
-    protected void updateColor(Cell c){
-        if (c.getCurrState() == LifeCellState.ALIVE) {
-            c.setColor(ALIVE_COLOR);
-        } else {
-            c.setColor(EMPTY_COLOR);
         }
     }
 }

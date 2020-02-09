@@ -1,14 +1,12 @@
 package cellsociety;
 
-import cellsociety.backend.Cell;
 import cellsociety.backend.gridstructures.GridStructure;
-import cellsociety.frontend.GridDisplay;
+import cellsociety.frontend.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -41,26 +39,30 @@ public class SimulationRunner extends Application {
     public static final int V_GAP = 10;
     public static final int H_GAP = 50;
     public static final int BOX_WIDTH = 100;
-    public static final int TOTAL_WIDTH = 800;
-    public static final int TOTAL_HEIGHT = 800;
+    public static final int TOTAL_WIDTH = 750;
+    public static final int TOTAL_HEIGHT = 750;
     public static final int DISPLAY_WIDTH = 400;
     public static final int DISPLAY_HEIGHT = 400;
+    private static final int DEFAULT_SIM_DELAY = 20;
     private static final String FILE_ERROR_MESSAGE = "The filename you entered is either invalid or could not be found.";
     private static final String START_SIM_MESSAGE = "Press Start to enjoy the Simulation!";
+    private static final String DEFAULT_INFOBOX_MESSAGE = "Load a simulation by entering its filename.";
+    private static final String DEFAULT_FONT = "Menlo";
 
-    private Rectangle noCurrGrid = new Rectangle(DISPLAY_WIDTH,DISPLAY_HEIGHT, Color.color(0.2, 0.2, .6));
-    private String myShape = SQUARE;
+    private Rectangle noCurrGrid = new Rectangle(DISPLAY_WIDTH,DISPLAY_HEIGHT,
+            Color.color(0.2, 0.2, .6));
+    private String myShape;
 
     private GridStructure currGridStruct;
     private GridDisplay currGridDisplay;
     private boolean shouldStep;
     private boolean isSimRunning;
-    private int simDelay;
+    private int delay;
     private int currDelayLeft;
     private Stage simStage;
     private Scene simDisplay;
     private BorderPane displayPane;
-    private GridPane topGrid;
+    private GridPane topLevelGrid;
     private ScrollPane scrollPane;
 
     private XMLParser fileParser;
@@ -91,8 +93,8 @@ public class SimulationRunner extends Application {
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
 
-        topGrid.add(title, 1, 0);
-        topGrid.add(scrollPane, 1, 1);
+        topLevelGrid.add(title, 1, 0);
+        topLevelGrid.add(scrollPane, 1, 1);
         // noCurrGrid.setArcWidth(20.0);
         // noCurrGrid.setArcHeight(20.0);
 
@@ -112,35 +114,31 @@ public class SimulationRunner extends Application {
         currGridDisplay = null;
         shouldStep = false;
         isSimRunning = false;
-        simDelay = 10;
+        delay = DEFAULT_SIM_DELAY;
     }
 
     private void initializeUI() {
         Group root = new Group();
-        topGrid = initializePane();
-        displayPane = new BorderPane();
+        topLevelGrid = initializePane(); // topLevelGrid is the highest level grid
 
         HBox topButtons = setupTopButtons();
-        topGrid.add(topButtons, 1, 2);
+        topLevelGrid.add(topButtons, 1, 2);
         HBox centerButtons = setupCenterButtons();
-        topGrid.add(centerButtons, 1, 3);
+        topLevelGrid.add(centerButtons, 1, 3);
         HBox bottomButtons = setupBottomButtons();
-        topGrid.add(bottomButtons, 1, 4);
+        topLevelGrid.add(bottomButtons, 1, 4);
 
-        GridPane boxes = new GridPane();
-        boxes.add(createInfoBox(), 0, 0);
-        boxes.add(setupShapeButtons(), 0, 1);
-        boxes.add(createStatsBox(), 0, 2);
+        VBox messageBoxes = new VBox();
+        messageBoxes.getChildren().addAll(createInfoBox(), setupShapeButtons(), createStatsBox()); //***
+        topLevelGrid.add(messageBoxes, 2, 1);
 
-        topGrid.add(boxes, 2, 1);
-
-
-        displayPane.setCenter(topGrid);
-        root.getChildren().add(displayPane);
+        root.getChildren().add(topLevelGrid);
         simDisplay = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
-        simDisplay.getStylesheets().add(getClass().getResource(RESOURCE_FOLDER + STYLESHEET).toExternalForm());
-        myInfoBox.getChildren().add(new Label(""));
-        addMessage(myInfoBox,"Load a simulation by entering its filename.");
+
+        String stylesheet = String.format("%s%s", RESOURCE_FOLDER, STYLESHEET);
+        simDisplay.getStylesheets().add(getClass().getResource(stylesheet).toExternalForm());
+        myInfoBox.getChildren().add(new Label("FILLER"));
+        addMessage(myInfoBox, DEFAULT_INFOBOX_MESSAGE);
     }
 
     private GridPane initializePane() {
@@ -169,11 +167,11 @@ public class SimulationRunner extends Application {
         HBox buttonHolder = new HBox();
 
         Text prompt = new Text("Speed: ");
-        prompt.setFont(new Font("Menlo", FONT_SIZE));
+        prompt.setFont(new Font(DEFAULT_FONT, FONT_SIZE));
         prompt.setFill(FONT_COLOR);
 
         mySlider = new Slider(-4, 4, 0);
-        mySlider.setLayoutX(200);
+        mySlider.setLayoutX(300);
         mySlider.setShowTickMarks(true);
         // mySlider.setShowTickLabels(true);
         mySlider.setSnapToTicks(true);
@@ -188,7 +186,7 @@ public class SimulationRunner extends Application {
         HBox buttonHolder = new HBox();
 
         Text prompt = new Text("Enter filename: ");
-        prompt.setFont(new Font("Menlo", FONT_SIZE));
+        prompt.setFont(new Font(DEFAULT_FONT, FONT_SIZE));
         prompt.setFill(FONT_COLOR);
         myTextField = new TextField();
         // myTextField.setPrefColumnCount(20); //***
@@ -200,30 +198,19 @@ public class SimulationRunner extends Application {
         return buttonHolder;
     }
 
-    private GridPane setupShapeButtons() {
-        GridPane buttonHolder = new GridPane();
-        ToggleGroup group = new ToggleGroup();
-        myShapeButtons = group;
+    private VBox setupShapeButtons() {
+        VBox buttonHolder = new VBox();
+        ToggleGroup tg = new ToggleGroup();
+        myShapeButtons = tg;
 
-        RadioButton square = new RadioButton();
-        square.setUserData(SQUARE);
-        square.setToggleGroup(group);
-        square.setSelected(true);
-        square.setOnAction(event -> shapeButton());
-        buttonHolder.add(square, 0, 0);
-
-        RadioButton diamond = new RadioButton(DIAMOND);
-        diamond.setUserData(DIAMOND);
-        diamond.setToggleGroup(group);
-        diamond.setOnAction(event -> shapeButton());
-        buttonHolder.add(diamond, 0, 1);
-
-        RadioButton circle = new RadioButton(CIRCLE);
-        circle.setUserData(CIRCLE);
-        circle.setToggleGroup(group);
-        circle.setOnAction(event -> shapeButton());
-        buttonHolder.add(circle, 0, 2);
-
+        String[] shapeArray = new String[]{SQUARE, DIAMOND, TRIANGLE, HEXAGON, CIRCLE};
+        for (String shape: shapeArray){
+            RadioButton button = new RadioButton(shape);
+            button.setUserData(shape);
+            button.setToggleGroup(tg);
+            button.setOnAction(event -> shapeButton());
+            buttonHolder.getChildren().add(button);
+        }
         return buttonHolder;
     }
 
@@ -241,7 +228,7 @@ public class SimulationRunner extends Application {
 
     private StackPane createMessageBox(int size) {
         StackPane sp = new StackPane();
-        Rectangle background = new Rectangle(size*2, size, Color.color(1.0, 1.0, 1.0));
+        Rectangle background = new Rectangle(size*2, size, Color.WHITE);
         background.setArcWidth(BOX_WIDTH/10);
         background.setArcHeight(BOX_WIDTH/10);
         sp.getChildren().add(background);
@@ -268,11 +255,9 @@ public class SimulationRunner extends Application {
 
     private void loadButton() {
         isSimRunning = false;
-        // topGrid.getChildren().remove(noCurrGrid);
+        topLevelGrid.getChildren().remove(noCurrGrid);
         if (currGridDisplay != null)
-            // topGrid.getChildren().remove(currentGridDisplay.getDisplay());
-        clearMessage(myInfoBox);
-        clearMessage(myStatsBox);
+            topLevelGrid.getChildren().remove(currGridDisplay.getDisplay());
         try {
             XMLFilename = String.format("%s%s", XML_FOLDER, myTextField.getText());
             generateGrids();
@@ -282,41 +267,46 @@ public class SimulationRunner extends Application {
         catch (Exception e) {
             currGridDisplay = null;
             currGridStruct = null;
-            // topGrid.getChildren().add(noCurrGrid);
             scrollPane.setContent(noCurrGrid);
             addMessage(myInfoBox, FILE_ERROR_MESSAGE);
         }
     }
 
-    private void generateGrids() {
+    private void generateGrids() { //***
         currGridStruct = fileParser.generateGrid(XMLFilename, myShape);
-        initGridDisplay(myShape, currGridStruct.getRowNum(), currGridStruct.getColNum());
+        int rowNum = currGridStruct.getRowNum();
+        int colNum = currGridStruct.getColNum();
+        initGridDisplay(myShape, rowNum, colNum);
     }
 
-    private void initGridDisplay(String myShape, int rowNum, int colNum) {
-        currGridDisplay = new GridDisplay(myShape, rowNum, colNum, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-        currGridDisplay.setupFromGridStruct(currGridStruct);
-    }
-
-    private void clearMessage (Pane messageBox) {
-        Node message = new Text("");
-        for (Node child: messageBox.getChildren()) {
-            if (child instanceof Label) { //***
-                message = child;
-            }
+    private void initGridDisplay(String shape, int rowNum, int colNum) {
+        if (shape == "DIAMOND"){
+            currGridDisplay = new DiamondDisplay(rowNum, colNum, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+        } else if (shape == "TRIANGLE") {
+            currGridDisplay = new TriangleDisplay(rowNum, colNum, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+        } else if (shape == "HEXAGON") {
+            currGridDisplay = new HexagonDisplay(rowNum, colNum, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+        } else if (shape == "CIRCLE") {
+            currGridDisplay = new CircleDisplay(rowNum, colNum, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+        } else {
+            currGridDisplay = new SquareDisplay(rowNum, colNum, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+            //TODO: error checking ["__ is not a valid shape"]
         }
-        messageBox.getChildren().remove(message);
+        currGridDisplay.setupDisplayFromStructure(currGridStruct);
     }
+
     private void addMessage (Pane messageBox, String message) {
         Label l = new Label(message);
-        l.setFont(new Font("Menlo", FONT_SIZE / 2)); //***
+        l.setFont(new Font(DEFAULT_FONT, FONT_SIZE/2)); //***
         l.setWrapText(true);
-        l.setMaxWidth(BOX_WIDTH-2);
-        messageBox.getChildren().remove(1);
+        l.setMaxWidth(BOX_WIDTH);
+        if (messageBox.getChildren().size() > 0) {
+            messageBox.getChildren().remove(1);
+        }
         messageBox.getChildren().add(l);
     }
 
-    private void step () {
+    private void step() {
         if (currGridStruct != null && (isSimRunning || shouldStep)){
             if (currDelayLeft > 0){
                 currDelayLeft--;
@@ -326,7 +316,7 @@ public class SimulationRunner extends Application {
                 if (shouldStep) {
                     shouldStep = false;
                 } else {
-                    currDelayLeft = simDelay;
+                    currDelayLeft = delay;
                 }
             }
         }
@@ -335,7 +325,7 @@ public class SimulationRunner extends Application {
     private void checkSlider() {
         double sliderValue = mySlider.getValue();
         int speed = discrete(sliderValue);
-        simDelay = (int) (10 * Math.pow(2, speed));
+        delay = (int) (10 * Math.pow(2, speed));
     }
 
     private int discrete(double speed) {

@@ -1,8 +1,6 @@
 package cellsociety.backend.gridstructures;
 
 import cellsociety.backend.Cell;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,7 +14,7 @@ public class SegregationGrid extends GridStructure{
     private double satisfactionThreshold;
     private HashSet<Cell> allEmpties;
 
-    enum SegregationCellStates {
+    enum SegregationCellState {
         EMPTY, ONE, TWO
     }
 
@@ -27,6 +25,21 @@ public class SegregationGrid extends GridStructure{
         this.init(shape);
     }
 
+    protected Cell createCell(double radius, int row, int col) {
+        SegregationCellState state = SegregationCellState.valueOf(generateState());
+        return new Cell(radius, state);
+    }
+
+    protected void updateColorRGB(Cell c) {
+        if (c.getCurrState() == SegregationCellState.EMPTY) {
+            c.setColor(EMPTY_COLOR);
+        } else if (c.getCurrState() == SegregationCellState.ONE) {
+            c.setColor(ONE_COLOR);
+        } else {
+            c.setColor(TWO_COLOR);
+        }
+    }
+
     @Override
     protected void calcNewStates() {
         getAllEmpties();
@@ -35,40 +48,23 @@ public class SegregationGrid extends GridStructure{
         }
     }
 
-    protected void updateColor(Cell c) {
-        if(c.getCurrState() == SegregationCellStates.EMPTY) {
-            c.setColor(EMPTY_COLOR);
-        }
-        else if(c.getCurrState() == SegregationCellStates.ONE) {
-            c.setColor(ONE_COLOR);
-        }
-        else{
-            c.setColor(TWO_COLOR);
-        }
-    }
-
-    protected Cell makeCellOfType(double radius, String shape, int row, int col) {
-        SegregationCellStates selectedState = SegregationCellStates.valueOf(generateState());
-        return new Cell(radius, selectedState, shape);
-    }
-
     private void segregationSimStateRules(Cell currCell) {
-        if(currCell.getCurrState() == SegregationCellStates.EMPTY) {
-            currCell.setNextState(SegregationCellStates.EMPTY);
+        if(currCell.getCurrState() == SegregationCellState.EMPTY) {
+            currCell.setNextState(SegregationCellState.EMPTY);
         } else if(!isSatisfied(currCell) && !allEmpties.isEmpty()) {
             Cell currEmpty = getRandomEmpty();
             currEmpty.setCurrState(currCell.getCurrState());
             currEmpty.setNextState(currCell.getCurrState());
             allEmpties.remove(currEmpty);
-            currCell.setNextState(SegregationCellStates.EMPTY);
-        } else if(currCell.getCurrState() != SegregationCellStates.EMPTY) {
+            currCell.setNextState(SegregationCellState.EMPTY);
+        } else if(currCell.getCurrState() != SegregationCellState.EMPTY) {
             currCell.setNextState(currCell.getCurrState());
         }
     }
 
     private boolean isSatisfied(Cell currCell) {
         List<Cell> allNeighbors = currCell.getNeighbors();
-        if(currCell.getCurrState() == SegregationCellStates.EMPTY) {
+        if(currCell.getCurrState() == SegregationCellState.EMPTY) {
             return true;
         }
         int numSame = 0;
@@ -78,7 +74,7 @@ public class SegregationGrid extends GridStructure{
                 numSame++;
                 numTotal++;
             }
-            else if(currNeighbor != null && !(currNeighbor.getCurrState() == SegregationCellStates.EMPTY)) {
+            else if(currNeighbor != null && !(currNeighbor.getCurrState() == SegregationCellState.EMPTY)) {
                 numTotal++;
             }
         }
@@ -97,7 +93,7 @@ public class SegregationGrid extends GridStructure{
     protected void getAllEmpties(){
         HashSet<Cell> allEmpties = new HashSet<Cell>();
         for(Cell c: cellList) {
-            if (c.getCurrState() == SegregationCellStates.EMPTY) {
+            if (c.getCurrState() == SegregationCellState.EMPTY) {
                 allEmpties.add(c);
             }
         }

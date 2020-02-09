@@ -5,15 +5,13 @@ import java.util.ArrayList;
 
 public class Cell {
     protected double radius;
-    protected String shape;
     protected double[] colorRGB;
     protected Object currState;
     protected Object nextState;
     protected List<Cell> neighbors;
 
-    public Cell (double radius, Object currState, String shape) {
+    public Cell (double radius, Object currState) {
         this.radius = radius;
-        this.shape = shape;
         this.currState = currState;
         this.nextState = null;
         this.neighbors = new ArrayList<>();
