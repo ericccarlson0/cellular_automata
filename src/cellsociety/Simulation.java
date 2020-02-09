@@ -23,7 +23,10 @@ public class Simulation {
         PERCOLATION_BLOCK(Color.color(0.4, 0.2, 0.2)),
         SEGREGATION_ONE(Color.color(1.0, 0.5, 0.5)),
         SEGREGATION_TWO(Color.color(0.5, 0.5, 1.0)),
-        SEGREGATION_EMPTY(Color.color(1.0, 1.0, 1.0));
+        SEGREGATION_EMPTY(Color.color(1.0, 1.0, 1.0)),
+        RPS_ROCK(Color.GREEN),
+        RPS_PAPER(Color.RED),
+        RPS_SCISSORS(Color.BLUEVIOLET);
 
         private Color stateColor;
         AllStates(Color p){
