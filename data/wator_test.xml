@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <data simType="PRED_PREY">
-    <size>100</size>
+    <size>50</size>
     <percents>10,1,89</percents>
     <states>EMPTY,SHARK,FISH</states>
     <misc>8,4,7</misc>

@@ -2,6 +2,7 @@ package cellsociety.frontend;
 
 import cellsociety.Simulation;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
 
 public abstract class GridDisplay {
@@ -18,8 +19,7 @@ public abstract class GridDisplay {
     private int numCols;
     private double cellRadius = 10;
 
-    public GridDisplay(int numRows, int numCols, double radius) {
-        this.cellRadius = radius;
+    public GridDisplay(int numRows, int numCols) {
         totalWidth = Simulation.DISPLAY_WIDTH;
         totalHeight = Simulation.DISPLAY_HEIGHT;
         this.numRows = numRows;
@@ -30,7 +30,14 @@ public abstract class GridDisplay {
     }
 
     protected abstract Shape createShape(int row, int col);
-    public abstract void addCellToDisplay(int row, int col, Object state);
+
+    public void addCellToDisplay(int row, int col, Object state) {
+        Shape shape = createShape(row, col);
+        Paint p = ((Simulation.AllStates) state).getColor();
+        shape.setFill(p);
+        gridDisplay.getChildren().add(shape);
+        shapeHolder[row][col] = shape;
+    }
 
     public void updateDisplayAtCell(int row, int col, Object stateAtCell) {
         Shape shape = shapeHolder[row][col];
@@ -39,12 +46,15 @@ public abstract class GridDisplay {
     }
 
     public Pane getDisplay() { return gridDisplay; }
-
+    protected Shape[][] getShapeHolder(){
+        return shapeHolder;
+    }
     protected double getCellRadius(){
         return cellRadius;
     }
-
-    protected Shape[][] getShapeHolder(){
-        return shapeHolder;
+    protected double getNumRows(){ return numRows; }
+    protected double getNumCols(){ return numCols; }
+    protected void setCellRadius(double rad){
+        cellRadius = rad;
     }
 }
