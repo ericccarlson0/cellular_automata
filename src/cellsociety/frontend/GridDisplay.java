@@ -16,7 +16,7 @@ public abstract class GridDisplay {
     private double totalHeight;
     private int numRows;
     private int numCols;
-    private double cellRadius = 10; //***
+    private double cellRadius = 10;
 
     public GridDisplay(int numRows, int numCols, double radius) {
         this.cellRadius = radius;
@@ -31,14 +31,6 @@ public abstract class GridDisplay {
 
     protected abstract Shape createShape(int row, int col);
     public abstract void addCellToDisplay(int row, int col, Object state);
-
-//    public abstract void renderDisplay(Pane display, Shape[][] cellShapes, int rn, int cn,
-//                                       double cx, double cy, double radius);
-//    public void initializeDisplay() {
-//        double centerX = totalWidth/2;
-//        double centerY = totalHeight/2;
-//        renderDisplay(gridDisplay, shapeHolder, rowNum, colNum, centerX, centerY, cellRadius); //***
-//    }
 
     public void updateDisplayAtCell(int row, int col, Object stateAtCell) {
         Shape shape = shapeHolder[row][col];
