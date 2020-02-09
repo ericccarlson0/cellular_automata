@@ -4,6 +4,7 @@ import cellsociety.backend.Cell;
 import cellsociety.backend.gridstructures.GridStructure;
 import cellsociety.frontend.GridDisplay;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
 public class Simulation {
@@ -51,7 +52,7 @@ public class Simulation {
         }
     }
 
-    public GridPane getDisplay() {
+    public Region getDisplay() {
         return gridDisplay.getDisplay();
     }
 

@@ -79,7 +79,7 @@ public class SegregationGrid extends GridStructure{
 
     protected void getAllEmpties(){
         HashSet<Cell> allEmpties = new HashSet<Cell>();
-        for(Cell c: allCells) {
+        for(Cell c: cellList) {
             if (c.getCurrState() == Simulation.AllStates.SEGREGATION_EMPTY) {
                 allEmpties.add(c);
             }

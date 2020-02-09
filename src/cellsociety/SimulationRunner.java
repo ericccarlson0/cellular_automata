@@ -1,8 +1,6 @@
 package cellsociety;
 
-import cellsociety.backend.Cell;
 import cellsociety.backend.gridstructures.GridStructure;
-import cellsociety.frontend.GridDisplay;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
