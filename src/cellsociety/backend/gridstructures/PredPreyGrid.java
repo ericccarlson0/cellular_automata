@@ -69,13 +69,13 @@ public class PredPreyGrid extends GridStructure {
     @Override
     protected void calcNewStates() {
         for(Cell c: currSharks){
-            sharkMove(c);
+            sharkUpdate(c);
         }
         for(Cell c: currFish){
-            fishMove(c);
+            fishUpdate(c);
         }
         for(Cell c: currEmpties){
-            emptiesMove(c);
+            emptyUpdate(c);
         }
         currSharks = nextSharks;
         currFish = nextFish;
@@ -85,17 +85,59 @@ public class PredPreyGrid extends GridStructure {
         nextEmpties.clear();
     }
 
-    private void emptiesMove(Cell c) {
+    private void emptyUpdate(Cell c) {
 
     }
 
-    private void fishMove(Cell c) {
+    private void fishUpdate(Cell c) {
 
     }
 
-    private void sharkMove(Cell c) {
-        ((Shark)speciesAtCell.get(c)[0]).decrease();
+    private void sharkUpdate(Cell c) {
+        Shark currShark = (Shark)speciesAtCell.get(c)[0];
+        currShark.decrease();
         Cell whereToMove = canMove(c);
+        if(!currShark.shouldDie()){
+            if(whereToMove != null){
+                moveShark(c,whereToMove);
+                if(currShark.readyForBaby()){
+                    currShark.haveBaby();
+                    setToShark(c,new Shark(deathRate,sharkFertility));
+                }
+                else
+                    setToEmpty(c);
+            }
+            else
+                setToShark(c,currShark);
+        }
+        else
+            setToEmpty(c);
+    }
+
+    private void setToEmpty(Cell c) {
+        speciesAtCell.get(c)[1] = null;
+        c.setNextState(Simulation.AllStates.PREDPREY_EMPTY);
+        nextEmpties.add(c);
+    }
+
+    private void setToShark(Cell c, Shark s){
+        speciesAtCell.get(c)[1] = s;
+        c.setNextState(Simulation.AllStates.PREDPREY_SHARK);
+        nextSharks.add(c);
+    }
+
+    private void setToFish(Cell c, Fish f){
+        speciesAtCell.get(c)[1] = f;
+        c.setNextState(Simulation.AllStates.PREDPREY_FISH);
+        nextFish.add(c);
+    }
+
+    private void moveShark(Cell c, Cell whereToMove) {
+        Shark currShark = (Shark)speciesAtCell.get(c)[0];
+        if(whereToMove.getCurrState() == Simulation.AllStates.PREDPREY_FISH){
+            currShark.eat();
+        }
+        setToShark(whereToMove,currShark);
     }
 
     private Cell canMove(Cell c) {
@@ -162,21 +204,14 @@ public class PredPreyGrid extends GridStructure {
 
     class Shark{
         int energyLeft;
-        int nextEnergyLeft;
         int leftBeforeBabies;
-        int nextLeftBeforeBabies;
+        int initEnergy;
+        int initBabies;
         Shark(int deathRate,int babyRate){
             energyLeft = deathRate;
             leftBeforeBabies = babyRate;
-            nextEnergyLeft = Integer.MAX_VALUE;
-            nextLeftBeforeBabies = Integer.MAX_VALUE;
-        }
-
-        void updateValues(){
-            energyLeft = nextEnergyLeft;
-            leftBeforeBabies = nextLeftBeforeBabies;
-            nextEnergyLeft = Integer.MAX_VALUE;
-            nextLeftBeforeBabies = Integer.MAX_VALUE;
+            initEnergy = deathRate;
+            initBabies = babyRate;
         }
 
         void decrease(){
@@ -184,20 +219,20 @@ public class PredPreyGrid extends GridStructure {
             leftBeforeBabies--;
         }
 
-        void resetEnergy(int deathRate){
-            nextEnergyLeft = deathRate;
+        void eat(){
+            energyLeft = initEnergy;
         }
 
-        void resetLeftBeforeBaby(int babyRate){
-            nextLeftBeforeBabies = babyRate;
+        void haveBaby(){
+            leftBeforeBabies = initBabies;
         }
 
-        int leftBeforeBaby(){
-            return leftBeforeBabies;
+        boolean readyForBaby(){
+            return leftBeforeBabies <= 0;
         }
 
-        int energyLeft(){
-            return energyLeft;
+        boolean shouldDie(){
+            return energyLeft <= 0;
         }
     }
 
