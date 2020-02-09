@@ -255,17 +255,16 @@ public class SimulationRunner extends Application {
         topLevelGrid.getChildren().remove(noCurrGrid);
         if (currSimulation != null)
             topLevelGrid.getChildren().remove(currSimulation.getDisplay()); //***
-        try {
+         try {
             XMLFilename = String.format("%s%s", XML_FOLDER, myTextField.getText());
             generateSimulation();
             scrollPane.setContent(currSimulation.getDisplay());
             addMessage(myInfoBox, START_SIM_MESSAGE);
-        }
-        catch (Exception e) {
+         } catch (Exception e) {
             currSimulation = null;
             scrollPane.setContent(noCurrGrid);
             addMessage(myInfoBox, FILE_ERROR_MESSAGE);
-        }
+         }
     }
 
     private void generateSimulation() {
