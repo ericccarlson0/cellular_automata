@@ -27,7 +27,7 @@ public class XMLParser {
         }
     }
 
-    public GridStructure generateGrid (String xmlFilename, String mode) {
+    public GridStructure generateGrid (String xmlFilename) {
         File dataFile = new File(xmlFilename);
         Element root = getRootElement(dataFile);
         if (isValidFile(root)) {
@@ -37,33 +37,30 @@ public class XMLParser {
             ArrayList<Double> percents = getPercents(root);
             ArrayList<String> states = getStates(root);
             ArrayList<Double> misc = getMisc(root);
-            return generateGridStructure(simType,dimensions,percents,states,misc,mode);
+            return generateGridStructure(simType,dimensions,percents,states,misc);
         } else {
             return null;
         }
     }
 
-    private GridStructure generateGridStructure(SimulationRunner.SimulationType simType, int dimensions,
-                                                ArrayList<Double> percents, ArrayList<String> states,
-                                                ArrayList<Double> misc, String shape) {
+    private GridStructure generateGridStructure(SimulationRunner.SimulationType simType, int dimensions, ArrayList<Double> percents, ArrayList<String> states, ArrayList<Double> misc) {
         GridStructure grid = null;
         //TODO implement rowNum and colNum in XML (instead of "dimensions")
         int rowNum = dimensions;
         int colNum = dimensions;
-        int radius = 10; //***
         switch(simType){
             case LIFE:
                 //TODO figure out how to specify number of neighbors based on shape of cells
-                grid = new LifeGrid(rowNum, colNum, percents, states, radius, shape,8);
+                grid = new LifeGrid(dimensions, dimensions, percents,states, 8);
                 break;
             case FIRE:
-                grid = new FireGrid(rowNum, colNum, percents, states, radius, shape,8, misc.get(0));
+                grid = new FireGrid(dimensions, dimensions, percents, states, 8, misc.get(0));
                 break;
             case PERCOLATION:
-                grid = new PercolationGrid(rowNum, colNum, percents, states, radius, shape,8, misc.get(0));
+                grid = new PercolationGrid(dimensions, dimensions, percents, states, 8,misc.get(0));
                 break;
             case SEGREGATION:
-                grid = new SegregationGrid(rowNum, colNum, percents, states, radius, shape,8, misc.get(0));
+                grid = new SegregationGrid(dimensions, dimensions, percents, states, 8,misc.get(0));
                 break;
             case PRED_PREY:
                 break;

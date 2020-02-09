@@ -1,7 +1,7 @@
 package cellsociety;
 
 import cellsociety.backend.gridstructures.GridStructure;
-import cellsociety.frontend.*;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -49,19 +49,17 @@ public class SimulationRunner extends Application {
     private static final String DEFAULT_INFOBOX_MESSAGE = "Load a simulation by entering its filename.";
     private static final String DEFAULT_FONT = "Menlo";
 
-    private Rectangle noCurrGrid = new Rectangle(DISPLAY_WIDTH,DISPLAY_HEIGHT,
+    private Rectangle noCurrGrid = new Rectangle(DISPLAY_WIDTH, DISPLAY_HEIGHT,
             Color.color(0.2, 0.2, .6));
     private String myShape;
-
-    private GridStructure currGridStruct;
-    private GridDisplay currGridDisplay;
     private boolean shouldStep;
-    private boolean isSimRunning;
+    private boolean simRunning;
     private int delay;
-    private int currDelayLeft;
+    private int delayLeft;
+
+    private Simulation currSimulation;
     private Stage simStage;
     private Scene simDisplay;
-    private BorderPane displayPane;
     private GridPane topLevelGrid;
     private ScrollPane scrollPane;
 
@@ -110,10 +108,9 @@ public class SimulationRunner extends Application {
     }
 
     private void initializeVariables() {
-        currGridStruct = null;
-        currGridDisplay = null;
+        currSimulation = null;
         shouldStep = false;
-        isSimRunning = false;
+        simRunning = false;
         delay = DEFAULT_SIM_DELAY;
     }
 
@@ -236,17 +233,17 @@ public class SimulationRunner extends Application {
     }
 
     private void startButton() {
-        isSimRunning = true;
+        simRunning = true;
     }
 
     private void stopButton() {
-        isSimRunning = false;
+        simRunning = false;
     }
 
     private void stepButton() {
-        isSimRunning = false;
+        simRunning = false;
         shouldStep = true;
-        currDelayLeft = 0;
+        delayLeft = 0;
     }
 
     private void shapeButton() {
@@ -254,45 +251,26 @@ public class SimulationRunner extends Application {
     }
 
     private void loadButton() {
-        isSimRunning = false;
+        simRunning = false;
         topLevelGrid.getChildren().remove(noCurrGrid);
-        if (currGridDisplay != null)
-            topLevelGrid.getChildren().remove(currGridDisplay.getDisplay());
+        if (currSimulation != null)
+            topLevelGrid.getChildren().remove(currSimulation.getDisplay()); //***
         try {
             XMLFilename = String.format("%s%s", XML_FOLDER, myTextField.getText());
-            generateGrids();
-            scrollPane.setContent(currGridDisplay.getDisplay());
+            generateSimulation();
+            scrollPane.setContent(currSimulation.getDisplay());
             addMessage(myInfoBox, START_SIM_MESSAGE);
         }
         catch (Exception e) {
-            currGridDisplay = null;
-            currGridStruct = null;
+            currSimulation = null;
             scrollPane.setContent(noCurrGrid);
             addMessage(myInfoBox, FILE_ERROR_MESSAGE);
         }
     }
 
-    private void generateGrids() { //***
-        currGridStruct = fileParser.generateGrid(XMLFilename, myShape);
-        int rowNum = currGridStruct.getRowNum();
-        int colNum = currGridStruct.getColNum();
-        initGridDisplay(myShape, rowNum, colNum);
-    }
-
-    private void initGridDisplay(String shape, int rowNum, int colNum) {
-        if (shape == "DIAMOND"){
-            currGridDisplay = new DiamondDisplay(rowNum, colNum, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-        } else if (shape == "TRIANGLE") {
-            currGridDisplay = new TriangleDisplay(rowNum, colNum, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-        } else if (shape == "HEXAGON") {
-            currGridDisplay = new HexagonDisplay(rowNum, colNum, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-        } else if (shape == "CIRCLE") {
-            currGridDisplay = new CircleDisplay(rowNum, colNum, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-        } else {
-            currGridDisplay = new SquareDisplay(rowNum, colNum, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-            //TODO: error checking ["__ is not a valid shape"]
-        }
-        currGridDisplay.setupDisplayFromStructure(currGridStruct);
+    private void generateSimulation() {
+        GridStructure gs = fileParser.generateGrid(XMLFilename);
+        currSimulation = new Simulation(gs, myShape);
     }
 
     private void addMessage (Pane messageBox, String message) {
@@ -307,16 +285,16 @@ public class SimulationRunner extends Application {
     }
 
     private void step() {
-        if (currGridStruct != null && (isSimRunning || shouldStep)){
-            if (currDelayLeft > 0){
-                currDelayLeft--;
+        if (currSimulation != null && (simRunning || shouldStep)){
+            if (delayLeft > 0){
+                delayLeft--;
             } else {
                 checkSlider();
-                currGridStruct.step();
+                currSimulation.step();
                 if (shouldStep) {
                     shouldStep = false;
                 } else {
-                    currDelayLeft = delay;
+                    delayLeft = delay;
                 }
             }
         }
@@ -324,30 +302,13 @@ public class SimulationRunner extends Application {
 
     private void checkSlider() {
         double sliderValue = mySlider.getValue();
-        int speed = discrete(sliderValue);
-        delay = (int) (10 * Math.pow(2, speed));
+        double spd = discretize(sliderValue);
+        delay = (int)(DEFAULT_SIM_DELAY * Math.pow(2, spd));
     }
 
-    private int discrete(double speed) {
-        if (speed < -3.5) {
-            return 4;
-        } else if (speed < -2.5) {
-            return 3;
-        } else if (speed < -1.5) {
-            return 2;
-        } else if (speed < -0.5) {
-            return 1;
-        } else if (speed < 0.5) {
-            return 0;
-        } else if (speed < 1.5) {
-            return -1;
-        } else if (speed < 2.5) {
-            return -2;
-        } else if (speed < 3.5) {
-            return -3;
-        } else {
-            return -4;
-        }
+    private double discretize(double continuousVal) {
+        double discreteVal = -1 * ((int) (2*continuousVal)) / 2;
+        return discreteVal;
     }
 
     public static void main(String[] args){
