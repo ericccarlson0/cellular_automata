@@ -24,8 +24,8 @@ public class PredPreyGrid extends GridStructure {
 
     private HashMap<Cell,List<List<Integer>>> cellValues;
 
-    public PredPreyGrid(int size, ArrayList<Double> percents, ArrayList<String> states, int numNeighbors, double sharkFertility, double fishFertility, double mortalityRate){
-        super(size,percents,states,numNeighbors);
+    public PredPreyGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states, int numNeighbors, double sharkFertility, double fishFertility, double mortalityRate){
+        super(rowNum,colNum,percents,states,numNeighbors);
         this.deathRate = (int)mortalityRate;
         this.sharkFertility = (int)sharkFertility;
         this.fishFertility = (int)fishFertility;
@@ -93,7 +93,7 @@ public class PredPreyGrid extends GridStructure {
     }
 
     @Override
-    protected Cell makeCellOfType(int row, int col) {
+    protected Cell createCell(int row, int col) {
         Simulation.AllStates selectedState = Simulation.AllStates.valueOf(GRID_TYPE_STRING+generateState());
         return new Cell(selectedState);
     }

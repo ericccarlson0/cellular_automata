@@ -17,7 +17,7 @@ public class PercolationGrid extends GridStructure {
         this.initialFillProbability = initialFillProbability;
         this.init();
     }
-    
+
     protected Cell createCell(int row, int col){
         Simulation.AllStates state;
         if (row == 0 && Math.random() < initialFillProbability) {
