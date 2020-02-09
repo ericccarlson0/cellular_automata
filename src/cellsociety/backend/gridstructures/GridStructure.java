@@ -8,21 +8,21 @@ import java.util.List;
 
 public abstract class GridStructure {
 
-    protected ArrayList<Cell> allCells;
+    protected ArrayList<Cell> cellList;
 
     private Cell[][] gridStructure;
-    private int rowNum;
-    private int colNum;
-    private double cellRadius;
+    private int size;
     private List<Double> statePercents;
     private List<String> states;
-    private int neighborhoodType;
+    private int numNeighbors;
+//    private int neighborhoodType;
 
     public GridStructure(int size, List<Double> percents, List<String> states, int numNeighbors) {
         this.size = size;
         this.states = states;
         this.statePercents = percents;
-        this.neighborhoodType = neighborhoodType;
+        this.numNeighbors = numNeighbors;
+        //this.neighborhoodType = neighborhoodType;
     }
 
     protected abstract void calcNewStates();
@@ -37,7 +37,7 @@ public abstract class GridStructure {
 
     private void initGridStructure() {
         gridStructure = new Cell[size][size];
-        allCells = new ArrayList<>();
+        cellList = new ArrayList<>();
         createCells();
         initCellNeighbors(numNeighbors);
     }
@@ -58,7 +58,7 @@ public abstract class GridStructure {
             for (int col = 0; col < size; col++) {
                 Cell curr = makeCellOfType(row,col);
                 gridStructure[row][col] = curr;
-                allCells.add(curr);
+                cellList.add(curr);
             }
         }
     }
@@ -76,8 +76,8 @@ public abstract class GridStructure {
     }
 
     private void initCellNeighbors(int numNeighbors) {
-        for (int row = 0; row < rowNum; row++) {
-            for (int col = 0; col < rowNum; col++) {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
                 List<Cell> neighbors = new ArrayList<>();
                 switch(numNeighbors){
                     //TODO: make different configurations of neighbors
@@ -90,9 +90,7 @@ public abstract class GridStructure {
                         break;
                 }
                 removeNulls(neighbors);
-                for (Cell neighbor: neighbors) {
-                    gridStructure[row][col].addNeighbor(neighbor);
-                }
+                gridStructure[row][col].setNeighbors(neighbors);
             }
         }
     }
@@ -117,8 +115,8 @@ public abstract class GridStructure {
     }
 
     private Cell isValidCoords(int row, int col) {
-        boolean rowValid = (row >= 0) && (row < rowNum);
-        boolean colValid = (col >= 0) && (col < rowNum);
+        boolean rowValid = (row >= 0) && (row < size);
+        boolean colValid = (col >= 0) && (col < size);
         if (rowValid && colValid){
             return gridStructure[row][col];
         }
