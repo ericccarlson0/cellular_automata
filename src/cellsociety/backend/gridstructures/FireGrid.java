@@ -1,27 +1,20 @@
 package cellsociety.backend.gridstructures;
 
+import cellsociety.Simulation;
 import cellsociety.backend.Cell;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FireGrid extends GridStructure {
-    public static final double[] TREE_COLOR = new double[]{0.2, 0.75, 0.2};
-    public static final double[] EMPTY_COLOR = new double[]{0.8, 0.8, 0.6};
-    public static final double[] FIRE_COLOR = new double[]{0.8, 0.2, 0.0};
+    public static final String GRID_TYPE_STRING = "FIRE_";
     private double catchProb;
 
-    enum FireCellStates {
-        EMPTY, TREE, FIRE
-    }
 
-    public FireGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states,
-                    double radius, String shape, int neighborhoodType, double catchProb) {
-        super(rowNum, colNum, percents, states, radius, shape, neighborhoodType);
+    public FireGrid(int size, ArrayList<Double> percents, ArrayList<String> states, int numNeighbors, double catchProb){
+        super(size,percents,states,numNeighbors);
         this.catchProb = catchProb;
-        this.init(shape);
+        this.init();
     }
 
     @Override
@@ -31,45 +24,34 @@ public class FireGrid extends GridStructure {
         }
     }
 
-    protected void updateColor(Cell c) {
-        if(c.getCurrState() == FireCellStates.EMPTY) {
-            c.setColor(EMPTY_COLOR);
-        }
-        else if(c.getCurrState() == FireCellStates.TREE) {
-            c.setColor(TREE_COLOR);
-        }
-        else{
-            c.setColor(FIRE_COLOR);
-        }
-    }
-
-    protected Cell makeCell(double radius, String shape, int row, int col) {
-        FireCellStates selectedState = FireCellStates.valueOf(generateState());
-        return new Cell(radius, selectedState,shape);
+    @Override
+    protected Cell makeCellOfType(int row, int col) {
+        Simulation.AllStates selectedState = Simulation.AllStates.valueOf(GRID_TYPE_STRING+generateState());
+        return new Cell(selectedState);
     }
 
     /* assumes 8 neighbors are given, only uses the 4 neighbors directly connecting */
     private void fireSimStateRules(Cell currCell) {
         List<Cell> allNeighbors = currCell.getNeighbors();
 
-        if(currCell.getCurrState() == FireCellStates.EMPTY || currCell.getCurrState() == FireCellStates.FIRE) {
-            currCell.setNextState(FireCellStates.EMPTY);
+        if(currCell.getCurrState() == Simulation.AllStates.FIRE_EMPTY || currCell.getCurrState() == Simulation.AllStates.FIRE_FIRE) {
+            currCell.setNextState(Simulation.AllStates.FIRE_EMPTY);
         }
         else {
             int index = 1;
             boolean couldCatch = false;
             while(index < allNeighbors.size()){
-                if(allNeighbors.get(index) != null && allNeighbors.get(index).getCurrState() == FireCellStates.FIRE) {
+                if(allNeighbors.get(index) != null && allNeighbors.get(index).getCurrState() == Simulation.AllStates.FIRE_FIRE) {
                     couldCatch = true;
                     break;
                 }
                 index += 2;
             }
             if(couldCatch && Math.random() < catchProb) {
-                currCell.setNextState(FireCellStates.FIRE);
+                currCell.setNextState(Simulation.AllStates.FIRE_FIRE);
             }
             else{
-                currCell.setNextState(FireCellStates.TREE);
+                currCell.setNextState(Simulation.AllStates.FIRE_TREE);
             }
         }
     }

@@ -8,11 +8,7 @@ import java.util.List;
 
 public abstract class GridStructure {
 
-    // public static final double CELL_GAP = 0;
-    // public static final int DISPLAY_WIDTH = 500;
-    // public static final int DISPLAY_HEIGHT = 500;
-
-    protected ArrayList<Cell> cellList;
+    protected ArrayList<Cell> allCells;
 
     private Cell[][] gridStructure;
     private int rowNum;
@@ -22,11 +18,8 @@ public abstract class GridStructure {
     private List<String> states;
     private int neighborhoodType;
 
-    public GridStructure(int nowNum, int colNum, List<Double> percents, List<String> states,
-                         double radius,  String shape, int neighborhoodType) {
-        this.rowNum = rowNum;
-        this.colNum = colNum;
-        this.cellRadius = radius;
+    public GridStructure(int size, List<Double> percents, List<String> states, int numNeighbors) {
+        this.size = size;
         this.states = states;
         this.statePercents = percents;
         this.neighborhoodType = neighborhoodType;
@@ -34,9 +27,7 @@ public abstract class GridStructure {
 
     protected abstract void calcNewStates();
 
-    protected Cell makeCell(String shape) {
-        return new Cell(cellRadius, null, shape);
-    }
+    protected abstract Cell makeCellOfType(int row, int col);
 
     private void initPercents() {
         for (int index = 1; index < statePercents.size(); index++){
@@ -44,16 +35,16 @@ public abstract class GridStructure {
         }
     }
 
-    private void initGridStructure(String shape) {
-        gridStructure = new Cell[rowNum][colNum];
-        cellList = new ArrayList<>();
-        createCells(shape);
-        initCellNeighbors(neighborhoodType);
+    private void initGridStructure() {
+        gridStructure = new Cell[size][size];
+        allCells = new ArrayList<>();
+        createCells();
+        initCellNeighbors(numNeighbors);
     }
 
-    protected void init(String shape) { // Does this do any work?
+    protected void init() {
         initPercents();
-        initGridStructure(shape);
+        initGridStructure();
     }
 
     public void step() {
@@ -62,13 +53,12 @@ public abstract class GridStructure {
         updateCellStates();
     }
 
-    private void createCells(String shape){ //***
-        for (int row = 0; row < rowNum; row++) {
-            for (int col = 0; col < rowNum; col++) {
-                Cell curr = makeCell(shape);
+    private void createCells() {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                Cell curr = makeCellOfType(row,col);
                 gridStructure[row][col] = curr;
-                cellList.add(curr);
-                // updateColor(curr); ***
+                allCells.add(curr);
             }
         }
     }
@@ -138,7 +128,6 @@ public abstract class GridStructure {
     private void updateCellStates(){
         for(Cell c : cellList){
             c.updateState();
-            // updateColor(c);
         }
     }
 
@@ -146,7 +135,11 @@ public abstract class GridStructure {
         return gridStructure[row][col];
     }
 
-    public int getRowNum() { return rowNum; }
+    public int getSize() {
+        return size;
+    }
 
-    public int getColNum() { return colNum; }
+    public Object getStateAtCell(int row, int col){
+        return gridStructure[row][col].getCurrState();
+    }
 }

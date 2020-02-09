@@ -1,21 +1,21 @@
 package cellsociety.frontend;
 
+import cellsociety.Simulation;
 import cellsociety.backend.Cell;
-import cellsociety.backend.gridstructures.GridStructure;
-import javafx.scene.layout.Region;
-import javafx.scene.shape.Polygon;
+import cellsociety.backend.gridstructures.LifeGrid;
+import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-
-import java.awt.*;
 
 public class GridDisplay {
     public static final double CELL_GAP = .1;
-    public static final double SQRT_THREE = Math.sqrt(3);
-    public static final double SQRT_TWO = Math.sqrt(2);
+    public static final int DISPLAY_WIDTH = 500;
+    public static final int DISPLAY_HEIGHT = 500;
 
-    private Region gridDisplay;
+    private GridPane display;
+    private Shape[][] shapeHolder;
     private CellShape cellShape;
     private Cell[][] cellObjects;
     private Shape[][] cellShapes;
@@ -135,12 +135,11 @@ public class GridDisplay {
         return ret;
     }
 
-    //***
-    public Polygon renderTriangle(double[] center, double radius) {
-        Polygon ret = new Polygon();
-        Double[] points = calcTrianglePoints(center, radius);
-        ret.getPoints().addAll(points);
-        return ret;
+    public GridDisplay(String cellShape, int size){
+        this.cellShape = CellShape.valueOf(cellShape);
+        this.size = size;
+        shapeHolder = new Shape[size][size];
+        initializeDisplay();
     }
 
     public Polygon renderHexagon(double[] center, double radius) {
@@ -154,8 +153,22 @@ public class GridDisplay {
 
     }
 
-    public void addCellToDisplay(int row, int col, Cell c){
-        // gridDisplay.add(c.getVisual(), col, row,1,1);
+    public void addCellToDisplay(int row, int col, Object state){
+        switch(cellShape){
+            case SQUARE:
+                addRectToDisplay(row, col, state);
+                break;
+        }
+    }
+
+    private void addRectToDisplay(int row, int col, Object state) {
+        double cellWidth = DISPLAY_WIDTH / size - 2*CELL_GAP;
+        double cellHeight = DISPLAY_HEIGHT / size - 2*CELL_GAP;
+        Shape s = new Rectangle(cellWidth, cellHeight);
+        Paint p = ((Simulation.AllStates) state).getColor();
+        s.setFill(p);
+        display.add(s, col, row,1,1);
+        shapeHolder[row][col] = s;
     }
 
     private void initSquareCellDisplay() {
@@ -180,5 +193,10 @@ public class GridDisplay {
 
     public Region getDisplay(){
         return gridDisplay;
+    }
+
+    public void updateDisplayAtCell(int row, int col, Object stateAtCell) {
+        Simulation.AllStates state =( Simulation.AllStates) stateAtCell;
+        shapeHolder[row][col].setFill(state.getColor());
     }
 }

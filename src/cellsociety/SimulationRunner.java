@@ -51,8 +51,7 @@ public class SimulationRunner extends Application {
     private Rectangle noCurrGrid = new Rectangle(DISPLAY_WIDTH,DISPLAY_HEIGHT, Color.color(0.2, 0.2, .6));
     private String myShape = SQUARE;
 
-    private GridStructure currGridStruct;
-    private GridDisplay currGridDisplay;
+    private Simulation currSimulation;
     private boolean shouldStep;
     private boolean isSimRunning;
     private int simDelay;
@@ -108,8 +107,7 @@ public class SimulationRunner extends Application {
     }
 
     private void initializeVariables() {
-        currGridStruct = null;
-        currGridDisplay = null;
+        currSimulation = null;
         shouldStep = false;
         isSimRunning = false;
         simDelay = 10;
@@ -268,34 +266,26 @@ public class SimulationRunner extends Application {
 
     private void loadButton() {
         isSimRunning = false;
-        // topGrid.getChildren().remove(noCurrGrid);
-        if (currGridDisplay != null)
-            // topGrid.getChildren().remove(currentGridDisplay.getDisplay());
         clearMessage(myInfoBox);
         clearMessage(myStatsBox);
         try {
-            XMLFilename = String.format("%s%s", XML_FOLDER, myTextField.getText());
-            generateGrids();
-            scrollPane.setContent(currGridDisplay.getDisplay());
+            XMLFilename = String.format(XML_FOLDER + myTextField.getText());
+            generateSimulation();
+            //topGrid.add(currSimulation.getDisplay(), 1, 1);
+            scrollPane.setContent(currSimulation.getDisplay());
             addMessage(myInfoBox, START_SIM_MESSAGE);
         }
         catch (Exception e) {
-            currGridDisplay = null;
-            currGridStruct = null;
+            currSimulation = null;
             // topGrid.getChildren().add(noCurrGrid);
             scrollPane.setContent(noCurrGrid);
             addMessage(myInfoBox, FILE_ERROR_MESSAGE);
         }
     }
 
-    private void generateGrids() {
-        currGridStruct = fileParser.generateGrid(XMLFilename, myShape);
-        initGridDisplay(myShape, currGridStruct.getRowNum(), currGridStruct.getColNum());
-    }
-
-    private void initGridDisplay(String myShape, int rowNum, int colNum) {
-        currGridDisplay = new GridDisplay(myShape, rowNum, colNum, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-        currGridDisplay.setupFromGridStruct(currGridStruct);
+    private void generateSimulation() {
+        GridStructure grid = fileParser.generateGrid(XMLFilename);
+        currSimulation = new Simulation(grid,myShape);
     }
 
     private void clearMessage (Pane messageBox) {
@@ -312,17 +302,16 @@ public class SimulationRunner extends Application {
         l.setFont(new Font("Menlo", FONT_SIZE / 2)); //***
         l.setWrapText(true);
         l.setMaxWidth(BOX_WIDTH-2);
-        messageBox.getChildren().remove(1);
         messageBox.getChildren().add(l);
     }
 
     private void step () {
-        if (currGridStruct != null && (isSimRunning || shouldStep)){
+        if (currSimulation != null && (isSimRunning || shouldStep)){
             if (currDelayLeft > 0){
                 currDelayLeft--;
             } else {
                 checkSlider();
-                currGridStruct.step();
+                currSimulation.step();
                 if (shouldStep) {
                     shouldStep = false;
                 } else {
