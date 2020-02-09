@@ -20,7 +20,7 @@ public class SegregationGrid extends GridStructure{
     }
 
     protected Cell createCell(int row, int col) {
-        Simulation.AllStates state = Simulation.AllStates.valueOf(generateState());
+        Simulation.AllStates state = Simulation.AllStates.valueOf(GRID_TYPE_STRING+generateState());
         return new Cell(state);
     }
 
