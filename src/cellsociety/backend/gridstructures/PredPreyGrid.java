@@ -22,7 +22,7 @@ public class PredPreyGrid extends GridStructure {
     private List<Cell> nextFish;
     private List<Cell> nextEmpties;
 
-    private HashMap<Cell,List<List<Integer>>> cellValues;
+    private HashMap<Cell,<List<Integer>>> cellValues;
 
     public PredPreyGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states, int numNeighbors, double sharkFertility, double fishFertility, double mortalityRate){
         super(rowNum,colNum,percents,states,numNeighbors);
@@ -72,12 +72,19 @@ public class PredPreyGrid extends GridStructure {
         for(Cell c: currEmpties){
             emptiesMove(c);
         }
+        updateSpecies();
         currSharks = nextSharks;
         currFish = nextFish;
         currEmpties = nextEmpties;
         nextSharks.clear();
         nextFish.clear();
         nextEmpties.clear();
+    }
+
+    private void updateSpecies() {
+        for(Cell c : cellList){
+            cellValues.get()
+        }
     }
 
     private void emptiesMove(Cell c) {
@@ -96,5 +103,43 @@ public class PredPreyGrid extends GridStructure {
     protected Cell createCell(int row, int col) {
         Simulation.AllStates selectedState = Simulation.AllStates.valueOf(GRID_TYPE_STRING+generateState());
         return new Cell(selectedState);
+    }
+
+    class Shark{
+        int energyLeft;
+        int nextEnergyLeft;
+        int leftBeforeBabies;
+        int nextLeftBeforeBabies;
+        Shark(int deathRate,int babyRate){
+            energyLeft = deathRate;
+            leftBeforeBabies = babyRate;
+            nextEnergyLeft = Integer.MAX_VALUE;
+            nextLeftBeforeBabies = Integer.MAX_VALUE;
+        }
+
+        void updateValues(){
+            energyLeft = nextEnergyLeft;
+            leftBeforeBabies = nextLeftBeforeBabies;
+        }
+
+        void decreaseEnergy(){
+            nextEnergyLeft = energyLeft - 1;
+        }
+
+        void resetEnergy(int deathRate){
+            nextEnergyLeft = deathRate;
+        }
+
+        void resetLeftBeforeBaby(int babyRate){
+            nextLeftBeforeBabies = babyRate;
+        }
+
+        int leftBeforeBaby(){
+            return leftBeforeBabies;
+        }
+
+        int energyLeft(){
+            return energyLeft;
+        }
     }
 }
