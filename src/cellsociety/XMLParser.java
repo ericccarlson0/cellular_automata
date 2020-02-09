@@ -64,6 +64,8 @@ public class XMLParser {
                 break;
             case PRED_PREY:
                 break;
+            case RPS:
+                grid = new RockPaperScissorsGrid(dimensions, dimensions, percents,states,8,misc.get(0));
         }
         return grid;
     }

@@ -32,7 +32,10 @@ public class Simulation {
         SEGREGATION_EMPTY(Color.color(1.0, 1.0, 1.0)),
         PREDPREY_FISH(Color.LIGHTCORAL),
         PREDPREY_SHARK(Color.BLACK),
-        PREDPREY_EMPTY(Color.TURQUOISE);
+        PREDPREY_EMPTY(Color.TURQUOISE),
+        RPS_ROCK(Color.GREEN),
+        RPS_PAPER(Color.RED),
+        RPS_SCISSORS(Color.BLUEVIOLET);
 
         private Color stateColor;
         AllStates(Color p) { stateColor = p; }
