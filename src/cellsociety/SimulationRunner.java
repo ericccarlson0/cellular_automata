@@ -39,21 +39,25 @@ public class SimulationRunner extends Application {
     public static final int V_GAP = 10;
     public static final int H_GAP = 50;
     public static final int BOX_WIDTH = 100;
-    public static final int TOTAL_WIDTH = 750;
+    public static final int TOTAL_WIDTH = 1000;
     public static final int TOTAL_HEIGHT = 750;
-    public static final int DISPLAY_WIDTH = 400;
-    public static final int DISPLAY_HEIGHT = 400;
+    public static final int DISPLAY_WIDTH = 500;
+    public static final int DISPLAY_HEIGHT = 500;
+    private static final double SCROLL_PANE_HEIGHT = 400;
     private static final int DEFAULT_SIM_DELAY = 20;
     private static final String FILE_ERROR_MESSAGE = "The filename you entered is either invalid or could not be found.";
     private static final String START_SIM_MESSAGE = "Press Start to enjoy the Simulation!";
     private static final String DEFAULT_INFOBOX_MESSAGE = "Load a simulation by entering its filename.";
     private static final String DEFAULT_FONT = "Menlo";
+    private static final String TORUS = "TORUS";
+    private static final String NO_TORUS = "FLAT GRID";
 
     private Rectangle noCurrGrid = new Rectangle(DISPLAY_WIDTH, DISPLAY_HEIGHT,
             Color.color(0.2, 0.2, .6));
     private String myShape;
     private boolean shouldStep;
-    private boolean simRunning;
+    private boolean isSimRunning;
+    private boolean isTorus = false;
     private int delay;
     private int delayLeft;
 
@@ -70,6 +74,7 @@ public class SimulationRunner extends Application {
     private StackPane myInfoBox;
     private StackPane myStatsBox;
     private ToggleGroup myShapeButtons;
+    private ToggleGroup myTorusButtons;
 
     enum SimulationType {
         LIFE, FIRE, PERCOLATION, SEGREGATION, PRED_PREY, RPS
@@ -88,6 +93,7 @@ public class SimulationRunner extends Application {
 
         scrollPane = new ScrollPane();
         scrollPane.setContent(noCurrGrid);
+        scrollPane.setPrefHeight(SCROLL_PANE_HEIGHT);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
 
@@ -110,7 +116,7 @@ public class SimulationRunner extends Application {
     private void initializeVariables() {
         currSimulation = null;
         shouldStep = false;
-        simRunning = false;
+        isSimRunning = false;
         delay = DEFAULT_SIM_DELAY;
     }
 
@@ -128,6 +134,9 @@ public class SimulationRunner extends Application {
         VBox messageBoxes = new VBox();
         messageBoxes.getChildren().addAll(createInfoBox(), setupShapeButtons(), createStatsBox()); //***
         topLevelGrid.add(messageBoxes, 2, 1);
+
+        VBox torusButtons = setupTorusButtons();
+        topLevelGrid.add(torusButtons, 2, 2);
 
         root.getChildren().add(topLevelGrid);
         simDisplay = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
@@ -211,6 +220,22 @@ public class SimulationRunner extends Application {
         return buttonHolder;
     }
 
+    private VBox setupTorusButtons() {
+        VBox holder = new VBox();
+        ToggleGroup tg = new ToggleGroup();
+        myTorusButtons = tg;
+
+        String[] torusArray = new String[]{TORUS, NO_TORUS};
+        for (String option: torusArray){
+            RadioButton button = new RadioButton(option);
+            button.setUserData(option);
+            button.setToggleGroup(tg);
+            button.setOnAction(event -> torusButton());
+            holder.getChildren().add(button);
+        }
+        return holder;
+    }
+
     private StackPane createStatsBox() {
         StackPane statsBox = createMessageBox(BOX_WIDTH);
         myStatsBox = statsBox;
@@ -233,15 +258,15 @@ public class SimulationRunner extends Application {
     }
 
     private void startButton() {
-        simRunning = true;
+        isSimRunning = true;
     }
 
     private void stopButton() {
-        simRunning = false;
+        isSimRunning = false;
     }
 
     private void stepButton() {
-        simRunning = false;
+        isSimRunning = false;
         shouldStep = true;
         delayLeft = 0;
     }
@@ -249,9 +274,13 @@ public class SimulationRunner extends Application {
     private void shapeButton() {
         myShape = myShapeButtons.getSelectedToggle().getUserData().toString();
     }
+    private void torusButton() {
+        isTorus = (myTorusButtons.getSelectedToggle().getUserData().toString()
+                == TORUS);
+    }
 
     private void loadButton() {
-        simRunning = false;
+        isSimRunning = false;
         topLevelGrid.getChildren().remove(noCurrGrid);
         if (currSimulation != null)
             topLevelGrid.getChildren().remove(currSimulation.getDisplay()); //***
@@ -284,7 +313,7 @@ public class SimulationRunner extends Application {
     }
 
     private void step() {
-        if (currSimulation != null && (simRunning || shouldStep)){
+        if (currSimulation != null && (isSimRunning || shouldStep)){
             if (delayLeft > 0){
                 delayLeft--;
             } else {
