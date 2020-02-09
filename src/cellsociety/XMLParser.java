@@ -48,25 +48,24 @@ public class XMLParser {
         //TODO implement rowNum and colNum in XML (instead of "dimensions")
         int rowNum = dimensions;
         int colNum = dimensions;
-        int radius = 10; //***
         switch(simType){
             case LIFE:
                 //TODO figure out how to specify number of neighbors based on shape of cells
-                grid = new LifeGrid(dimensions,percents,states,8);
+                grid = new LifeGrid(dimensions, dimensions, percents,states, 8);
                 break;
             case FIRE:
-                grid = new FireGrid(dimensions,percents,states,8, misc.get(0));
+                grid = new FireGrid(dimensions, dimensions, percents, states, 8, misc.get(0));
                 break;
             case PERCOLATION:
-                grid = new PercolationGrid(dimensions,percents,states,8,misc.get(0));
+                grid = new PercolationGrid(dimensions, dimensions, percents, states, 8,misc.get(0));
                 break;
             case SEGREGATION:
-                grid = new SegregationGrid(dimensions,percents,states,8,misc.get(0));
+                grid = new SegregationGrid(dimensions, dimensions, percents, states, 8,misc.get(0));
                 break;
             case PRED_PREY:
                 break;
             case RPS:
-                grid = new RockPaperScissorsGrid(dimensions,percents,states,8,misc.get(0));
+                grid = new RockPaperScissorsGrid(dimensions, dimensions, percents,states,8,misc.get(0));
         }
         return grid;
     }

@@ -10,38 +10,37 @@ public class FireGrid extends GridStructure {
     public static final String GRID_TYPE_STRING = "FIRE_";
     private double catchProb;
 
-
-    public FireGrid(int size, ArrayList<Double> percents, ArrayList<String> states, int numNeighbors, double catchProb){
-        super(size,percents,states,numNeighbors);
+    public FireGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states,
+                    int neighborhoodType, double catchProb){
+        super(rowNum, colNum, percents, states, neighborhoodType);
         this.catchProb = catchProb;
         this.init();
     }
 
-    @Override
-    protected void calcNewStates() {
-        for(Cell c: cellList){
-            fireSimStateRules(c);
-        }
+    protected Cell createCell(int row, int col) {
+            Simulation.AllStates state = Simulation.AllStates.valueOf(GRID_TYPE_STRING + generateState());
+            return new Cell(state);
     }
 
-    @Override
-    protected Cell makeCellOfType(int row, int col) {
-        Simulation.AllStates selectedState = Simulation.AllStates.valueOf(GRID_TYPE_STRING+generateState());
-        return new Cell(selectedState);
+    protected void calcNewStates() {
+        for (Cell c : cellList) {
+            updateFireCell(c);
+        }
     }
 
     /* assumes 8 neighbors are given, only uses the 4 neighbors directly connecting */
-    private void fireSimStateRules(Cell currCell) {
+    private void updateFireCell(Cell currCell) {
         List<Cell> allNeighbors = currCell.getNeighbors();
 
-        if(currCell.getCurrState() == Simulation.AllStates.FIRE_EMPTY || currCell.getCurrState() == Simulation.AllStates.FIRE_FIRE) {
+        if (currCell.getCurrState() == Simulation.AllStates.FIRE_EMPTY ||
+                currCell.getCurrState() == Simulation.AllStates.FIRE_FIRE) {
             currCell.setNextState(Simulation.AllStates.FIRE_EMPTY);
-        }
-        else {
+        } else {
             int index = 1;
             boolean couldCatch = false;
-            while(index < allNeighbors.size()){
-                if(allNeighbors.get(index) != null && allNeighbors.get(index).getCurrState() == Simulation.AllStates.FIRE_FIRE) {
+            while (index < allNeighbors.size()){
+                if (allNeighbors.get(index) != null &&
+                        allNeighbors.get(index).getCurrState() == Simulation.AllStates.FIRE_FIRE) {
                     couldCatch = true;
                     break;
                 }
@@ -49,8 +48,7 @@ public class FireGrid extends GridStructure {
             }
             if(couldCatch && Math.random() < catchProb) {
                 currCell.setNextState(Simulation.AllStates.FIRE_FIRE);
-            }
-            else{
+            } else {
                 currCell.setNextState(Simulation.AllStates.FIRE_TREE);
             }
         }
