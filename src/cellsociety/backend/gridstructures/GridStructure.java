@@ -1,33 +1,29 @@
 package cellsociety.backend.gridstructures;
 
 import cellsociety.backend.Cell;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public abstract class GridStructure {
-
-    protected ArrayList<Cell> cellList;
-
+    protected List<Cell> cellList;
     private Cell[][] gridStructure;
-    private int size;
+    private int rowNum;
+    private int colNum;
     private List<Double> statePercents;
     private List<String> states;
-    private int numNeighbors;
-//    private int neighborhoodType;
+    private int neighborhoodType;
 
-    public GridStructure(int size, List<Double> percents, List<String> states, int numNeighbors) {
-        this.size = size;
+    public GridStructure(int rowNum, int colNum, List<Double> percents, List<String> states, int neighborhoodType) {
+        this.rowNum = rowNum;
+        this.colNum = colNum;
         this.states = states;
         this.statePercents = percents;
-        this.numNeighbors = numNeighbors;
-        //this.neighborhoodType = neighborhoodType;
+        this.neighborhoodType = neighborhoodType;
     }
 
     protected abstract void calcNewStates();
-
-    protected abstract Cell makeCellOfType(int row, int col);
+    protected abstract Cell createCell(int row, int col);
 
     private void initPercents() {
         for (int index = 1; index < statePercents.size(); index++){
@@ -36,10 +32,10 @@ public abstract class GridStructure {
     }
 
     private void initGridStructure() {
-        gridStructure = new Cell[size][size];
+        gridStructure = new Cell[rowNum][colNum];
         cellList = new ArrayList<>();
         createCells();
-        initCellNeighbors(numNeighbors);
+        initCellNeighbors(neighborhoodType);
     }
 
     protected void init() {
@@ -54,9 +50,9 @@ public abstract class GridStructure {
     }
 
     private void createCells() {
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                Cell curr = makeCellOfType(row,col);
+        for (int row = 0; row < rowNum; row++) {
+            for (int col = 0; col < colNum; col++) {
+                Cell curr = createCell(row, col);
                 gridStructure[row][col] = curr;
                 cellList.add(curr);
             }
@@ -75,11 +71,11 @@ public abstract class GridStructure {
         return states.get(-1);
     }
 
-    private void initCellNeighbors(int numNeighbors) {
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
+    private void initCellNeighbors(int neighborhoodType) {
+        for (int row = 0; row < rowNum; row++) {
+            for (int col = 0; col < colNum; col++) {
                 List<Cell> neighbors = new ArrayList<>();
-                switch(numNeighbors){
+                switch(neighborhoodType){
                     //TODO: make different configurations of neighbors
                     case 2:
                         break;
@@ -90,7 +86,7 @@ public abstract class GridStructure {
                         break;
                 }
                 removeNulls(neighbors);
-                gridStructure[row][col].setNeighbors(neighbors);
+                gridStructure[row][col].setNeighbors(neighbors); //***
             }
         }
     }
@@ -115,29 +111,28 @@ public abstract class GridStructure {
     }
 
     private Cell isValidCoords(int row, int col) {
-        boolean rowValid = (row >= 0) && (row < size);
-        boolean colValid = (col >= 0) && (col < size);
+        boolean rowValid = (row >= 0) && (row < rowNum);
+        boolean colValid = (col >= 0) && (col < colNum);
         if (rowValid && colValid){
             return gridStructure[row][col];
         }
         return null;
     }
 
-    private void updateCellStates(){
-        for(Cell c : cellList){
-            c.updateState();
+    private void updateCellStates() {
+        for (Cell cell : cellList) {
+            cell.updateState();
         }
     }
 
-    public Cell getCellAtIndex(int row, int col){
+    public Cell getCellAtIndex(int row, int col) {
         return gridStructure[row][col];
     }
 
-    public int getSize() {
-        return size;
-    }
-
-    public Object getStateAtCell(int row, int col){
+    public Object getStateAtCell(int row, int col) {
         return gridStructure[row][col].getCurrState();
     }
+
+    public int getRowNum() { return rowNum; }
+    public int getColNum() { return colNum; }
 }

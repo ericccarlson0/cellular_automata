@@ -2,15 +2,21 @@ package cellsociety;
 
 import cellsociety.backend.Cell;
 import cellsociety.backend.gridstructures.GridStructure;
-import cellsociety.frontend.GridDisplay;
+import cellsociety.frontend.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 
 public class Simulation {
+    public static final double DISPLAY_HEIGHT = 400;
+    public static final double DISPLAY_WIDTH = 400;
     private GridStructure gridStruct;
     private GridDisplay gridDisplay;
-    private int size;
+    private int rowNum;
+    private int colNum;
+    private double cellRadius;
+    private String cellShape;
 
     public enum AllStates {
         LIFE_ALIVE(Color.BLACK),
@@ -26,29 +32,43 @@ public class Simulation {
         SEGREGATION_EMPTY(Color.color(1.0, 1.0, 1.0));
 
         private Color stateColor;
-        AllStates(Color p){
-            stateColor = p;
-        }
+        AllStates(Color p) { stateColor = p; }
 
-        public Color getColor(){
+        public Color getColor() {
             return stateColor;
         }
     }
 
-
-    public Simulation(GridStructure gs, String myShape) {
+    public Simulation(GridStructure gs, String shape) {
         gridStruct = gs;
-        size = gs.getSize();
-        initDisplay(myShape, size);
+        rowNum = gs.getRowNum();
+        colNum = gs.getColNum();
+        cellShape = shape;
+        cellRadius = DISPLAY_WIDTH/rowNum/2;
+        initDisplay();
     }
 
-    private void initDisplay(String myShape, int size) {
-        gridDisplay = new GridDisplay(myShape,size);
-        for(int row = 0; row < size; row++){
-            for(int col = 0; col < size; col++){
-                Cell currCell = gridStruct.getCellAtIndex(row,col);
-                gridDisplay.addCellToDisplay(row,col,currCell.getCurrState());
+    private void initDisplay() {
+        selectInitGrid();
+        for (int row=0; row<rowNum; row++) {
+            for (int col=0; col<colNum; col++){
+                Cell currCell = gridStruct.getCellAtIndex(row, col);
+                gridDisplay.addCellToDisplay(row, col, currCell.getCurrState());
             }
+        }
+    }
+
+    private void selectInitGrid(){
+        if (cellShape == "DIAMOND") {
+            gridDisplay = new DiamondDisplay(rowNum, colNum, cellRadius);
+        } else if (cellShape == "TRIANGLE") {
+            gridDisplay = new TriangleDisplay(rowNum, colNum, cellRadius);
+        } else if (cellShape == "HEXAGON") {
+            gridDisplay = new HexagonDisplay(rowNum, colNum, cellRadius);
+        } else if (cellShape == "CIRCLE") {
+            gridDisplay = new CircleDisplay(rowNum, colNum, cellRadius);
+        } else {
+            gridDisplay = new SquareDisplay(rowNum, colNum, cellRadius);
         }
     }
 
@@ -62,9 +82,9 @@ public class Simulation {
     }
 
     private void updateDisplay() {
-        for(int row = 0; row < size; row++){
-            for(int col = 0; col < size; col++){
-                gridDisplay.updateDisplayAtCell(row, col, gridStruct.getStateAtCell(row,col));
+        for (int row = 0; row < rowNum; row++) {
+            for (int col = 0; col < colNum; col++) {
+                gridDisplay.updateDisplayAtCell(row, col, gridStruct.getStateAtCell(row, col));
             }
         }
     }
