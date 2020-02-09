@@ -11,16 +11,18 @@ public abstract class GridStructure {
     protected ArrayList<Cell> allCells;
 
     private Cell[][] gridStructure;
-    private int size;
+    private int rowNum;
+    private int colNum;
+    private double cellRadius;
     private List<Double> statePercents;
     private List<String> states;
-    private int numNeighbors;
+    private int neighborhoodType;
 
     public GridStructure(int size, List<Double> percents, List<String> states, int numNeighbors) {
         this.size = size;
         this.states = states;
         this.statePercents = percents;
-        this.numNeighbors = numNeighbors;
+        this.neighborhoodType = neighborhoodType;
     }
 
     protected abstract void calcNewStates();
@@ -46,7 +48,7 @@ public abstract class GridStructure {
     }
 
     public void step() {
-        Collections.shuffle(allCells);
+        Collections.shuffle(cellList);
         calcNewStates();
         updateCellStates();
     }
@@ -73,29 +75,36 @@ public abstract class GridStructure {
         return states.get(-1);
     }
 
-    //TODO: set up so that supports creating neighborhoods of different amounts for individual cells
     private void initCellNeighbors(int numNeighbors) {
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                ArrayList<Cell> neighbors = new ArrayList<>();
+        for (int row = 0; row < rowNum; row++) {
+            for (int col = 0; col < rowNum; col++) {
+                List<Cell> neighbors = new ArrayList<>();
                 switch(numNeighbors){
+                    //TODO: make different configurations of neighbors
+                    case 2:
+                        break;
+                    case 4:
+                        break;
                     case 8:
                         neighbors = getNeighborsEight(row, col);
                         break;
                 }
                 removeNulls(neighbors);
-                gridStructure[row][col].setNeighbors(neighbors);
+                for (Cell neighbor: neighbors) {
+                    gridStructure[row][col].addNeighbor(neighbor);
+                }
             }
         }
     }
 
-    private void removeNulls(ArrayList<Cell> neighbors) {
-        //found at https://stackoverflow.com/questions/4819635/how-to-remove-all-null-elements-from-a-arraylist-or-string-array
+    private void removeNulls(List<Cell> neighbors) {
+        // Found at:
+        // https://stackoverflow.com/questions/4819635/how-to-remove-all-null-elements-from-a-arraylist-or-string-array
         neighbors.removeAll(Collections.singleton(null));
     }
 
-    private ArrayList<Cell> getNeighborsEight(int row, int col) {
-        ArrayList<Cell> neighbors = new ArrayList<>();
+    private List<Cell> getNeighborsEight(int row, int col) {
+        List<Cell> neighbors = new ArrayList<>();
         neighbors.add(isValidCoords(row - 1, col - 1));
         neighbors.add(isValidCoords(row - 1,col));
         neighbors.add(isValidCoords(row - 1,col + 1));
@@ -108,8 +117,8 @@ public abstract class GridStructure {
     }
 
     private Cell isValidCoords(int row, int col) {
-        boolean rowValid = (row >= 0) && (row < size);
-        boolean colValid = (col >= 0) && (col < size);
+        boolean rowValid = (row >= 0) && (row < rowNum);
+        boolean colValid = (col >= 0) && (col < rowNum);
         if (rowValid && colValid){
             return gridStructure[row][col];
         }
@@ -117,7 +126,7 @@ public abstract class GridStructure {
     }
 
     private void updateCellStates(){
-        for(Cell c : allCells){
+        for(Cell c : cellList){
             c.updateState();
         }
     }

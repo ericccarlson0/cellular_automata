@@ -19,7 +19,7 @@ public class FireGrid extends GridStructure {
 
     @Override
     protected void calcNewStates() {
-        for(Cell c: allCells){
+        for(Cell c: cellList){
             fireSimStateRules(c);
         }
     }

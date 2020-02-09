@@ -24,7 +24,7 @@ public class SegregationGrid extends GridStructure{
     @Override
     protected void calcNewStates() {
         getAllEmpties();
-        for(Cell c: allCells){
+        for(Cell c: cellList){
             segregationSimStateRules(c);
         }
     }

@@ -24,7 +24,7 @@ public class PercolationGrid extends GridStructure {
     }
 
     protected void calcNewStates(){
-        for(Cell c: allCells){
+        for(Cell c: cellList){
             percolationSimStateRules(c);
         }
     }

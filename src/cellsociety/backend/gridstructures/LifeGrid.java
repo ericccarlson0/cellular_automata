@@ -4,6 +4,7 @@ import cellsociety.Simulation;
 import cellsociety.backend.Cell;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import java.awt.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +18,12 @@ public class LifeGrid extends GridStructure{
     }
 
     protected void calcNewStates(){
-        for(Cell c: allCells){
-            lifeSimStateRules(c);
+        for(Cell c: cellList){
+            updateLifeCell(c);
         }
     }
 
-    private void lifeSimStateRules(Cell currCell) {
+    private void updateLifeCell(Cell currCell) {
         List<Cell> allNeighbors = currCell.getNeighbors();
         int numNeighborsAlive = 0;
         for(Cell currNeighbor: allNeighbors){
@@ -44,5 +45,4 @@ public class LifeGrid extends GridStructure{
         Simulation.AllStates selectedState = Simulation.AllStates.valueOf(GRID_TYPE_STRING + generateState());
         return new Cell(selectedState);
     }
-
 }

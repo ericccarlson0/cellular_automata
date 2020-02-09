@@ -1,11 +1,7 @@
 package cellsociety.backend;
 
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-
 import java.util.List;
+import java.util.ArrayList;
 
 public class Cell{
     protected Object currState;
@@ -15,6 +11,7 @@ public class Cell{
     public Cell (Object currState) {
         this.currState = currState;
         this.nextState = null;
+        this.neighbors = new ArrayList<>();
     }
 
     public void updateState() {
@@ -26,21 +23,15 @@ public class Cell{
         this.neighbors = neighbors;
     }
 
-    public Object getCurrState(){
-        return currState;
-    }
+    // Is there any way to reduce the code smells here?
 
-    public void setNextState(Object state){
-        nextState = state;
-    }
+    public Object getCurrState(){ return currState; }
 
-    public void setCurrState(Object state){
-        currState = state;
-    }
+    public void setCurrState(Object state){ currState = state; }
 
-    protected Object getNextState(){
-        return nextState;
-    }
+    public void setNextState(Object state){ nextState = state; }
+
+    protected Object getNextState(){ return nextState; }
 
     public List<Cell> getNeighbors() {
         return neighbors;

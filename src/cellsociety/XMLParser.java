@@ -45,6 +45,10 @@ public class XMLParser {
 
     private GridStructure generateGridStructure(SimulationRunner.SimulationType simType, int dimensions, ArrayList<Double> percents, ArrayList<String> states, ArrayList<Double> misc) {
         GridStructure grid = null;
+        //TODO implement rowNum and colNum in XML (instead of "dimensions")
+        int rowNum = dimensions;
+        int colNum = dimensions;
+        int radius = 10; //***
         switch(simType){
             case LIFE:
                 //TODO figure out how to specify number of neighbors based on shape of cells
