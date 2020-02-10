@@ -29,9 +29,9 @@ public class Simulation {
         SEGREGATION_ONE(Color.color(1.0, 0.5, 0.5)),
         SEGREGATION_TWO(Color.color(0.5, 0.5, 1.0)),
         SEGREGATION_EMPTY(Color.color(1.0, 1.0, 1.0)),
-        PREDPREY_FISH(Color.LIGHTCORAL),
-        PREDPREY_SHARK(Color.BLACK),
-        PREDPREY_EMPTY(Color.TURQUOISE),
+        PRED_PREY_FISH(Color.LIGHTCORAL),
+        PRED_PREY_SHARK(Color.BLACK),
+        PRED_PREY_EMPTY(Color.TURQUOISE),
         RPS_ROCK(Color.color(0.0, 0.0, 0.0)),
         RPS_PAPER(Color.color(1.0, 1.0, 1.0)),
         RPS_SCISSORS(Color.color(0.5, 0.5, 0.5));

@@ -63,6 +63,7 @@ public class XMLParser {
                 grid = new SegregationGrid(rowNum, colNum, percents, states, 8,misc.get(0));
                 break;
             case PRED_PREY:
+                grid = new PredPreyGrid(dimensions, dimensions, percents, states, 8, misc.get(0), misc.get(1), misc.get(2));
                 break;
             case RPS:
                 grid = new RockPaperScissorsGrid(rowNum, colNum, percents,states,8,misc.get(0));
