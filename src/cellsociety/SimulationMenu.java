@@ -16,11 +16,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SimulationRunner extends Application {
+public class SimulationMenu extends Application {
 
     public static final String TITLE = "CELLULAR AUTOMATA";
     public static final int FRAMES_PER_SECOND = 60;
@@ -44,21 +42,14 @@ public class SimulationRunner extends Application {
     public static final int BOX_WIDTH = 100;
     public static final int TOTAL_WIDTH = 800;
     public static final int TOTAL_HEIGHT = 600;
-    public static final int DISPLAY_WIDTH = 500;
-    public static final int DISPLAY_HEIGHT = 500;
     private static final double DEFAULT_NODE_SPACING = 12;
     private static final int BUTTON_SPACING = 4;
-    private static final int DEFAULT_SIM_DELAY = 20;
     private static final String FILE_ERROR_MESSAGE = "The filename you entered is either invalid or could not be found.";
-    private static final String START_SIM_MESSAGE = "Press Start to enjoy the Simulation!";
-    private static final String DEFAULT_INFOBOX_MESSAGE = "Load a simulation by entering its filename.";
+    private static final String LOAD_SIM_MESSAGE = "Load a simulation by entering its filename.";
     private static final String DEFAULT_FONT = "Menlo";
     private static final String TORUS = "TORUS";
     private static final String NO_TORUS = "FLAT GRID";
     private static final String FILENAME_PROMPT = "FILENAME: ";
-
-    private Rectangle noCurrGrid = new Rectangle(DISPLAY_WIDTH, DISPLAY_HEIGHT,
-            Color.color(0.2, 0.2, .6));
     private String myShape;
     private boolean isTorus = false;
 
@@ -75,7 +66,7 @@ public class SimulationRunner extends Application {
     private ToggleGroup myShapeButtons;
     private ToggleGroup myTorusButtons;
 
-    HashMap<Simulation,Stage> allRunningSims;
+    HashMap<SimulationUI,Stage> allRunningSims;
 
     enum SimulationType {
         LIFE, FIRE, PERCOLATION, SEGREGATION, PRED_PREY, RPS, ANT
@@ -125,7 +116,7 @@ public class SimulationRunner extends Application {
         String stylesheet = String.format("%s%s", RESOURCE_FOLDER, STYLESHEET);
         simDisplay.getStylesheets().add(getClass().getResource(stylesheet).toExternalForm()); //***
         myInfoBox.getChildren().add(new Label("FILLER"));
-        addMessage(myInfoBox, DEFAULT_INFOBOX_MESSAGE);
+        addMessage(myInfoBox, LOAD_SIM_MESSAGE);
     }
 
     private GridPane initializePane() {
@@ -217,7 +208,7 @@ public class SimulationRunner extends Application {
         try {
             XMLFilename = String.format("%s%s", XML_FOLDER, myTextField.getText());
             generateSimulation();
-            addMessage(myInfoBox, START_SIM_MESSAGE);
+            addMessage(myInfoBox, LOAD_SIM_MESSAGE);
         } catch (Exception e) {
             addMessage(myInfoBox, FILE_ERROR_MESSAGE);
         }
@@ -226,8 +217,9 @@ public class SimulationRunner extends Application {
     private void generateSimulation() {
         GridStructure gs = fileParser.generateGrid(XMLFilename,isTorus);
         Stage stageForNewSim = new Stage();
-        currSimulation = new Simulation(gs, myShape, stageForNewSim);
-        allRunningSims.put(currSimulation,stageForNewSim);
+        currSimulation = new Simulation(gs, myShape);
+        SimulationUI sim = new SimulationUI(currSimulation,stageForNewSim);
+        allRunningSims.put(sim,stageForNewSim);
     }
 
     private void addMessage (Pane messageBox, String message) {
@@ -242,7 +234,7 @@ public class SimulationRunner extends Application {
     }
 
     private void step() {
-        for(Simulation currSim : allRunningSims.keySet()){
+        for(SimulationUI currSim : allRunningSims.keySet()){
             currSim.step();
         }
     }
