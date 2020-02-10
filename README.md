@@ -1,7 +1,7 @@
 simulation - team 12
 ====
 
-This project implements a cellular automata simulator. Currently, the following simulation types are supported: Conways' Game of Life, Fire Spreading, Percolation, Segregation, Predator Prey, Rock Paper Scissors, and Ant Foraging. The simulations support different cell shapes, different numbers of neighbors, and the option to run a torodial simulation. 
+This project implements a cellular automata simulator. Currently, the following simulation types are supported: Conways' Game of Life, Fire Spreading, Percolation, Segregation, Predator Prey, Rock Paper Scissors. The simulations support different cell shapes, different numbers of neighbors, and the option to run a torodial simulation. 
 
 Names: Charles Papandreou (cnp20), Eric Carlson (ecc45), Turner Jordan (tgj5)
 
@@ -40,13 +40,13 @@ Run the SimulationMenu.java class to launch the program. Load in an XML configur
 
 ####Data files needed: 
 Files needed are the xml specification files that are in data folder, and the TextElements.properties file in the resources folder to configure all text constants. SET THE DATA FOLDER AS RESOURCES ROOT. These include: *fire_test.xml*, *life_test.xml*, *percolation_test.xml*, *segregation_test.xml*, *wator_test.xml*, *rps_test.xml*, *ant_test.xml*. The following XML tags are used: 
- - SimType: indicates the simulation type the file is loading. Must be of type LIFE, FIRE, ANT, RPS, SEGREGATION, PERCOLATION, or PRED_PREY.
+ - SimType: indicates the simulation type the file is loading. Must be of type LIFE, FIRE, ANT (not usable in current version), RPS, SEGREGATION, PERCOLATION, or PRED_PREY.
  - Size: sets both the row and width values for each simulation. All simulations are currently implemented as squares.
  - Percents: sets the probability distributions for each state during initialization, corresponding with the order of states in the following tag. These should be integer values that sum to 100, and each state should have a corresponding value.
  - States: the following states must be used for each simulation, in all caps, comma separated with no spaces in between:
     1. Life: ALIVE,EMPTY
     2. Fire: EMPTY,TREE,FIRE
-    3. Ant: EMPTY,PHEROMONES,FOOD,NEST,FULL
+    3. Ant (unimplemented in current version): EMPTY,PHEROMONES,FOOD,NEST,FULL
     4. RPS: ROCK,PAPER,SCISSORS
     5. Segregation: EMPTY,ONE,TWO
     6. Percolation: BLOCK,EMPTY
@@ -54,7 +54,7 @@ Files needed are the xml specification files that are in data folder, and the Te
  - Misc: Any additional values that a specific simulation must require. These values should be comma separated with no spaces in between. The values for the implemented simulations are as follows:
     1. Life: NONE, misc field can be set to anything, will not affect simulation (it should still be there though)
     2. Fire: catchProb - the probability that a fire will catch a neighboring tree on fire
-    3. Ant: newAntsPerStep - the number of new ants that are generated with each step, antLifeSpan: how many steps each ant can live for
+    3. Ant (unimplemented in current version): newAntsPerStep - the number of new ants that are generated with each step, antLifeSpan: how many steps each ant can live for
     4. RPS: winThreshold - a double representing the percentage of games each player must lose before the state is changed
     5. Segregation: satisfactionThreshold - a double representing the percentage of neighbors that must be the same state for a cell to be satisfied (that is, not move)
     6. Percolation: initialFillProbability - the probability that a cell on the top row will be filled with water at the beginning of the simulation
@@ -70,7 +70,7 @@ Assumptions or Simplifications: We have the user using XML files to generate the
 
 Interesting data files: rps_test.xml looks cool!
 
-Known Bugs: None, but the data files must be formatted according to our specifications to be read. Otherwise, the application will reject them as invalid files. 
+Known Bugs: None, but the data files must be formatted according to our specifications to be read. Otherwise, the application will reject them as invalid files. The ant foraging simulation does not currently work, but has been included as a text document in the docs folder for reference.
 
 ### Impressions
 Our goal in the second leg of this project was to create an project that was interesting to the user and 
