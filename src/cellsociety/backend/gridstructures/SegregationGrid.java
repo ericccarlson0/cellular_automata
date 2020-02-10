@@ -12,9 +12,9 @@ public class SegregationGrid extends GridStructure{
     private double satisfactionThreshold;
     private HashSet<Cell> allEmpties;
 
-    public SegregationGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states,
+    public SegregationGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states, boolean isTorus,
                            int neighborhoodType, double satisfactionThreshold) {
-        super(rowNum, colNum, percents, states, neighborhoodType);
+        super(rowNum, colNum, percents, states, neighborhoodType, isTorus);
         this.satisfactionThreshold = satisfactionThreshold;
         this.init();
     }
