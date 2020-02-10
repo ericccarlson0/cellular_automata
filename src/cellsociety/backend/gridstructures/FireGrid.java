@@ -11,8 +11,8 @@ public class FireGrid extends GridStructure {
     private double catchProb;
 
     public FireGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states,
-                    int neighborhoodType, double catchProb){
-        super(rowNum, colNum, percents, states, neighborhoodType);
+                    boolean isTorus, int neighborhoodType, double catchProb){
+        super(rowNum, colNum, percents, states, neighborhoodType, isTorus);
         this.catchProb = catchProb;
         this.init();
     }

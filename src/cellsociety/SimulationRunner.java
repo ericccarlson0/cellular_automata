@@ -303,7 +303,7 @@ public class SimulationRunner extends Application {
     }
 
     private void generateSimulation() {
-        GridStructure gs = fileParser.generateGrid(XMLFilename);
+        GridStructure gs = fileParser.generateGrid(XMLFilename,isTorus);
         currSimulation = new Simulation(gs, myShape);
     }
 

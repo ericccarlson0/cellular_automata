@@ -24,8 +24,8 @@ public class PredPreyGrid extends GridStructure {
 
     private HashMap<Cell,Object[]> speciesAtCell;
 
-    public PredPreyGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states, int numNeighbors, double sharkFertility, double fishFertility, double mortalityRate){
-        super(rowNum,colNum,percents,states,numNeighbors);
+    public PredPreyGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states, boolean isTorus, int numNeighbors, double sharkFertility, double fishFertility, double mortalityRate){
+        super(rowNum,colNum,percents,states,numNeighbors, isTorus);
         this.deathRate = (int)mortalityRate;
         this.sharkFertility = (int)sharkFertility;
         this.fishFertility = (int)fishFertility;
