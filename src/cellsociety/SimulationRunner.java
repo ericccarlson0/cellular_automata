@@ -72,7 +72,7 @@ public class SimulationRunner extends Application {
     private ToggleGroup myShapeButtons;
 
     enum SimulationType {
-        LIFE, FIRE, PERCOLATION, SEGREGATION, PRED_PREY, RPS
+        LIFE, FIRE, PERCOLATION, SEGREGATION, PRED_PREY, RPS, ANT
     }
 
     @Override

@@ -35,7 +35,12 @@ public class Simulation {
         PREDPREY_EMPTY(Color.TURQUOISE),
         RPS_ROCK(Color.GREEN),
         RPS_PAPER(Color.RED),
-        RPS_SCISSORS(Color.BLUEVIOLET);
+        RPS_SCISSORS(Color.BLUEVIOLET),
+        ANT_EMPTY(Color.WHITE),
+        ANT_PHEROMONES(Color.LIGHTGREEN),
+        ANT_FOOD(Color.BLUEVIOLET),
+        ANT_NEST(Color.ORANGERED),
+        ANT_FULL(Color.DARKGREEN);
 
         private Color stateColor;
         AllStates(Color p) { stateColor = p; }
