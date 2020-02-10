@@ -1,5 +1,4 @@
-simulation
-====
+# simulation -- team 12
 
 This project implements a cellular automata simulator.
 
