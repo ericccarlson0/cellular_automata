@@ -9,8 +9,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 
 public class Simulation {
-    public static final double DISPLAY_HEIGHT = 400;
-    public static final double DISPLAY_WIDTH = 400;
+    public static final double DISPLAY_HEIGHT = 500;
+    public static final double DISPLAY_WIDTH = 500;
     private GridStructure gridStruct;
     private GridDisplay gridDisplay;
     private int rowNum;
