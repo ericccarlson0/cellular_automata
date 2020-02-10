@@ -13,6 +13,7 @@ public class AntGrid extends GridStructure{
     private HashMap<Cell, List<Ant>> antsInCells;
     private Cell antNest;
     private int newAntsPerStep = 2;
+    private int antLifeSpan = 500;
 
     public AntGrid(int rowNum, int colNum, List<Double> percents, List<String> states, int neighborhoodType, double Something) {
         super(rowNum, colNum, percents, states, neighborhoodType);
@@ -50,7 +51,9 @@ public class AntGrid extends GridStructure{
     }
 
     protected void updateAnts() {
-        addAnts(newAntsPerStep);
+        for(int i = 0; i < newAntsPerStep; i++) {
+            allAnts.add(new Ant(antLifeSpan));
+        }
         for(Ant currAnt: allAnts) {
             if(currAnt.hasFood) {
                 antReturnToNest(currAnt);
@@ -58,12 +61,6 @@ public class AntGrid extends GridStructure{
             else {
                 antFindFoodSource(currAnt);
             }
-        }
-    }
-
-    protected void addAnts(int numNewAnts) {
-        for(int i = 0; i < numNewAnts; i++) {
-            allAnts.add(new Ant(500));
         }
     }
 
@@ -94,7 +91,10 @@ public class AntGrid extends GridStructure{
         return 1;
     }
 
-    protected int getMaxHomePherNeighbor
+    protected int getMaxHomePherNeighbor(Ant currAnt) {
+        return 1;
+    }
+
     class Ant{
         private int lifeSpan;
         private boolean hasFood;
@@ -109,4 +109,5 @@ public class AntGrid extends GridStructure{
             antsInCells.get(antNest).add(this);
         }
     }
+
 }
