@@ -23,8 +23,8 @@ import java.util.ResourceBundle;
 
 /**
  * SimulationMenu is used to run the entire application. It has a start-up display and tracks the time for the
- * simulations. It is used to Simulation classes, which represent simulations (including concurrent ones). This is
- * how the application generates simulations.
+ * simulations. It is used to SimulationUI classes, which hold each simulation (including concurrent ones). The
+ * application generates simulations by creating new SimulationUI classes.
  */
 public class SimulationMenu extends Application {
 
