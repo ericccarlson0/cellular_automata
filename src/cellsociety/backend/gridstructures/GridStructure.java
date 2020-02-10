@@ -85,8 +85,17 @@ public abstract class GridStructure {
                     case 4:
                         neighbors = getNeighborsFour(row,col);
                         break;
+                    case 6:
+                        neighbors = getNeighborsSix(row,col);
+                        break;
                     case 8:
                         neighbors = getNeighborsEight(row, col);
+                        break;
+                    case 9:
+                        neighbors = getNeighborsNine(row,col);
+                        break;
+                    case 12:
+                        neighbors = getNeighborsTwelve(row,col);
                         break;
                 }
                 removeNulls(neighbors);
@@ -122,6 +131,11 @@ public abstract class GridStructure {
         neighbors.removeAll(Collections.singleton(null));
     }
 
+    private List<Cell> getNeighborsSix(int row, int col){
+        List<Cell> neighbors = new ArrayList<>();
+        return neighbors;
+    }
+
     private List<Cell> getNeighborsEight(int row, int col) {
         List<Cell> neighbors = new ArrayList<>();
         neighbors.add(isValidCoords(row - 1, col - 1));
@@ -132,6 +146,45 @@ public abstract class GridStructure {
         neighbors.add(isValidCoords(row + 1,col));
         neighbors.add(isValidCoords(row + 1,col - 1));
         neighbors.add(isValidCoords(row,col - 1));
+        return neighbors;
+    }
+
+    private List<Cell> getNeighborsNine(int row, int col){
+        List<Cell> neighbors = new ArrayList<>();
+        neighbors.add(isValidCoords(row,col + 2));
+        neighbors.add(isValidCoords(row,col - 2));
+        boolean pointedUp = ((row+col)%2 == 1);
+        if(pointedUp){
+            neighbors.add(isValidCoords(row - 1, col));
+            neighbors.add(isValidCoords(row - 1, col+1));
+            neighbors.add(isValidCoords(row - 1, col-1));
+            neighbors.add(isValidCoords(row + 1, col+1));
+            neighbors.add(isValidCoords(row + 1, col+2));
+            neighbors.add(isValidCoords(row + 1, col-1));
+            neighbors.add(isValidCoords(row + 1, col-2));
+        }
+        else{
+            neighbors.add(isValidCoords(row + 1, col));
+            neighbors.add(isValidCoords(row + 1, col+1));
+            neighbors.add(isValidCoords(row + 1, col-1));
+            neighbors.add(isValidCoords(row - 1, col+1));
+            neighbors.add(isValidCoords(row - 1, col+2));
+            neighbors.add(isValidCoords(row - 1, col-1));
+            neighbors.add(isValidCoords(row - 1, col-2));
+        }
+        return neighbors;
+    }
+
+    private List<Cell> getNeighborsTwelve(int row, int col){
+        List<Cell> neighbors = new ArrayList<>();
+        List<Cell> fromThree = getNeighborsThree(row,col);
+        List<Cell> fromNine = getNeighborsNine(row,col);
+        for(Cell c: fromThree){
+            neighbors.add(c);
+        }
+        for(Cell c: fromNine){
+            neighbors.add(c);
+        }
         return neighbors;
     }
 
