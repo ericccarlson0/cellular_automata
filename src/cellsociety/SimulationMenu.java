@@ -23,8 +23,8 @@ import java.util.ResourceBundle;
 
 /**
  * SimulationMenu is used to run the entire application. It has a start-up display and tracks the time for the
- * simulations. It is used to Simulation classes, which represent simulations (including concurrent ones). This is
- * how the application generates simulations.
+ * simulations. It is used to SimulationUI classes, which hold each simulation (including concurrent ones). The
+ * application generates simulations by creating new SimulationUI classes.
  */
 public class SimulationMenu extends Application {
 
@@ -46,7 +46,7 @@ public class SimulationMenu extends Application {
     private static final double DEFAULT_NODE_SPACING = 12;
     private static final int BUTTON_SPACING = 4;
 
-    private String myShape;
+    private String shape;
     private boolean isTorus = false;
 
     private Simulation currSimulation;
@@ -116,7 +116,7 @@ public class SimulationMenu extends Application {
         display = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
 
         String stylesheet = String.format("%s%s", RESOURCE_FOLDER, STYLESHEET);
-        display.getStylesheets().add(getClass().getResource(stylesheet).toExternalForm()); //***
+        display.getStylesheets().add(getClass().getResource(stylesheet).toExternalForm());
         myInfoBox.getChildren().add(new Label("FILLER"));
         addMessage(myInfoBox, textElements.getString("defaultInfoboxMessage"));
     }
@@ -193,7 +193,6 @@ public class SimulationMenu extends Application {
         return holder;
     }
 
-    //***
     private StackPane createInfoBox() {
         StackPane infoBox = createMessageBox(BOX_WIDTH);
         myInfoBox = infoBox;
@@ -217,7 +216,7 @@ public class SimulationMenu extends Application {
     }
 
     private void shapeButton() {
-        myShape = myShapeButtons.getSelectedToggle().getUserData().toString();
+        shape = myShapeButtons.getSelectedToggle().getUserData().toString();
     }
 
     private void torusButton() {
@@ -226,35 +225,53 @@ public class SimulationMenu extends Application {
     }
 
     private void loadButton() {
-        try {
-            String val = neighborhoodBox.getValue();
-            neighborhoodType = Integer.parseInt(val);
-
-            XMLFilename = String.format("%s%s", XML_FOLDER, filenameField.getText());
-            generateSimulation();
-            addMessage(myInfoBox, textElements.getString("defaultInfoboxMessage"));
-        } catch (Exception e) {
-            addMessage(myInfoBox, textElements.getString("fileErrorMessage"));
+        String val = neighborhoodBox.getValue();
+        neighborhoodType = Integer.parseInt(val);
+        if (isValidNeighborhood()) {
+            try {
+                XMLFilename = String.format("%s%s", XML_FOLDER, filenameField.getText());
+                generateSimulation();
+                addMessage(myInfoBox, textElements.getString("defaultInfoboxMessage"));
+            } catch (Exception e) {
+                addMessage(myInfoBox, textElements.getString("fileErrorMessage"));
+            }
+        } else {
+            addMessage(myInfoBox, textElements.getString("neighborhoodErrorMessage"));
         }
     }
 
     private void generateSimulation() {
         GridStructure gs = fileParser.generateGrid(XMLFilename, isTorus, neighborhoodType);
         Stage stageForNewSim = new Stage();
-        currSimulation = new Simulation(gs, myShape);
+        currSimulation = new Simulation(gs, shape);
         SimulationUI sim = new SimulationUI(currSimulation,stageForNewSim);
         runningSims.put(sim,stageForNewSim);
     }
 
     private void addMessage (Pane messageBox, String message) {
         Label l = new Label(message);
-        l.setId("message-box"); //***
+        l.setId("message-box");
         l.setWrapText(true);
         l.setMaxWidth(BOX_WIDTH*1.5);
         if (messageBox.getChildren().size() > 0) {
             messageBox.getChildren().remove(1);
         }
         messageBox.getChildren().add(l);
+    }
+
+    private boolean isValidNeighborhood() {
+        if (shape.equals("SQUARE")) {
+            return (neighborhoodType==4 || neighborhoodType==8);
+        } else if (shape.equals("DIAMOND")) {
+            return (neighborhoodType==4 || neighborhoodType==8);
+        } else if (shape.equals("HEXAGON")) {
+            return (neighborhoodType==3 || neighborhoodType==6);
+        } else if (shape.equals("TRIANGLE")) {
+            return (neighborhoodType==3 || neighborhoodType==6 || neighborhoodType==12);
+        } else {
+            // "CIRCLE" allows the user to test any of the neighborhood types and see what happens ...
+            return true;
+        }
     }
 
     private void step() {

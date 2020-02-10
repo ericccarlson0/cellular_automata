@@ -1,5 +1,4 @@
-simulation - team 12
-====
+# simulation -- team 12
 
 This project implements a cellular automata simulator. Currently, the following simulation types are supported: Conways' Game of Life, Fire Spreading, Percolation, Segregation, Predator Prey, Rock Paper Scissors. The simulations support different cell shapes, different numbers of neighbors, and the option to run a torodial simulation. 
 
