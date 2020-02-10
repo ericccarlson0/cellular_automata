@@ -46,7 +46,7 @@ public class SimulationMenu extends Application {
     private static final double DEFAULT_NODE_SPACING = 12;
     private static final int BUTTON_SPACING = 4;
 
-    private String shape;
+    private String shape = "SQUARE";
     private boolean isTorus = false;
 
     private Simulation currSimulation;
@@ -69,7 +69,7 @@ public class SimulationMenu extends Application {
     ResourceBundle textElements = ResourceBundle.getBundle("resources.TextElements", locale);
 
     enum SimulationType {
-        LIFE, FIRE, PERCOLATION, SEGREGATION, PRED_PREY, RPS, ANT
+        LIFE, FIRE, PERCOLATION, SEGREGATION, PRED_PREY, RPS
     }
 
 
@@ -267,7 +267,7 @@ public class SimulationMenu extends Application {
         } else if (shape.equals("HEXAGON")) {
             return (neighborhoodType==3 || neighborhoodType==6);
         } else if (shape.equals("TRIANGLE")) {
-            return (neighborhoodType==3 || neighborhoodType==6 || neighborhoodType==12);
+            return (neighborhoodType==3 || neighborhoodType==9 || neighborhoodType==12);
         } else {
             // "CIRCLE" allows the user to test any of the neighborhood types and see what happens ...
             return true;

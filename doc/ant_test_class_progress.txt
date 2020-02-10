@@ -1,0 +1,252 @@
+package cellsociety.backend.gridstructures;
+
+import cellsociety.Simulation;
+import cellsociety.backend.Cell;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class AntGrid extends GridStructure{
+    public static final String GRID_TYPE_STRING = "ANT_";
+    private List<Ant> allAnts;
+    private HashMap<Cell, List<Ant>> antsInCells;
+    private HashMap<Cell, Double> pheromonesInCells;
+    private Cell antNest;
+    private Cell foodSource;
+    private int newAntsPerStep;
+    private int antLifeSpan;
+    private int maxAntsInSpace = 10;
+    private double pheromonesAmount = 0.1;
+    private double fedPheromonesAmount = 500;
+
+    public AntGrid(int rowNum, int colNum, List<Double> percents, List<String> states, boolean isTorus, int neighborhoodType, double newAntsPerStep, double antLifeSpan) {
+        super(rowNum, colNum, percents, states, neighborhoodType, isTorus);
+        this.init();
+        initializeAntMap();
+        initializePheromoneMap();
+        this.antNest = getCellAtIndex(20, 20);
+        this.foodSource = getCellAtIndex(50,50);
+        this.allAnts = new ArrayList<Ant>();
+        this.newAntsPerStep = (int) newAntsPerStep;
+        this.antLifeSpan = (int) antLifeSpan;
+    }
+
+    @Override
+    protected void calcNewStates() {
+        updateAnts();
+        for(Cell c: cellList) {
+            updateAntCell(c);
+        }
+    }
+
+    @Override
+    protected Cell createCell(int row, int col) {
+        Simulation.AllStates state;
+        if(row == 20 && col == 20) {
+            state = Simulation.AllStates.ANT_NEST;
+        }
+        else if(row == 50 && col == 50) {
+            state = Simulation.AllStates.ANT_FOOD;
+        }
+        else {
+            state = Simulation.AllStates.ANT_EMPTY;
+        }
+        return new Cell(state);
+    }
+
+    protected void updateAntCell(Cell currCell) {
+        if(currCell == antNest || currCell == foodSource) {
+            currCell.setNextState(currCell.getCurrState());
+        }
+        else if(!antsInCells.get(currCell).isEmpty()) {
+            currCell.setNextState(Simulation.AllStates.ANT_FULL);
+        }
+        else if(pheromonesInCells.get(currCell) > 0.0) {
+            currCell.setNextState(Simulation.AllStates.ANT_PHEROMONES);
+        }
+        else {
+            currCell.setNextState(Simulation.AllStates.ANT_EMPTY);
+        }
+    }
+
+    protected void updateAnts() {
+        for(int i = 0; i < newAntsPerStep; i++) {
+            allAnts.add(new Ant(antLifeSpan));
+        }
+        System.out.println(allAnts.size());
+
+        for(Ant currAnt: allAnts) {
+            currAnt.lifeSpan = currAnt.lifeSpan - 1;
+            if(currAnt.lifeSpan <= 0) {
+                allAnts.remove(currAnt);
+                antsInCells.get(currAnt.currCell).remove(currAnt);
+                currAnt = null;
+                return;
+            }
+            List<Cell> allNeighbors = currAnt.currCell.getNeighbors();
+            if(currAnt.hasFood) {
+                antReturnToNest(currAnt, allNeighbors);
+            }
+            else {
+                antFindFoodSource(currAnt, allNeighbors);
+            }
+            antsInCells.get(currAnt.currCell).remove(currAnt);
+            currAnt.currCell = currAnt.nextCell;
+            antsInCells.get(currAnt.currCell).add(currAnt);
+            currAnt.nextCell = null;
+        }
+    }
+
+    protected void initializeAntMap() {
+        antsInCells = new HashMap<Cell, List<Ant>>();
+        for(Cell c: cellList){
+            antsInCells.put(c, new ArrayList<Ant>());
+        }
+    }
+
+    protected void initializePheromoneMap() {
+        pheromonesInCells = new HashMap<Cell, Double>();
+        for(Cell c: cellList) {
+            pheromonesInCells.put(c, 0.0);
+        }
+    }
+
+    protected void antReturnToNest(Ant currAnt, List<Cell> neighbors) {
+        if(currAnt.currCell == antNest) {
+            currAnt.hasFood = false;
+            currAnt.nextCell = currAnt.currCell;
+            return;
+        }
+        if(currAnt.currCell == foodSource) {
+            currAnt.orientation = getMaxPherNeighbor(currAnt, neighbors);
+        }
+        Cell nextSpace = getValidLocation(currAnt.orientation, neighbors);
+        if(nextSpace != null){
+            dropPheromones(currAnt, currAnt.currCell);
+            currAnt.orientation = neighbors.indexOf(nextSpace);
+            currAnt.nextCell = nextSpace;
+        }
+        else {
+            currAnt.nextCell = currAnt.currCell;
+        }
+    }
+
+    protected void antFindFoodSource(Ant currAnt, List<Cell> neighbors) {
+        if(currAnt.currCell == foodSource) {
+            currAnt.hasFood = true;
+            currAnt.nextCell = currAnt.currCell;
+            return;
+        }
+        if(currAnt.currCell == antNest) {
+            currAnt.orientation = getMaxPherNeighbor(currAnt, neighbors);
+        }
+        Cell nextSpace = getValidLocation(currAnt.orientation, neighbors);
+        if(nextSpace != null) {
+            dropPheromones(currAnt, currAnt.currCell);
+            currAnt.orientation = neighbors.indexOf(nextSpace);
+            currAnt.nextCell = nextSpace;
+        }
+        else{
+            currAnt.nextCell = currAnt.currCell;
+        }
+    }
+
+    protected int getMaxPherNeighbor(Ant currAnt, List<Cell> neighbors) {
+        double maxPher = -1.0;
+        int maxIndex = 0;
+        int index = 0;
+        for(Cell currNeighbor: neighbors) {
+            if(currNeighbor != null) {
+                double currPheromone = pheromonesInCells.get(currNeighbor);
+                if (currPheromone >= maxPher) {
+                    maxIndex = index;
+                    maxPher = currPheromone;
+                }
+            }
+            index++;
+        }
+        return maxIndex;
+    }
+
+    protected Cell getValidLocation(int orientation, List<Cell> neighbors) {
+        List<Cell> potentialNeighbors = new ArrayList<Cell>();
+        int[] orientations = getValidOrientations(orientation);
+        for(int i: orientations) {
+            if(neighbors.get(i) != null && antsInCells.get(neighbors.get(i)).size() < maxAntsInSpace) {
+                potentialNeighbors.add(neighbors.get(i));
+            }
+        }
+        if(potentialNeighbors.isEmpty()) {
+            for(Cell newNeighbor: neighbors) {
+                if(newNeighbor != null && antsInCells.get(newNeighbor).size() < maxAntsInSpace) {
+                    potentialNeighbors.add(newNeighbor);
+                }
+            }
+        }
+        if(potentialNeighbors.isEmpty()) {
+            return null;
+        }
+        double p = Math.random();
+        double totalProbability = 0.0;
+        double cumulativeProbability = 0.0;
+        for(Cell neighbor: potentialNeighbors) {
+            totalProbability += 1.0 + pheromonesInCells.get(neighbor);
+        }
+        for(Cell neighbor: potentialNeighbors) {
+            cumulativeProbability += (1.0 + pheromonesInCells.get(neighbor)) / totalProbability;
+            if(p <= cumulativeProbability) {
+                return neighbor;
+            }
+        }
+        return null;
+    }
+
+    protected int[] getValidOrientations(int orientation) {
+        int[] orientations = new int[3];
+        switch(orientation) {
+            case 0:
+                orientations[0] = 7;
+                orientations[1] = 0;
+                orientations[2] = 1;
+                break;
+            case 7:
+                orientations[0] = 6;
+                orientations[1] = 7;
+                orientations[2] = 0;
+                break;
+            default:
+                orientations[0] = orientation - 1;
+                orientations[1] = orientation;
+                orientations[2] = orientation + 1;
+                break;
+        }
+
+        return orientations;
+    }
+
+    protected void dropPheromones(Ant currAnt, Cell currCell) {
+        if(currAnt.hasFood) {
+            pheromonesInCells.put(currCell, (pheromonesInCells.get(currCell) + fedPheromonesAmount));
+        }
+        else {
+            pheromonesInCells.put(currCell, (pheromonesInCells.get(currCell) + pheromonesAmount));
+        }
+    }
+
+    class Ant{
+        private int lifeSpan;
+        private boolean hasFood;
+        private Cell currCell;
+        private Cell nextCell;
+        private int orientation;
+
+        public Ant(int lifespan) {
+            this.lifeSpan = lifespan;
+            this.hasFood = false;
+            this.currCell = antNest;
+            antsInCells.get(antNest).add(this);
+        }
+    }
+
+}
