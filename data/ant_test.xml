@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<data simType="ANT">
-    <size>100</size>
-    <percents>0,0,0,0,0</percents>
-    <states>EMPTY,PHEROMONES,FOOD,NEST,FULL</states>
-    <misc>.55</misc>
-</data>
