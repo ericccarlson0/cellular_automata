@@ -1,4 +1,4 @@
-simulation
+simulation - team 12
 ====
 
 This project implements a cellular automata simulator.
@@ -7,17 +7,24 @@ Names: Charles Papandreou, Eric Carlson, Turner Jordan
 
 ### Timeline
 
-Start Date: 02/04/2020
+Start Date: 01/23/2020
 
-Finish Date: 
+Finish Date: 02/10/2020
 
-Hours Spent: 50
+Hours Spent: 100
 
 ### Primary Roles
 
 
 ### Resources Used
-
+#### Simulation Rules Sources:
+ - Life: https://en.wikipedia.org/wiki/Conway's_Game_of_Life
+ - Fire: https://www2.cs.duke.edu/courses/spring20/compsci308/assign/02_simulation/nifty/shiflet-fire/
+ - Percolation: https://www2.cs.duke.edu/courses/spring20/compsci308/assign/02_simulation/PercolationCA.pdf
+ - Rock Paper Scissors
+ - Predator Prey
+ - Segregation
+ - Ant Foraging:
 
 ### Running the Program
 
