@@ -78,13 +78,23 @@ public abstract class GridStructure {
             for (int col = 0; col < colNum; col++) {
                 List<Cell> neighbors = new ArrayList<>();
                 switch(neighborhoodType){
-                    //TODO: make different configurations of neighbors
-                    case 2:
+                    case 3:
+                        neighbors = getNeighborsThree(row,col);
                         break;
                     case 4:
+                        neighbors = getNeighborsFour(row,col);
+                        break;
+                    case 6:
+                        neighbors = getNeighborsSix(row,col);
                         break;
                     case 8:
                         neighbors = getNeighborsEight(row, col);
+                        break;
+                    case 9:
+                        neighbors = getNeighborsNine(row,col);
+                        break;
+                    case 12:
+                        neighbors = getNeighborsTwelve(row,col);
                         break;
                 }
                 removeNulls(neighbors);
@@ -93,10 +103,45 @@ public abstract class GridStructure {
         }
     }
 
-    private void removeNulls(List<Cell> neighbors) {
-        // Found at:
-        // https://stackoverflow.com/questions/4819635/how-to-remove-all-null-elements-from-a-arraylist-or-string-array
-        neighbors.removeAll(Collections.singleton(null));
+    private List<Cell> getNeighborsThree(int row, int col){
+        List<Cell> neighbors = new ArrayList<>();
+        neighbors.add(isValidCoords(row,col - 1));
+        neighbors.add(isValidCoords(row,col+1));
+        boolean pointedUp = ((row+col)%2 == 1);
+        if(pointedUp)
+            neighbors.add(isValidCoords(row + 1, col));
+        else
+            neighbors.add(isValidCoords(row - 1, col));
+        return neighbors;
+    }
+
+    private List<Cell> getNeighborsFour(int row, int col){
+        List<Cell> neighbors = new ArrayList<>();
+        neighbors.add(isValidCoords(row - 1, col));
+        neighbors.add(isValidCoords(row, col+1));
+        neighbors.add(isValidCoords(row+1,col));
+        neighbors.add(isValidCoords(row, col-1));
+        return neighbors;
+    }
+
+    private List<Cell> getNeighborsSix(int row, int col){
+        List<Cell> neighbors = new ArrayList<>();
+        neighbors.add(isValidCoords(row - 2, col));
+        neighbors.add(isValidCoords(row + 2,col));
+        boolean off = (row%2 == 0);
+        if(off){
+            neighbors.add(isValidCoords(row - 1,col));
+            neighbors.add(isValidCoords(row - 1,col - 1));
+            neighbors.add(isValidCoords(row + 1,col - 1));
+            neighbors.add(isValidCoords(row + 1,col));
+        }
+        else{
+            neighbors.add(isValidCoords(row - 1,col));
+            neighbors.add(isValidCoords(row - 1,col + 1));
+            neighbors.add(isValidCoords(row + 1,col + 1));
+            neighbors.add(isValidCoords(row + 1,col));
+        }
+        return neighbors;
     }
 
     private List<Cell> getNeighborsEight(int row, int col) {
@@ -110,6 +155,51 @@ public abstract class GridStructure {
         neighbors.add(isValidCoords(row + 1,col - 1));
         neighbors.add(isValidCoords(row,col - 1));
         return neighbors;
+    }
+
+    private List<Cell> getNeighborsNine(int row, int col){
+        List<Cell> neighbors = new ArrayList<>();
+        neighbors.add(isValidCoords(row,col + 2));
+        neighbors.add(isValidCoords(row,col - 2));
+        boolean pointedUp = ((row+col)%2 == 1);
+        if(pointedUp){
+            neighbors.add(isValidCoords(row - 1, col));
+            neighbors.add(isValidCoords(row - 1, col+1));
+            neighbors.add(isValidCoords(row - 1, col-1));
+            neighbors.add(isValidCoords(row + 1, col+1));
+            neighbors.add(isValidCoords(row + 1, col+2));
+            neighbors.add(isValidCoords(row + 1, col-1));
+            neighbors.add(isValidCoords(row + 1, col-2));
+        }
+        else{
+            neighbors.add(isValidCoords(row + 1, col));
+            neighbors.add(isValidCoords(row + 1, col+1));
+            neighbors.add(isValidCoords(row + 1, col-1));
+            neighbors.add(isValidCoords(row - 1, col+1));
+            neighbors.add(isValidCoords(row - 1, col+2));
+            neighbors.add(isValidCoords(row - 1, col-1));
+            neighbors.add(isValidCoords(row - 1, col-2));
+        }
+        return neighbors;
+    }
+
+    private List<Cell> getNeighborsTwelve(int row, int col){
+        List<Cell> neighbors = new ArrayList<>();
+        List<Cell> fromThree = getNeighborsThree(row,col);
+        List<Cell> fromNine = getNeighborsNine(row,col);
+        for(Cell c: fromThree){
+            neighbors.add(c);
+        }
+        for(Cell c: fromNine){
+            neighbors.add(c);
+        }
+        return neighbors;
+    }
+
+    private void removeNulls(List<Cell> neighbors) {
+        // Found at:
+        // https://stackoverflow.com/questions/4819635/how-to-remove-all-null-elements-from-a-arraylist-or-string-array
+        neighbors.removeAll(Collections.singleton(null));
     }
 
     private Cell isValidCoords(int row, int col) {

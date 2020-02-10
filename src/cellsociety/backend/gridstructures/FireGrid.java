@@ -28,23 +28,16 @@ public class FireGrid extends GridStructure {
         }
     }
 
-    /* assumes 8 neighbors are given, only uses the 4 neighbors directly connecting */
     private void updateFireCell(Cell currCell) {
         List<Cell> allNeighbors = currCell.getNeighbors();
 
-        if (currCell.getCurrState() == Simulation.AllStates.FIRE_EMPTY ||
-                currCell.getCurrState() == Simulation.AllStates.FIRE_FIRE) {
+        if (currCell.getCurrState() == Simulation.AllStates.FIRE_EMPTY || currCell.getCurrState() == Simulation.AllStates.FIRE_FIRE) {
             currCell.setNextState(Simulation.AllStates.FIRE_EMPTY);
         } else {
-            int index = 1;
             boolean couldCatch = false;
-            while (index < allNeighbors.size()){
-                if (allNeighbors.get(index) != null &&
-                        allNeighbors.get(index).getCurrState() == Simulation.AllStates.FIRE_FIRE) {
+            for(Cell c: allNeighbors){
+                if(c.getCurrState() == Simulation.AllStates.FIRE_FIRE)
                     couldCatch = true;
-                    break;
-                }
-                index += 2;
             }
             if(couldCatch && Math.random() < catchProb) {
                 currCell.setNextState(Simulation.AllStates.FIRE_FIRE);
