@@ -27,7 +27,7 @@ public class XMLParser {
         }
     }
 
-    public GridStructure generateGrid (String xmlFilename, boolean isTorus) {
+    public GridStructure generateGrid (String xmlFilename, boolean isTorus, int neighborhoodType) {
         File dataFile = new File(xmlFilename);
         Element root = getRootElement(dataFile);
         if (isValidFile(root)) {
@@ -37,7 +37,7 @@ public class XMLParser {
             ArrayList<Double> percents = getPercents(root);
             ArrayList<String> states = getStates(root);
             ArrayList<Double> misc = getMisc(root);
-            return generateGridStructure(simType,dimensions,percents,states,misc, isTorus);
+            return generateGridStructure(simType,dimensions,percents,states,misc, isTorus,neighborhoodType);
         } else {
             return null;
         }
@@ -45,7 +45,7 @@ public class XMLParser {
 
 
     private GridStructure generateGridStructure(SimulationMenu.SimulationType simType, int dimensions,
-                                                ArrayList<Double> percents, ArrayList<String> states, ArrayList<Double> misc, boolean isTorus) {
+                                                ArrayList<Double> percents, ArrayList<String> states, ArrayList<Double> misc, boolean isTorus, int neighborhoodType) {
         GridStructure grid = null;
         //TODO implement rowNum and colNum in XML (instead of "dimensions")
         int rowNum = dimensions+1;
@@ -53,25 +53,25 @@ public class XMLParser {
         switch(simType){
             case LIFE:
                 //TODO figure out how to specify number of neighbors based on shape of cells
-                grid = new LifeGrid(rowNum, colNum, percents, states, isTorus, 8);
+                grid = new LifeGrid(rowNum, colNum, percents, states, isTorus, neighborhoodType);
                 break;
             case FIRE:
-                grid = new FireGrid(rowNum, colNum, percents, states, isTorus,8, misc.get(0));
+                grid = new FireGrid(rowNum, colNum, percents, states, isTorus,neighborhoodType, misc.get(0));
                 break;
             case PERCOLATION:
-                grid = new PercolationGrid(rowNum, colNum, percents, states, isTorus,8,misc.get(0));
+                grid = new PercolationGrid(rowNum, colNum, percents, states, isTorus,neighborhoodType,misc.get(0));
                 break;
             case SEGREGATION:
-                grid = new SegregationGrid(rowNum, colNum, percents, states, isTorus,8,misc.get(0));
+                grid = new SegregationGrid(rowNum, colNum, percents, states, isTorus,neighborhoodType,misc.get(0));
                 break;
             case PRED_PREY:
-                grid = new PredPreyGrid(dimensions, dimensions, percents, states, isTorus,8, misc.get(0), misc.get(1), misc.get(2));
+                grid = new PredPreyGrid(dimensions, dimensions, percents, states, isTorus,neighborhoodType, misc.get(0), misc.get(1), misc.get(2));
                 break;
             case RPS:
-                grid = new RockPaperScissorsGrid(rowNum, colNum, percents,states, isTorus,8,misc.get(0));
+                grid = new RockPaperScissorsGrid(rowNum, colNum, percents,states, isTorus,neighborhoodType,misc.get(0));
                 break;
             case ANT:
-                grid = new AntGrid(dimensions, dimensions, percents, states, isTorus, 8, misc.get(0));
+                grid = new AntGrid(dimensions, dimensions, percents, states, isTorus, neighborhoodType, misc.get(0));
                 break;
         }
         return grid;
