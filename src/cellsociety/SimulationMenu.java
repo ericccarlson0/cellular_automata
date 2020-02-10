@@ -5,6 +5,8 @@ import cellsociety.backend.gridstructures.GridStructure;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -38,17 +40,10 @@ public class SimulationMenu extends Application {
     public static final int H_GAP = 50;
     public static final int BOX_WIDTH = 100;
     public static final int TOTAL_WIDTH = 1000;
-    public static final int TOTAL_HEIGHT = 750;
-    public static final int GRID_WIDTH = 600;
-    public static final int GRID_HEIGHT = 600;
-    private static final double DISPLAY_WIDTH = 450;
-    private static final double DISPLAY_HEIGHT = 450;
+    public static final int TOTAL_HEIGHT = 500;
     private static final double DEFAULT_NODE_SPACING = 12;
     private static final int BUTTON_SPACING = 4;
     private static final int DEFAULT_SIM_DELAY = 20;
-
-    private Rectangle noCurrGrid = new Rectangle(GRID_WIDTH, GRID_HEIGHT,
-            Color.color(0.2, 0.2, .6));
 
     private String myShape;
     private boolean isTorus = false;
@@ -60,11 +55,13 @@ public class SimulationMenu extends Application {
 
     private XMLParser fileParser;
     private String XMLFilename;
-    private TextField myTextField;
+    private TextField filenameField;
     private StackPane myInfoBox;
-    private StackPane myStatsBox;
     private ToggleGroup myShapeButtons;
     private ToggleGroup myTorusButtons;
+    private ChoiceBox<String> neighborhoodBox;
+    private int neighborhoodType = 8;
+
     HashMap<SimulationUI, Stage> allRunningSims;
 
     Locale locale = Locale.ENGLISH;
@@ -84,7 +81,7 @@ public class SimulationMenu extends Application {
         initializeUI();
 
         Text title = new Text(textElements.getString("title"));
-        title.setFill(Color.BLACK);
+        title.setId("title-text");
 
         topLevelGrid.add(title, 1, 0);
 
@@ -103,15 +100,11 @@ public class SimulationMenu extends Application {
         Group root = new Group();
         topLevelGrid = initializePane(); // topLevelGrid is the highest level grid
 
-        HBox bottomButtons = setupBottomButtons();
-        topLevelGrid.add(bottomButtons, 1, 4);
-
-        VBox messageBoxes = new VBox(DEFAULT_NODE_SPACING);
-        messageBoxes.getChildren().addAll(createInfoBox(), createStatsBox(), setupShapeButtons()); //***
-        topLevelGrid.add(messageBoxes, 2, 1);
-
-        VBox torusButtons = setupTorusButtons();
-        topLevelGrid.add(torusButtons, 2, 2);
+        topLevelGrid.add(setupFilenameField(), 1, 1);
+        topLevelGrid.add(createInfoBox(), 2, 1);
+        topLevelGrid.add(setupShapeButtons(), 1, 2);
+        topLevelGrid.add(setupNeighborhoodBox(), 2, 2);
+        topLevelGrid.add(setupTorusButtons(), 2, 3);
 
         root.getChildren().add(topLevelGrid);
         simDisplay = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
@@ -130,23 +123,34 @@ public class SimulationMenu extends Application {
         return pane;
     }
 
-    private HBox setupBottomButtons() {
-        HBox holder = new HBox(DEFAULT_NODE_SPACING);
+    private VBox setupFilenameField() {
+        VBox holder = new VBox(DEFAULT_NODE_SPACING);
+        Text text = createPrompt(textElements.getString("filenamePrompt"));
 
-        Text prompt = new Text(textElements.getString("filenamePrompt"));
-        prompt.setFont(new Font(textElements.getString("font"), FONT_SIZE));
-        prompt.setFill(FONT_COLOR);
-        myTextField = new TextField();
-
+        filenameField = new TextField();
         Button loadButton = new Button("Load XML File");
         loadButton.setOnAction(event -> loadButton());
 
-        holder.getChildren().addAll(prompt, myTextField, loadButton);
+        holder.getChildren().addAll(text, filenameField, loadButton);
+        return holder;
+    }
+
+    private VBox setupNeighborhoodBox() {
+        VBox holder = new VBox(DEFAULT_NODE_SPACING);
+        Text text = createPrompt(textElements.getString("neighborhoodPrompt"));
+
+        neighborhoodBox = new ChoiceBox<>();
+        neighborhoodBox.getItems().addAll("3", "4", "6", "8", "9", "12");
+        neighborhoodBox.getSelectionModel().select(0);
+        holder.getChildren().addAll(text, neighborhoodBox);
         return holder;
     }
 
     private VBox setupShapeButtons() {
-        VBox buttonHolder = new VBox(BUTTON_SPACING);
+        VBox holder = new VBox(BUTTON_SPACING);
+        Text text = createPrompt(textElements.getString("shapePrompt"));
+        holder.getChildren().add(text);
+
         ToggleGroup tg = new ToggleGroup();
         myShapeButtons = tg;
 
@@ -158,13 +162,16 @@ public class SimulationMenu extends Application {
             button.setUserData(shape);
             button.setToggleGroup(tg);
             button.setOnAction(event -> shapeButton());
-            buttonHolder.getChildren().add(button);
+            holder.getChildren().add(button);
         }
-        return buttonHolder;
+        return holder;
     }
 
     private VBox setupTorusButtons() {
         VBox holder = new VBox(BUTTON_SPACING);
+        Text text = createPrompt(textElements.getString("torusPrompt"));
+        holder.getChildren().add(text);
+
         ToggleGroup tg = new ToggleGroup();
         myTorusButtons = tg;
 
@@ -180,12 +187,7 @@ public class SimulationMenu extends Application {
         return holder;
     }
 
-    private StackPane createStatsBox() {
-        StackPane statsBox = createMessageBox(BOX_WIDTH);
-        myStatsBox = statsBox;
-        return statsBox;
-    }
-
+    //***
     private StackPane createInfoBox() {
         StackPane infoBox = createMessageBox(BOX_WIDTH);
         myInfoBox = infoBox;
@@ -201,6 +203,13 @@ public class SimulationMenu extends Application {
         return sp;
     }
 
+    private Text createPrompt(String prompt) {
+        Text text = new Text(prompt);
+        text.setFont(new Font(textElements.getString("font"), FONT_SIZE));
+        text.setFill(FONT_COLOR);
+        return text;
+    }
+
     private void shapeButton() {
         myShape = myShapeButtons.getSelectedToggle().getUserData().toString();
     }
@@ -212,7 +221,10 @@ public class SimulationMenu extends Application {
 
     private void loadButton() {
         try {
-            XMLFilename = String.format("%s%s", XML_FOLDER, myTextField.getText());
+            String val = neighborhoodBox.getValue();
+            neighborhoodType = Integer.parseInt(val);
+
+            XMLFilename = String.format("%s%s", XML_FOLDER, filenameField.getText());
             generateSimulation();
             addMessage(myInfoBox, textElements.getString("defaultInfoboxMessage"));
         } catch (Exception e) {
@@ -230,9 +242,9 @@ public class SimulationMenu extends Application {
 
     private void addMessage (Pane messageBox, String message) {
         Label l = new Label(message);
-        l.setFont(new Font(textElements.getString("font"), FONT_SIZE/2)); //***
+        l.setId("message-box"); //***
         l.setWrapText(true);
-        l.setMaxWidth(BOX_WIDTH);
+        l.setMaxWidth(BOX_WIDTH*1.5);
         if (messageBox.getChildren().size() > 0) {
             messageBox.getChildren().remove(1);
         }

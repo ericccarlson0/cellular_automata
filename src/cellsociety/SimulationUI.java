@@ -1,8 +1,5 @@
 package cellsociety;
 
-import cellsociety.backend.Cell;
-import cellsociety.backend.gridstructures.GridStructure;
-import cellsociety.frontend.*;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -11,7 +8,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -27,14 +23,12 @@ public class SimulationUI {
     public static final Color FONT_COLOR = Color.color(0.0, 0.0, 0.4);
     public static final int FONT_SIZE = 16;
     private static final double DEFAULT_NODE_SPACING = 12;
-    public static final int TOTAL_WIDTH = 600;
-    public static final int TOTAL_HEIGHT = 600;
     public static final Color DISPLAY_COLOR = Color.color(0.9, 0.9, 1.0);
-    private Stage whereRunning;
-    private Scene simDisplay;
+    private Stage stage;
+    private Scene display;
     private GridPane topLevelGrid;
     private boolean shouldStep;
-    private boolean isSimRunning;
+    private boolean isRunning;
     private ScrollPane scrollPane;
     private int delay;
     private int delayLeft;
@@ -42,18 +36,22 @@ public class SimulationUI {
     public static final String RESOURCE_FOLDER = "/resources/";
     public static final String STYLESHEET = "default.css";
     private static final String DEFAULT_FONT = "Menlo";
-    public static final int PADDING = 5;
+    public static final int PADDING = 10;
     public static final int V_GAP = 10;
     public static final int H_GAP = 50;
-    private static final double SCROLL_PANE_HEIGHT = 400;
-    private static final double SCROLL_PANE_WIDTH = 400;
+    public static final int GRID_WIDTH = 600;
+    public static final int GRID_HEIGHT = 600;
+    public static final double DISPLAY_HEIGHT = 400;
+    public static final double DISPLAY_WIDTH = 400;
+    public static final double TOTAL_WIDTH = 550;
+    public static final double TOTAL_HEIGHT = 550;
     private Slider mySlider;
 
     Locale locale = Locale.ENGLISH;
     ResourceBundle textElements = ResourceBundle.getBundle("resources.TextElements", locale);
 
     public SimulationUI(Simulation sim, Stage stageForNewSim) {
-        whereRunning = stageForNewSim;
+        stage = stageForNewSim;
         simulation = sim;
         initializeVariables();
         initUI();
@@ -61,42 +59,31 @@ public class SimulationUI {
 
     private void initializeVariables() {
         shouldStep = false;
-        isSimRunning = false;
+        isRunning = false;
         delay = DEFAULT_SIM_DELAY;
     }
 
     private void initUI() {
         Group root = new Group();
-        topLevelGrid = initializePane();
+        topLevelGrid = initializeTopGrid();
 
-        scrollPane = new ScrollPane();
-        scrollPane.setContent(simulation.getDisplay());
-        scrollPane.setPrefHeight(SCROLL_PANE_HEIGHT);
-        scrollPane.setPrefWidth(SCROLL_PANE_WIDTH);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-
-        topLevelGrid.add(scrollPane, 1, 0);
-
-        HBox topButtons = setupTopButtons();
-        topLevelGrid.add(topButtons, 1, 1);
-
-        HBox centerButtons = setupCenterButtons();
-        topLevelGrid.add(centerButtons, 1, 2);
+        topLevelGrid.add(initializeScrollPane(), 1, 1);
+        topLevelGrid.add(setupStateButtons(), 1, 2);
+        topLevelGrid.add(setupSpeedControl(), 1, 3);
 
         root.getChildren().add(topLevelGrid);
-        simDisplay = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
+        display = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
 
         String stylesheet = String.format("%s%s", RESOURCE_FOLDER, STYLESHEET);
-        simDisplay.getStylesheets().add(getClass().getResource(stylesheet).toExternalForm());
+        display.getStylesheets().add(getClass().getResource(stylesheet).toExternalForm());
 
-        whereRunning.setScene(simDisplay);
-        whereRunning.setTitle(textElements.getString("title"));
-        whereRunning.show();
+        stage.setScene(display);
+        stage.setTitle(textElements.getString("title"));
+        stage.show();
     }
 
 
-    private GridPane initializePane() {
+    private GridPane initializeTopGrid() {
         GridPane pane = new GridPane();
         pane.setPadding(new Insets(PADDING, PADDING, PADDING, PADDING));
         pane.setVgap(V_GAP);
@@ -104,8 +91,19 @@ public class SimulationUI {
         return pane;
     }
 
+    private ScrollPane initializeScrollPane() {
+        ScrollPane ret = new ScrollPane();
+        ret.setId("simulation-UI");
+        ret.setContent(simulation.getDisplay());
+        ret.setPrefHeight(DISPLAY_HEIGHT);
+        ret.setPrefWidth(DISPLAY_WIDTH);
+        ret.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        ret.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        return ret;
+    }
+
     public void step() {
-        if ((isSimRunning || shouldStep)){
+        if ((isRunning || shouldStep)){
             if (delayLeft > 0){
                 delayLeft--;
             } else {
@@ -121,21 +119,21 @@ public class SimulationUI {
     }
 
     private void startButton() {
-        isSimRunning = true;
+        isRunning = true;
     }
 
     private void stopButton() {
-        isSimRunning = false;
+        isRunning = false;
     }
 
     private void stepButton() {
-        isSimRunning = false;
+        isRunning = false;
         shouldStep = true;
         delayLeft = 0;
     }
 
-    private HBox setupTopButtons() {
-        HBox buttonHolder = new HBox(DEFAULT_NODE_SPACING);
+    private HBox setupStateButtons() {
+        HBox holder = new HBox(DEFAULT_NODE_SPACING);
 
         Button startButton = new Button(textElements.getString("start"));
         startButton.setOnAction(event -> startButton());
@@ -144,8 +142,22 @@ public class SimulationUI {
         Button stepButton = new Button(textElements.getString("step"));
         stepButton.setOnAction(event -> stepButton());
 
-        buttonHolder.getChildren().addAll(startButton, stopButton, stepButton);
-        return buttonHolder;
+        holder.getChildren().addAll(startButton, stopButton, stepButton);
+        return holder;
+    }
+
+    private HBox setupSpeedControl() {
+        HBox holder = new HBox(DEFAULT_NODE_SPACING);
+        Text text = createPrompt(textElements.getString("speedPrompt"));
+
+        mySlider = new Slider(-2, 4, 0);
+        mySlider.setLayoutX(300);
+        mySlider.setSnapToTicks(true);
+        mySlider.setMajorTickUnit(1.0f);
+        mySlider.setBlockIncrement(0.5f);
+
+        holder.getChildren().addAll(text, mySlider);
+        return holder;
     }
 
     private void checkSlider() {
@@ -159,20 +171,10 @@ public class SimulationUI {
         return discreteVal;
     }
 
-    private HBox setupCenterButtons() {
-        HBox buttonHolder = new HBox(DEFAULT_NODE_SPACING);
-
-        Text prompt = new Text(SPEED_PROMPT);
-        prompt.setFont(new Font(DEFAULT_FONT, FONT_SIZE));
-        prompt.setFill(FONT_COLOR);
-
-        mySlider = new Slider(-4, 4, 0);
-        mySlider.setLayoutX(300);
-        mySlider.setSnapToTicks(true);
-        mySlider.setMajorTickUnit(1.0f);
-        mySlider.setBlockIncrement(0.5f);
-
-        buttonHolder.getChildren().addAll(prompt, mySlider);
-        return buttonHolder;
+    private Text createPrompt(String prompt) {
+        Text text = new Text(prompt);
+        text.setFont(new Font(textElements.getString("font"), FONT_SIZE));
+        text.setFill(FONT_COLOR);
+        return text;
     }
 }
