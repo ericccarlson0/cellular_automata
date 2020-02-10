@@ -11,9 +11,9 @@ public class PercolationGrid extends GridStructure {
     public static final String GRID_TYPE_STRING = "PERCOLATION_";
     private double initialFillProbability;
 
-    public PercolationGrid (int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states,
+    public PercolationGrid (int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states, boolean isTorus,
                             int neighborhoodType, double initialFillProbability){
-        super(rowNum, colNum, percents, states, neighborhoodType);
+        super(rowNum, colNum, percents, states, neighborhoodType,isTorus);
         this.initialFillProbability = initialFillProbability;
         this.init();
     }

@@ -15,8 +15,8 @@ public class AntGrid extends GridStructure{
     private int newAntsPerStep = 2;
     private int antLifeSpan = 500;
 
-    public AntGrid(int rowNum, int colNum, List<Double> percents, List<String> states, int neighborhoodType, double Something) {
-        super(rowNum, colNum, percents, states, neighborhoodType);
+    public AntGrid(int rowNum, int colNum, List<Double> percents, List<String> states, boolean isTorus, int neighborhoodType, double Something) {
+        super(rowNum, colNum, percents, states, neighborhoodType, isTorus);
         this.init();
         initializeAntMap();
         this.antNest = getCellAtIndex(20, 20);

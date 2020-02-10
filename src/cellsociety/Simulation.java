@@ -9,13 +9,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 
 public class Simulation {
-    public static final double DISPLAY_HEIGHT = 400;
-    public static final double DISPLAY_WIDTH = 400;
+    public static final double DISPLAY_HEIGHT = 500;
+    public static final double DISPLAY_WIDTH = 500;
     private GridStructure gridStruct;
     private GridDisplay gridDisplay;
     private int rowNum;
     private int colNum;
-    private double cellRadius;
     private String cellShape;
 
     public enum AllStates {
@@ -30,17 +29,18 @@ public class Simulation {
         SEGREGATION_ONE(Color.color(1.0, 0.5, 0.5)),
         SEGREGATION_TWO(Color.color(0.5, 0.5, 1.0)),
         SEGREGATION_EMPTY(Color.color(1.0, 1.0, 1.0)),
-        PREDPREY_FISH(Color.LIGHTCORAL),
-        PREDPREY_SHARK(Color.BLACK),
-        PREDPREY_EMPTY(Color.TURQUOISE),
-        RPS_ROCK(Color.GREEN),
-        RPS_PAPER(Color.RED),
-        RPS_SCISSORS(Color.BLUEVIOLET),
+        PRED_PREY_FISH(Color.LIGHTCORAL),
+        PRED_PREY_SHARK(Color.BLACK),
+        PRED_PREY_EMPTY(Color.TURQUOISE),
+        RPS_ROCK(Color.color(0.0, 0.0, 0.0)),
+        RPS_PAPER(Color.color(1.0, 1.0, 1.0)),
+        RPS_SCISSORS(Color.color(0.5, 0.5, 0.5)),
         ANT_EMPTY(Color.WHITE),
         ANT_PHEROMONES(Color.LIGHTGREEN),
         ANT_FOOD(Color.BLUEVIOLET),
         ANT_NEST(Color.ORANGERED),
         ANT_FULL(Color.DARKGREEN);
+
 
         private Color stateColor;
         AllStates(Color p) { stateColor = p; }
@@ -52,10 +52,10 @@ public class Simulation {
 
     public Simulation(GridStructure gs, String shape) {
         gridStruct = gs;
-        rowNum = gs.getRowNum();
-        colNum = gs.getColNum();
+        rowNum = gs.getRowNum(); //***
+        colNum = gs.getColNum(); //***
         cellShape = shape;
-        cellRadius = DISPLAY_WIDTH/rowNum/2;
+//       = DISPLAY_WIDTH/rowNum/2;
         initDisplay();
     }
 
@@ -71,15 +71,15 @@ public class Simulation {
 
     private void selectInitGrid(){
         if (cellShape == "DIAMOND") {
-            gridDisplay = new DiamondDisplay(rowNum, colNum, cellRadius);
+            gridDisplay = new DiamondDisplay(rowNum, colNum);
         } else if (cellShape == "TRIANGLE") {
-            gridDisplay = new TriangleDisplay(rowNum, colNum, cellRadius);
+            gridDisplay = new TriangleDisplay(rowNum, colNum);
         } else if (cellShape == "HEXAGON") {
-            gridDisplay = new HexagonDisplay(rowNum, colNum, cellRadius);
+            gridDisplay = new HexagonDisplay(rowNum, colNum);
         } else if (cellShape == "CIRCLE") {
-            gridDisplay = new CircleDisplay(rowNum, colNum, cellRadius);
+            gridDisplay = new CircleDisplay(rowNum, colNum);
         } else {
-            gridDisplay = new SquareDisplay(rowNum, colNum, cellRadius);
+            gridDisplay = new SquareDisplay(rowNum, colNum);
         }
     }
 

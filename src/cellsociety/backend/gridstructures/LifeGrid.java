@@ -12,8 +12,8 @@ import java.util.List;
 public class LifeGrid extends GridStructure{
     public static final String GRID_TYPE_STRING = "LIFE_";
 
-    public LifeGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states, int neighborhoodType){
-        super(rowNum, colNum, percents, states, neighborhoodType);
+    public LifeGrid(int rowNum, int colNum, ArrayList<Double> percents, ArrayList<String> states, boolean isTorus, int neighborhoodType){
+        super(rowNum, colNum, percents, states, neighborhoodType, isTorus);
         this.init();
     }
 

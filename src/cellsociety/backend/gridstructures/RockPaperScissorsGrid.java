@@ -9,8 +9,8 @@ public class RockPaperScissorsGrid extends GridStructure{
     public static final String GRID_TYPE_STRING = "RPS_";
     private double winThreshold;
 
-    public RockPaperScissorsGrid(int rowNum, int colNum, List<Double> percents, List<String> states, int numNeighbors, double winThreshold) {
-        super(rowNum,colNum, percents, states, numNeighbors);
+    public RockPaperScissorsGrid(int rowNum, int colNum, List<Double> percents, List<String> states, boolean isTorus, int numNeighbors, double winThreshold) {
+        super(rowNum,colNum, percents, states, numNeighbors, isTorus);
         this.winThreshold = winThreshold;
         this.init();
     }
