@@ -133,6 +133,21 @@ public abstract class GridStructure {
 
     private List<Cell> getNeighborsSix(int row, int col){
         List<Cell> neighbors = new ArrayList<>();
+        neighbors.add(isValidCoords(row - 2, col));
+        neighbors.add(isValidCoords(row + 2,col));
+        boolean off = (row%2 == 0);
+        if(off){
+            neighbors.add(isValidCoords(row - 1,col));
+            neighbors.add(isValidCoords(row - 1,col - 1));
+            neighbors.add(isValidCoords(row + 1,col - 1));
+            neighbors.add(isValidCoords(row + 1,col));
+        }
+        else{
+            neighbors.add(isValidCoords(row - 1,col));
+            neighbors.add(isValidCoords(row - 1,col + 1));
+            neighbors.add(isValidCoords(row + 1,col + 1));
+            neighbors.add(isValidCoords(row + 1,col));
+        }
         return neighbors;
     }
 
