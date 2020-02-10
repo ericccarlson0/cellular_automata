@@ -21,6 +21,11 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * SimulationMenu is used to run the entire application. It has a start-up display and tracks the time for the
+ * simulations. It is used to Simulation classes, which represent simulations (including concurrent ones). This is
+ * how the application generates simulations.
+ */
 public class SimulationMenu extends Application {
 
     public static final int FRAMES_PER_SECOND = 60;
@@ -45,8 +50,8 @@ public class SimulationMenu extends Application {
     private boolean isTorus = false;
 
     private Simulation currSimulation;
-    private Stage simStage;
-    private Scene simDisplay;
+    private Stage stage;
+    private Scene display;
     private GridPane topLevelGrid;
 
     private XMLParser fileParser;
@@ -58,7 +63,7 @@ public class SimulationMenu extends Application {
     private ChoiceBox<String> neighborhoodBox;
     private int neighborhoodType = 8;
 
-    HashMap<SimulationUI, Stage> allRunningSims;
+    HashMap<SimulationUI, Stage> runningSims;
 
     Locale locale = Locale.ENGLISH;
     ResourceBundle textElements = ResourceBundle.getBundle("resources.TextElements", locale);
@@ -68,11 +73,17 @@ public class SimulationMenu extends Application {
     }
 
 
+    /**
+     * The start method is used to kick-off the animation by setting up key variables and calling
+     * initializeUI(), which sets up all of the UI Controls within the display.
+     * It sets up the Timeline, too, which calls the step() function at the end of each frame.
+     * @param stage
+     */
     @Override
     public void start (Stage stage) {
-        allRunningSims = new HashMap<>();
+        runningSims = new HashMap<>();
         fileParser = new XMLParser();
-        simStage = stage;
+        this.stage = stage;
 
         initializeUI();
 
@@ -80,10 +91,9 @@ public class SimulationMenu extends Application {
         title.setId("title-text");
 
         topLevelGrid.add(title, 1, 0);
-
-        simStage.setScene(simDisplay);
-        simStage.setTitle(textElements.getString("title"));
-        simStage.show();
+        this.stage.setScene(display);
+        this.stage.setTitle(textElements.getString("title"));
+        this.stage.show();
 
         KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step());
         Timeline animation = new Timeline();
@@ -103,10 +113,10 @@ public class SimulationMenu extends Application {
         topLevelGrid.add(setupTorusButtons(), 2, 3);
 
         root.getChildren().add(topLevelGrid);
-        simDisplay = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
+        display = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
 
         String stylesheet = String.format("%s%s", RESOURCE_FOLDER, STYLESHEET);
-        simDisplay.getStylesheets().add(getClass().getResource(stylesheet).toExternalForm()); //***
+        display.getStylesheets().add(getClass().getResource(stylesheet).toExternalForm()); //***
         myInfoBox.getChildren().add(new Label("FILLER"));
         addMessage(myInfoBox, textElements.getString("defaultInfoboxMessage"));
     }
@@ -233,7 +243,7 @@ public class SimulationMenu extends Application {
         Stage stageForNewSim = new Stage();
         currSimulation = new Simulation(gs, myShape);
         SimulationUI sim = new SimulationUI(currSimulation,stageForNewSim);
-        allRunningSims.put(sim,stageForNewSim);
+        runningSims.put(sim,stageForNewSim);
     }
 
     private void addMessage (Pane messageBox, String message) {
@@ -248,11 +258,15 @@ public class SimulationMenu extends Application {
     }
 
     private void step() {
-        for (SimulationUI currSim : allRunningSims.keySet()){
+        for (SimulationUI currSim : runningSims.keySet()){
             currSim.step();
         }
     }
 
+    /**
+     * Main is used to run the application.
+     * @param args
+     */
     public static void main(String[] args){
         launch(args);
     }
