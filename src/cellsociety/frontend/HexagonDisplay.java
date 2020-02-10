@@ -1,23 +1,45 @@
 package cellsociety.frontend;
 
+import cellsociety.Simulation;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 
 public class HexagonDisplay extends GridDisplay {
-    public HexagonDisplay(int rowNum, int colNum, double radius) {
-        super(rowNum, colNum, radius);
+    public HexagonDisplay(int rowNum, int colNum) {
+        super(rowNum, colNum);
     }
 
-    private Polygon renderHexagon(double[] center, double radius) { //*** How to determine the center?
+    protected Shape createShape(int row, int col) {
+        double unitHeight =  Simulation.DISPLAY_HEIGHT/getNumRows() + 1;
+        double unitWidth =   Simulation.DISPLAY_WIDTH/getNumCols() + 1;
+        double prefRatio = Math.cos(Math.PI/6) / (2 + 2*Math.sin(Math.PI/6));
+        double trueRatio = unitHeight/unitWidth;
+        double ratioXY = prefRatio/trueRatio;
+
+        double radius = unitWidth / (2 + 2*Math.sin(Math.PI/6));
+        double[] center = new double[]{unitWidth/2, unitHeight/2};
+
         PolygonConstructor pc = new PolygonConstructor();
-        Polygon ret = new Polygon();
         Double[] points = pc.calcPolygonPoints(center, radius, 6);
-        ret.getPoints().addAll(points);
-        return ret;
+        Polygon shape = new Polygon();
+        shape.getPoints().addAll(points);
+
+        double offset;
+        if ((row)%2 == 1) {
+            offset = unitWidth/2;
+        } else {
+            offset = 0;
+        }
+
+        shape.setTranslateX((unitWidth + .1)*col - unitWidth/2 + offset);
+        shape.setTranslateY((unitHeight + .1)*row - unitHeight/2);
+        shape.setScaleY(1/ratioXY);
+        return shape;
     }
 
+    @Deprecated
     public void renderDisplay(Pane display, Shape[][] cellShapes, int rn, int cn,
                               double cx, double cy, double radius) {
         double apothem = radius*Math.cos(Math.PI/6);
@@ -40,21 +62,5 @@ public class HexagonDisplay extends GridDisplay {
                 startingX -= cellWidth/2; // Remove offset
             }
         }
-    }
-
-    public Shape createShape(int row, int col) {
-//        PolygonConstructor pc = new PolygonConstructor();
-//        double[] hexagonWH = pc.calcHexagonWH(radius);
-//        double width = hexagonWH[0];
-//        double height = hexagonWH[1];
-//        Shape ret = renderHexagon(new double[]{width/2, height/2}, radius);
-//        ret.setFill(Color.BLACK);
-//        return ret;
-        return null;
-    }
-
-    @Override
-    public void addCellToDisplay(int row, int col, Object state) {
-
     }
 }

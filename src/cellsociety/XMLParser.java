@@ -46,27 +46,27 @@ public class XMLParser {
     private GridStructure generateGridStructure(SimulationRunner.SimulationType simType, int dimensions, ArrayList<Double> percents, ArrayList<String> states, ArrayList<Double> misc) {
         GridStructure grid = null;
         //TODO implement rowNum and colNum in XML (instead of "dimensions")
-        int rowNum = dimensions;
-        int colNum = dimensions;
+        int rowNum = dimensions+1;
+        int colNum = dimensions+1;
         switch(simType){
             case LIFE:
                 //TODO figure out how to specify number of neighbors based on shape of cells
-                grid = new LifeGrid(dimensions, dimensions, percents,states, 8);
+                grid = new LifeGrid(rowNum, colNum, percents, states, 8);
                 break;
             case FIRE:
-                grid = new FireGrid(dimensions, dimensions, percents, states, 8, misc.get(0));
+                grid = new FireGrid(rowNum, colNum, percents, states, 8, misc.get(0));
                 break;
             case PERCOLATION:
-                grid = new PercolationGrid(dimensions, dimensions, percents, states, 8,misc.get(0));
+                grid = new PercolationGrid(rowNum, colNum, percents, states, 8,misc.get(0));
                 break;
             case SEGREGATION:
-                grid = new SegregationGrid(dimensions, dimensions, percents, states, 8,misc.get(0));
+                grid = new SegregationGrid(rowNum, colNum, percents, states, 8,misc.get(0));
                 break;
             case PRED_PREY:
                 grid = new PredPreyGrid(dimensions, dimensions, percents, states, 8, misc.get(0), misc.get(1), misc.get(2));
                 break;
             case RPS:
-                grid = new RockPaperScissorsGrid(dimensions, dimensions, percents,states,8,misc.get(0));
+                grid = new RockPaperScissorsGrid(rowNum, colNum, percents,states,8,misc.get(0));
         }
         return grid;
     }

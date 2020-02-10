@@ -19,7 +19,7 @@ import javafx.util.Duration;
 
 public class SimulationRunner extends Application {
 
-    public static final String TITLE = "Cellular Automata";
+    public static final String TITLE = "CELLULAR AUTOMATA";
     public static final int FRAMES_PER_SECOND = 60;
     public static final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
 
@@ -39,21 +39,30 @@ public class SimulationRunner extends Application {
     public static final int V_GAP = 10;
     public static final int H_GAP = 50;
     public static final int BOX_WIDTH = 100;
-    public static final int TOTAL_WIDTH = 750;
+    public static final int TOTAL_WIDTH = 1000;
     public static final int TOTAL_HEIGHT = 750;
-    public static final int DISPLAY_WIDTH = 400;
-    public static final int DISPLAY_HEIGHT = 400;
+    public static final int DISPLAY_WIDTH = 500;
+    public static final int DISPLAY_HEIGHT = 500;
+    private static final double SCROLL_PANE_HEIGHT = 400;
+    private static final double SCROLL_PANE_WIDTH = 400;
+    private static final double DEFAULT_NODE_SPACING = 12;
+    private static final int BUTTON_SPACING = 4;
     private static final int DEFAULT_SIM_DELAY = 20;
     private static final String FILE_ERROR_MESSAGE = "The filename you entered is either invalid or could not be found.";
     private static final String START_SIM_MESSAGE = "Press Start to enjoy the Simulation!";
     private static final String DEFAULT_INFOBOX_MESSAGE = "Load a simulation by entering its filename.";
     private static final String DEFAULT_FONT = "Menlo";
+    private static final String TORUS = "TORUS";
+    private static final String NO_TORUS = "FLAT GRID";
+    private static final String FILENAME_PROMPT = "FILENAME: ";
+    private static final String SPEED_PROMPT = "SPEED: ";
 
     private Rectangle noCurrGrid = new Rectangle(DISPLAY_WIDTH, DISPLAY_HEIGHT,
             Color.color(0.2, 0.2, .6));
     private String myShape;
     private boolean shouldStep;
-    private boolean simRunning;
+    private boolean isSimRunning;
+    private boolean isTorus = false;
     private int delay;
     private int delayLeft;
 
@@ -70,6 +79,7 @@ public class SimulationRunner extends Application {
     private StackPane myInfoBox;
     private StackPane myStatsBox;
     private ToggleGroup myShapeButtons;
+    private ToggleGroup myTorusButtons;
 
     enum SimulationType {
         LIFE, FIRE, PERCOLATION, SEGREGATION, PRED_PREY, RPS
@@ -88,6 +98,8 @@ public class SimulationRunner extends Application {
 
         scrollPane = new ScrollPane();
         scrollPane.setContent(noCurrGrid);
+        scrollPane.setPrefHeight(SCROLL_PANE_HEIGHT);
+        scrollPane.setPrefWidth(SCROLL_PANE_WIDTH);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
 
@@ -110,7 +122,7 @@ public class SimulationRunner extends Application {
     private void initializeVariables() {
         currSimulation = null;
         shouldStep = false;
-        simRunning = false;
+        isSimRunning = false;
         delay = DEFAULT_SIM_DELAY;
     }
 
@@ -125,15 +137,18 @@ public class SimulationRunner extends Application {
         HBox bottomButtons = setupBottomButtons();
         topLevelGrid.add(bottomButtons, 1, 4);
 
-        VBox messageBoxes = new VBox();
-        messageBoxes.getChildren().addAll(createInfoBox(), setupShapeButtons(), createStatsBox()); //***
+        VBox messageBoxes = new VBox(DEFAULT_NODE_SPACING);
+        messageBoxes.getChildren().addAll(createInfoBox(), createStatsBox(), setupShapeButtons()); //***
         topLevelGrid.add(messageBoxes, 2, 1);
+
+        VBox torusButtons = setupTorusButtons();
+        topLevelGrid.add(torusButtons, 2, 2);
 
         root.getChildren().add(topLevelGrid);
         simDisplay = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
 
         String stylesheet = String.format("%s%s", RESOURCE_FOLDER, STYLESHEET);
-        simDisplay.getStylesheets().add(getClass().getResource(stylesheet).toExternalForm());
+        simDisplay.getStylesheets().add(getClass().getResource(stylesheet).toExternalForm()); //***
         myInfoBox.getChildren().add(new Label("FILLER"));
         addMessage(myInfoBox, DEFAULT_INFOBOX_MESSAGE);
     }
@@ -147,7 +162,7 @@ public class SimulationRunner extends Application {
     }
 
     private HBox setupTopButtons() {
-        HBox buttonHolder = new HBox();
+        HBox buttonHolder = new HBox(DEFAULT_NODE_SPACING);
 
         Button startButton = new Button("Start");
         startButton.setOnAction(event -> startButton());
@@ -161,16 +176,16 @@ public class SimulationRunner extends Application {
     }
 
     private HBox setupCenterButtons() {
-        HBox buttonHolder = new HBox();
+        HBox buttonHolder = new HBox(DEFAULT_NODE_SPACING);
 
-        Text prompt = new Text("Speed: ");
+        Text prompt = new Text(SPEED_PROMPT);
         prompt.setFont(new Font(DEFAULT_FONT, FONT_SIZE));
         prompt.setFill(FONT_COLOR);
 
         mySlider = new Slider(-4, 4, 0);
         mySlider.setLayoutX(300);
-        mySlider.setShowTickMarks(true);
-        // mySlider.setShowTickLabels(true);
+//        mySlider.setShowTickMarks(false);
+//        mySlider.setShowTickLabels(false);
         mySlider.setSnapToTicks(true);
         mySlider.setMajorTickUnit(1.0f);
         mySlider.setBlockIncrement(0.5f);
@@ -180,9 +195,9 @@ public class SimulationRunner extends Application {
     }
 
     private HBox setupBottomButtons() {
-        HBox buttonHolder = new HBox();
+        HBox buttonHolder = new HBox(DEFAULT_NODE_SPACING);
 
-        Text prompt = new Text("Enter filename: ");
+        Text prompt = new Text(FILENAME_PROMPT);
         prompt.setFont(new Font(DEFAULT_FONT, FONT_SIZE));
         prompt.setFill(FONT_COLOR);
         myTextField = new TextField();
@@ -196,7 +211,7 @@ public class SimulationRunner extends Application {
     }
 
     private VBox setupShapeButtons() {
-        VBox buttonHolder = new VBox();
+        VBox buttonHolder = new VBox(BUTTON_SPACING);
         ToggleGroup tg = new ToggleGroup();
         myShapeButtons = tg;
 
@@ -209,6 +224,22 @@ public class SimulationRunner extends Application {
             buttonHolder.getChildren().add(button);
         }
         return buttonHolder;
+    }
+
+    private VBox setupTorusButtons() {
+        VBox holder = new VBox(BUTTON_SPACING);
+        ToggleGroup tg = new ToggleGroup();
+        myTorusButtons = tg;
+
+        String[] torusArray = new String[]{TORUS, NO_TORUS};
+        for (String option: torusArray){
+            RadioButton button = new RadioButton(option);
+            button.setUserData(option);
+            button.setToggleGroup(tg);
+            button.setOnAction(event -> torusButton());
+            holder.getChildren().add(button);
+        }
+        return holder;
     }
 
     private StackPane createStatsBox() {
@@ -233,15 +264,15 @@ public class SimulationRunner extends Application {
     }
 
     private void startButton() {
-        simRunning = true;
+        isSimRunning = true;
     }
 
     private void stopButton() {
-        simRunning = false;
+        isSimRunning = false;
     }
 
     private void stepButton() {
-        simRunning = false;
+        isSimRunning = false;
         shouldStep = true;
         delayLeft = 0;
     }
@@ -249,22 +280,26 @@ public class SimulationRunner extends Application {
     private void shapeButton() {
         myShape = myShapeButtons.getSelectedToggle().getUserData().toString();
     }
+    private void torusButton() {
+        isTorus = (myTorusButtons.getSelectedToggle().getUserData().toString()
+                == TORUS);
+    }
 
     private void loadButton() {
-        simRunning = false;
+        isSimRunning = false;
         topLevelGrid.getChildren().remove(noCurrGrid);
         if (currSimulation != null)
             topLevelGrid.getChildren().remove(currSimulation.getDisplay()); //***
-         try {
+         // try {
             XMLFilename = String.format("%s%s", XML_FOLDER, myTextField.getText());
             generateSimulation();
             scrollPane.setContent(currSimulation.getDisplay());
             addMessage(myInfoBox, START_SIM_MESSAGE);
-         } catch (Exception e) {
-            currSimulation = null;
-            scrollPane.setContent(noCurrGrid);
-            addMessage(myInfoBox, FILE_ERROR_MESSAGE);
-         }
+//         } catch (Exception e) {
+//            currSimulation = null;
+//            scrollPane.setContent(noCurrGrid);
+//            addMessage(myInfoBox, FILE_ERROR_MESSAGE);
+//         }
     }
 
     private void generateSimulation() {
@@ -284,7 +319,7 @@ public class SimulationRunner extends Application {
     }
 
     private void step() {
-        if (currSimulation != null && (simRunning || shouldStep)){
+        if (currSimulation != null && (isSimRunning || shouldStep)){
             if (delayLeft > 0){
                 delayLeft--;
             } else {

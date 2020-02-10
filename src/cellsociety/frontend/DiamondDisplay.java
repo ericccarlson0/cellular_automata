@@ -1,15 +1,47 @@
 package cellsociety.frontend;
 
+import cellsociety.Simulation;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 public class DiamondDisplay extends GridDisplay {
-    public DiamondDisplay(int rowNum, int colNum, double radius) {
-        super(rowNum, colNum, radius);
+    public DiamondDisplay(int rowNum, int colNum) {
+        super(rowNum, colNum);
     }
 
+    protected Shape createShape(int row, int col) {
+        double unitHeight = Simulation.DISPLAY_HEIGHT/getNumRows() + 1;
+        double unitWidth = Simulation.DISPLAY_WIDTH/getNumCols() + 1;
+        double prefRatio = 1/2;
+        double trueRatio = unitHeight/unitWidth;
+        double ratioXY = prefRatio/trueRatio;
+
+        double radius = unitWidth/2;
+        double[] center = new double[]{unitWidth/2, unitHeight/2};
+
+        PolygonConstructor pc = new PolygonConstructor();
+        Double[] points = pc.calcPolygonPoints(center, radius, 4);
+        Polygon shape = new Polygon();
+        shape.getPoints().addAll(points);
+
+        double offset;
+        if ((row)%2 == 1) {
+            offset = unitWidth/2;
+        } else {
+            offset = 0;
+        }
+
+        shape.setTranslateX(unitWidth*col + offset);
+        shape.setTranslateY(unitHeight*row);
+        // shape.setScaleY(ratioXY);
+        return shape;
+    }
+
+    @Deprecated
     public void renderDisplay(Pane display, Shape[][] cellShapes, int rn, int cn,
                               double cx, double cy, double radius) {
         double cellWidth = 2*radius*Math.sqrt(2);
@@ -30,17 +62,5 @@ public class DiamondDisplay extends GridDisplay {
                 startingX -= cellWidth/2; // Remove offset
             }
         }
-    }
-
-    public Shape createShape(int row, int col) {
-//        Shape ret = new Rectangle(radius*2, radius*2);
-//        ret.setRotate(45);
-//        ret.setFill(Color.BLACK);
-        return null;
-    }
-
-    @Override
-    public void addCellToDisplay(int row, int col, Object state) {
-
     }
 }
