@@ -70,9 +70,6 @@ public class XMLParser {
             case RPS:
                 grid = new RockPaperScissorsGrid(rowNum, colNum, percents,states, isTorus,neighborhoodType,misc.get(0));
                 break;
-            case ANT:
-                grid = new AntGrid(dimensions, dimensions, percents, states, isTorus, neighborhoodType, misc.get(0));
-                break;
         }
         return grid;
     }
