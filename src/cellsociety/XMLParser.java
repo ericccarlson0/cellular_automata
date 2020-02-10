@@ -20,9 +20,9 @@ public class XMLParser {
 
     public XMLParser() {
         DOCUMENT_BUILDER = getDocumentBuilder();
-        SimulationRunner.SimulationType[] validSims = SimulationRunner.SimulationType.values();
+        SimulationMenu.SimulationType[] validSims = SimulationMenu.SimulationType.values();
         validSimTypes = new ArrayList<>();
-        for (SimulationRunner.SimulationType sim : validSims){
+        for (SimulationMenu.SimulationType sim : validSims){
             validSimTypes.add(sim.name());
         }
     }
@@ -31,7 +31,7 @@ public class XMLParser {
         File dataFile = new File(xmlFilename);
         Element root = getRootElement(dataFile);
         if (isValidFile(root)) {
-            SimulationRunner.SimulationType simType = SimulationRunner.SimulationType.valueOf
+            SimulationMenu.SimulationType simType = SimulationMenu.SimulationType.valueOf
                     (getAttribute(root,"simType"));
             int dimensions = getDimensions(root);
             ArrayList<Double> percents = getPercents(root);
@@ -43,7 +43,9 @@ public class XMLParser {
         }
     }
 
-    private GridStructure generateGridStructure(SimulationRunner.SimulationType simType, int dimensions, ArrayList<Double> percents, ArrayList<String> states, ArrayList<Double> misc, boolean isTorus) {
+
+    private GridStructure generateGridStructure(SimulationMenu.SimulationType simType, int dimensions,
+                                                ArrayList<Double> percents, ArrayList<String> states, ArrayList<Double> misc, boolean isTorus) {
         GridStructure grid = null;
         //TODO implement rowNum and colNum in XML (instead of "dimensions")
         int rowNum = dimensions+1;
@@ -67,6 +69,10 @@ public class XMLParser {
                 break;
             case RPS:
                 grid = new RockPaperScissorsGrid(rowNum, colNum, percents,states, isTorus,8,misc.get(0));
+                break;
+            case ANT:
+                grid = new AntGrid(dimensions, dimensions, percents, states, isTorus, 8, misc.get(0));
+                break;
         }
         return grid;
     }

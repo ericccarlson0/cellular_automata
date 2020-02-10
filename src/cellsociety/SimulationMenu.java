@@ -16,14 +16,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import java.util.HashMap;
 
 import java.util.Locale;
-import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-import static java.util.Locale.*;
+public class SimulationMenu extends Application {
 
-public class SimulationRunner extends Application {
     public static final int FRAMES_PER_SECOND = 60;
     public static final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
 
@@ -50,60 +49,44 @@ public class SimulationRunner extends Application {
 
     private Rectangle noCurrGrid = new Rectangle(GRID_WIDTH, GRID_HEIGHT,
             Color.color(0.2, 0.2, .6));
+
     private String myShape;
-    private boolean shouldStep;
-    private boolean isSimRunning;
     private boolean isTorus = false;
-    private int delay;
-    private int delayLeft;
 
     private Simulation currSimulation;
     private Stage simStage;
     private Scene simDisplay;
     private GridPane topLevelGrid;
-    private ScrollPane scrollPane;
 
     private XMLParser fileParser;
     private String XMLFilename;
     private TextField myTextField;
-    private Slider mySlider;
     private StackPane myInfoBox;
     private StackPane myStatsBox;
     private ToggleGroup myShapeButtons;
     private ToggleGroup myTorusButtons;
+    HashMap<SimulationUI, Stage> allRunningSims;
 
     Locale locale = Locale.ENGLISH;
-    String directory = System.getProperty("user.dir");
     ResourceBundle textElements = ResourceBundle.getBundle("resources.TextElements", locale);
 
     enum SimulationType {
-        LIFE, FIRE, PERCOLATION, SEGREGATION, PRED_PREY, RPS
+        LIFE, FIRE, PERCOLATION, SEGREGATION, PRED_PREY, RPS, ANT
     }
 
 
     @Override
     public void start (Stage stage) {
-
+        allRunningSims = new HashMap<>();
         fileParser = new XMLParser();
         simStage = stage;
 
         initializeUI();
-        initializeVariables();
 
         Text title = new Text(textElements.getString("title"));
         title.setFill(Color.BLACK);
 
-        scrollPane = new ScrollPane();
-        scrollPane.setContent(noCurrGrid);
-        scrollPane.setPrefHeight(DISPLAY_HEIGHT);
-        scrollPane.setPrefWidth(DISPLAY_WIDTH);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-
         topLevelGrid.add(title, 1, 0);
-        topLevelGrid.add(scrollPane, 1, 1);
-        // noCurrGrid.setArcWidth(20.0);
-        // noCurrGrid.setArcHeight(20.0);
 
         simStage.setScene(simDisplay);
         simStage.setTitle(textElements.getString("title"));
@@ -116,21 +99,10 @@ public class SimulationRunner extends Application {
         animation.play();
     }
 
-    private void initializeVariables() {
-        currSimulation = null;
-        shouldStep = false;
-        isSimRunning = false;
-        delay = DEFAULT_SIM_DELAY;
-    }
-
     private void initializeUI() {
         Group root = new Group();
         topLevelGrid = initializePane(); // topLevelGrid is the highest level grid
 
-        HBox topButtons = setupTopButtons();
-        topLevelGrid.add(topButtons, 1, 2);
-        HBox centerButtons = setupCenterButtons();
-        topLevelGrid.add(centerButtons, 1, 3);
         HBox bottomButtons = setupBottomButtons();
         topLevelGrid.add(bottomButtons, 1, 4);
 
@@ -140,9 +112,6 @@ public class SimulationRunner extends Application {
 
         VBox torusButtons = setupTorusButtons();
         topLevelGrid.add(torusButtons, 2, 2);
-
-        VBox userButtons = setupUserButtons();
-        topLevelGrid.add(userButtons, 2, 4); //***
 
         root.getChildren().add(topLevelGrid);
         simDisplay = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
@@ -161,39 +130,6 @@ public class SimulationRunner extends Application {
         return pane;
     }
 
-    private HBox setupTopButtons() {
-        HBox buttonHolder = new HBox(DEFAULT_NODE_SPACING);
-
-        Button startButton = new Button("Start");
-        startButton.setOnAction(event -> startButton());
-        Button stopButton = new Button("Stop");
-        stopButton.setOnAction(event -> stopButton());
-        Button stepButton = new Button("Step");
-        stepButton.setOnAction(event -> stepButton());
-
-        buttonHolder.getChildren().addAll(startButton, stopButton, stepButton);
-        return buttonHolder;
-    }
-
-    private HBox setupCenterButtons() {
-        HBox buttonHolder = new HBox(DEFAULT_NODE_SPACING);
-
-        Text prompt = new Text(textElements.getString("speedPrompt"));
-        prompt.setFont(new Font(textElements.getString("font"), FONT_SIZE));
-        prompt.setFill(FONT_COLOR);
-
-        mySlider = new Slider(-4, 4, 0);
-        mySlider.setLayoutX(300);
-//        mySlider.setShowTickMarks(false);
-//        mySlider.setShowTickLabels(false);
-        mySlider.setSnapToTicks(true);
-        mySlider.setMajorTickUnit(1.0f);
-        mySlider.setBlockIncrement(0.5f);
-
-        buttonHolder.getChildren().addAll(prompt, mySlider);
-        return buttonHolder;
-    }
-
     private HBox setupBottomButtons() {
         HBox holder = new HBox(DEFAULT_NODE_SPACING);
 
@@ -201,26 +137,11 @@ public class SimulationRunner extends Application {
         prompt.setFont(new Font(textElements.getString("font"), FONT_SIZE));
         prompt.setFill(FONT_COLOR);
         myTextField = new TextField();
-        // myTextField.setPrefColumnCount(20); //***
 
-        Button xmlLoadButton = new Button("Load XML File");
-        xmlLoadButton.setOnAction(event -> xmlLoadButton());
+        Button loadButton = new Button("Load XML File");
+        loadButton.setOnAction(event -> loadButton());
 
-        holder.getChildren().addAll(prompt, myTextField, xmlLoadButton);
-        return holder;
-    }
-
-    private VBox setupUserButtons() {
-        VBox holder = new VBox(DEFAULT_NODE_SPACING);
-
-        Text prompt = new Text(textElements.getString("userInputPrompt"));
-        prompt.setFont(new Font(textElements.getString("font"), FONT_SIZE));
-        prompt.setFill(FONT_COLOR);
-
-        Button userLoadButton = new Button("   Load   ");
-        userLoadButton.setOnAction(event -> userLoadButton());
-
-        holder.getChildren().addAll(prompt, userLoadButton);
+        holder.getChildren().addAll(prompt, myTextField, loadButton);
         return holder;
     }
 
@@ -280,20 +201,6 @@ public class SimulationRunner extends Application {
         return sp;
     }
 
-    private void startButton() {
-        isSimRunning = true;
-    }
-
-    private void stopButton() {
-        isSimRunning = false;
-    }
-
-    private void stepButton() {
-        isSimRunning = false;
-        shouldStep = true;
-        delayLeft = 0;
-    }
-
     private void shapeButton() {
         myShape = myShapeButtons.getSelectedToggle().getUserData().toString();
     }
@@ -303,46 +210,22 @@ public class SimulationRunner extends Application {
                 == textElements.getString("torus"));
     }
 
-    private void xmlLoadButton() {
-        isSimRunning = false;
-        topLevelGrid.getChildren().remove(noCurrGrid);
-        if (currSimulation != null)
-            topLevelGrid.getChildren().remove(currSimulation.getDisplay()); //***
-         // try {
+    private void loadButton() {
+        try {
             XMLFilename = String.format("%s%s", XML_FOLDER, myTextField.getText());
-            generateSimFromFilename();
-            scrollPane.setContent(currSimulation.getDisplay());
-            addMessage(myInfoBox, textElements.getString("startSimMessage"));
-//         } catch (Exception e) {
-//            currSimulation = null;
-//            scrollPane.setContent(noCurrGrid);
-//            addMessage(myInfoBox, textElements.getString("fileErrorMessage"));
-//         }
+            generateSimulation();
+            addMessage(myInfoBox, textElements.getString("defaultInfoboxMessage"));
+        } catch (Exception e) {
+            addMessage(myInfoBox, textElements.getString("fileErrorMessage"));
+        }
     }
 
-    private void generateSimFromFilename() {
-        GridStructure gs = fileParser.generateGrid(XMLFilename, isTorus);
+    private void generateSimulation() {
+        GridStructure gs = fileParser.generateGrid(XMLFilename,isTorus);
+        Stage stageForNewSim = new Stage();
         currSimulation = new Simulation(gs, myShape);
-    }
-
-    private void userLoadButton() {
-        isSimRunning = false;
-        topLevelGrid.getChildren().remove(noCurrGrid);
-        if (currSimulation != null)
-            topLevelGrid.getChildren().remove(currSimulation.getDisplay()); //***
-        // try {
-        generateSimFromCurrentInput();
-        scrollPane.setContent(currSimulation.getDisplay());
-        addMessage(myInfoBox, textElements.getString("startSimMessage"));
-//      } catch (Exception e) {
-//         currSimulation = null;
-//         scrollPane.setContent(noCurrGrid);
-//         addMessage(myInfoBox, textElements.getString("fileErrorMessage"));
-//      }
-    }
-
-    private void generateSimFromCurrentInput(){
-        //TODO: load a simulation from button input
+        SimulationUI sim = new SimulationUI(currSimulation,stageForNewSim);
+        allRunningSims.put(sim,stageForNewSim);
     }
 
     private void addMessage (Pane messageBox, String message) {
@@ -357,30 +240,9 @@ public class SimulationRunner extends Application {
     }
 
     private void step() {
-        if (currSimulation != null && (isSimRunning || shouldStep)){
-            if (delayLeft > 0){
-                delayLeft--;
-            } else {
-                checkSlider();
-                currSimulation.step();
-                if (shouldStep) {
-                    shouldStep = false;
-                } else {
-                    delayLeft = delay;
-                }
-            }
+        for (SimulationUI currSim : allRunningSims.keySet()){
+            currSim.step();
         }
-    }
-
-    private void checkSlider() {
-        double sliderValue = mySlider.getValue();
-        double spd = discretize(sliderValue);
-        delay = (int)(DEFAULT_SIM_DELAY * Math.pow(2, spd));
-    }
-
-    private double discretize(double continuousVal) {
-        double discreteVal = -1 * ((int) (2*continuousVal)) / 2;
-        return discreteVal;
     }
 
     public static void main(String[] args){

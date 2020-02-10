@@ -3,10 +3,8 @@ package cellsociety;
 import cellsociety.backend.Cell;
 import cellsociety.backend.gridstructures.GridStructure;
 import cellsociety.frontend.*;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Shape;
 
 public class Simulation {
     public static final double DISPLAY_HEIGHT = 500;
@@ -34,7 +32,13 @@ public class Simulation {
         PRED_PREY_EMPTY(Color.TURQUOISE),
         RPS_ROCK(Color.color(0.0, 0.0, 0.0)),
         RPS_PAPER(Color.color(1.0, 1.0, 1.0)),
-        RPS_SCISSORS(Color.color(0.5, 0.5, 0.5));
+        RPS_SCISSORS(Color.color(0.5, 0.5, 0.5)),
+        ANT_EMPTY(Color.WHITE),
+        ANT_PHEROMONES(Color.LIGHTGREEN),
+        ANT_FOOD(Color.BLUEVIOLET),
+        ANT_NEST(Color.ORANGERED),
+        ANT_FULL(Color.DARKGREEN);
+
 
         private Color stateColor;
         AllStates(Color p) { stateColor = p; }
@@ -46,10 +50,9 @@ public class Simulation {
 
     public Simulation(GridStructure gs, String shape) {
         gridStruct = gs;
-        rowNum = gs.getRowNum(); //***
-        colNum = gs.getColNum(); //***
+        rowNum = gs.getRowNum();
+        colNum = gs.getColNum();
         cellShape = shape;
-//       = DISPLAY_WIDTH/rowNum/2;
         initDisplay();
     }
 
