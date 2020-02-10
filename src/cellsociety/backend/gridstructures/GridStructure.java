@@ -13,13 +13,15 @@ public abstract class GridStructure {
     private List<Double> statePercents;
     private List<String> states;
     private int neighborhoodType;
+    private boolean isTorus;
 
-    public GridStructure(int rowNum, int colNum, List<Double> percents, List<String> states, int neighborhoodType) {
+    public GridStructure(int rowNum, int colNum, List<Double> percents, List<String> states, int neighborhoodType, boolean isTorus) {
         this.rowNum = rowNum;
         this.colNum = colNum;
         this.states = states;
         this.statePercents = percents;
         this.neighborhoodType = neighborhoodType;
+        this.isTorus = isTorus;
     }
 
     protected abstract void calcNewStates();
@@ -116,7 +118,22 @@ public abstract class GridStructure {
         if (rowValid && colValid){
             return gridStructure[row][col];
         }
+        else if(isTorus){
+            return getTorusCoords(row,col);
+        }
         return null;
+    }
+
+    private Cell getTorusCoords(int row, int col){
+        if(row < 0)
+            row = rowNum - 1;
+        if(col < 0)
+            col = colNum - 1;
+        if(col >= colNum)
+            col = 0;
+        if(row >= rowNum)
+            row = 0;
+        return gridStructure[row][col];
     }
 
     private void updateCellStates() {
