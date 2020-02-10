@@ -79,9 +79,11 @@ public abstract class GridStructure {
                 List<Cell> neighbors = new ArrayList<>();
                 switch(neighborhoodType){
                     //TODO: make different configurations of neighbors
-                    case 2:
+                    case 3:
+                        neighbors = getNeighborsThree(row,col);
                         break;
                     case 4:
+                        neighbors = getNeighborsFour(row,col);
                         break;
                     case 8:
                         neighbors = getNeighborsEight(row, col);
@@ -91,6 +93,27 @@ public abstract class GridStructure {
                 gridStructure[row][col].setNeighbors(neighbors); //***
             }
         }
+    }
+
+    private List<Cell> getNeighborsThree(int row, int col){
+        List<Cell> neighbors = new ArrayList<>();
+        neighbors.add(isValidCoords(row,col - 1));
+        neighbors.add(isValidCoords(row,col+1));
+        boolean pointedUp = ((row+col)%2 == 1);
+        if(pointedUp)
+            neighbors.add(isValidCoords(row + 1, col));
+        else
+            neighbors.add(isValidCoords(row - 1, col));
+        return neighbors;
+    }
+
+    private List<Cell> getNeighborsFour(int row, int col){
+        List<Cell> neighbors = new ArrayList<>();
+        neighbors.add(isValidCoords(row - 1, col));
+        neighbors.add(isValidCoords(row, col+1));
+        neighbors.add(isValidCoords(row+1,col));
+        neighbors.add(isValidCoords(row, col-1));
+        return neighbors;
     }
 
     private void removeNulls(List<Cell> neighbors) {
