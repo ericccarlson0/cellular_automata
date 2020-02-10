@@ -16,40 +16,54 @@ import javafx.stage.Stage;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * SimulationUI is a class that holds a Simulation object, which it accesses to update and display when the step()
+ * function is called.
+ * 'display' is the Scene that is passed to its Stage, 'stage'
+ * 'topLevelGrid' is the GridPane that holds the rendering of the cell matrix in addition to all of the UI controls
+ * 'slider' is the Slider UI control that controls the speed of the simulation
+ * In addition, there are 'start', 'stop', and 'step' buttons that are used to control the flow of the simulation.
+ */
 public class SimulationUI {
-    private Simulation simulation;
 
-    private static final String SPEED_PROMPT = "SPEED: ";
     public static final Color FONT_COLOR = Color.color(0.0, 0.0, 0.4);
+    public static final Color DISPLAY_COLOR = Color.color(0.9, 0.9, 1.0);
     public static final int FONT_SIZE = 16;
     private static final double DEFAULT_NODE_SPACING = 12;
-    public static final Color DISPLAY_COLOR = Color.color(0.9, 0.9, 1.0);
     private Stage stage;
     private Scene display;
     private GridPane topLevelGrid;
     private boolean shouldStep;
     private boolean isRunning;
-    private ScrollPane scrollPane;
     private int delay;
     private int delayLeft;
     private static final int DEFAULT_SIM_DELAY = 20;
     public static final String RESOURCE_FOLDER = "/resources/";
     public static final String STYLESHEET = "default.css";
-    private static final String DEFAULT_FONT = "Menlo";
     public static final int PADDING = 10;
     public static final int V_GAP = 10;
     public static final int H_GAP = 50;
     public static final int GRID_WIDTH = 600;
     public static final int GRID_HEIGHT = 600;
-    public static final double DISPLAY_HEIGHT = 400;
     public static final double DISPLAY_WIDTH = 400;
+    public static final double DISPLAY_HEIGHT = 400;
     public static final double TOTAL_WIDTH = 550;
     public static final double TOTAL_HEIGHT = 550;
-    private Slider mySlider;
+    private Slider slider;
 
+    private Simulation simulation;
     Locale locale = Locale.ENGLISH;
     ResourceBundle textElements = ResourceBundle.getBundle("resources.TextElements", locale);
 
+    /**
+     * The constructor for each SimulationUI initializes variables and then calls initUI() -- this method sets up
+     * the display (the cell matrix and the UI controls), adds the display to the stage, and shows the stage.
+     * @param sim:  A Simulation object is created and passed to the SimulationUI in order for it to be updated and
+     *           displayed. As of now, this object can only be created by an XMLParser in SimulationMenu, but it does
+     *           not seem to be too much of a stretch to create it using only UI controls that the user selects.
+     * @param stageForNewSim:   This is the stage object passed so that SimulationUI may act as an independent pop-
+     *                      up window.
+     */
     public SimulationUI(Simulation sim, Stage stageForNewSim) {
         stage = stageForNewSim;
         simulation = sim;
@@ -102,6 +116,14 @@ public class SimulationUI {
         return ret;
     }
 
+    /**
+     * The step() is called from the Timeline in SimulationMenu at the end of each frame. It depends on a 'delay',
+     * which decreases on each step and prevents an update occurring up to when it becomes zero. This delay is what
+     * is actually changed when the "speed" of the simulation is changed -- it becomes half of what it used to be
+     * when 2X speed is selected, for example.
+     * The function uses isRunning to determine whether the function is active, and shouldStep to determine if the
+     * 'step' button has been pressed within the last frame.
+     */
     public void step() {
         if ((isRunning || shouldStep)){
             if (delayLeft > 0){
@@ -150,18 +172,18 @@ public class SimulationUI {
         HBox holder = new HBox(DEFAULT_NODE_SPACING);
         Text text = createPrompt(textElements.getString("speedPrompt"));
 
-        mySlider = new Slider(-2, 4, 0);
-        mySlider.setLayoutX(300);
-        mySlider.setSnapToTicks(true);
-        mySlider.setMajorTickUnit(1.0f);
-        mySlider.setBlockIncrement(0.5f);
+        slider = new Slider(-2, 4, 0);
+        slider.setLayoutX(300);
+        slider.setSnapToTicks(true);
+        slider.setMajorTickUnit(1.0f);
+        slider.setBlockIncrement(0.5f);
 
-        holder.getChildren().addAll(text, mySlider);
+        holder.getChildren().addAll(text, slider);
         return holder;
     }
 
     private void checkSlider() {
-        double sliderValue = mySlider.getValue();
+        double sliderValue = slider.getValue();
         double spd = discretize(sliderValue);
         delay = (int)(DEFAULT_SIM_DELAY * Math.pow(2, spd));
     }
