@@ -56,6 +56,7 @@ public class SimulationRunner extends Application {
     private static final String NO_TORUS = "FLAT GRID";
     private static final String FILENAME_PROMPT = "FILENAME: ";
     private static final String SPEED_PROMPT = "SPEED: ";
+    private static final String USER_INPUT_PROMPT = "PRESS TO LOAD CURRENT INPUT:"; //***
 
     private Rectangle noCurrGrid = new Rectangle(DISPLAY_WIDTH, DISPLAY_HEIGHT,
             Color.color(0.2, 0.2, .6));
@@ -144,6 +145,9 @@ public class SimulationRunner extends Application {
         VBox torusButtons = setupTorusButtons();
         topLevelGrid.add(torusButtons, 2, 2);
 
+        VBox userButtons = setupUserButtons();
+        topLevelGrid.add(userButtons, 2, 3); //***
+
         root.getChildren().add(topLevelGrid);
         simDisplay = new Scene(root, TOTAL_WIDTH, TOTAL_HEIGHT, DISPLAY_COLOR);
 
@@ -195,7 +199,7 @@ public class SimulationRunner extends Application {
     }
 
     private HBox setupBottomButtons() {
-        HBox buttonHolder = new HBox(DEFAULT_NODE_SPACING);
+        HBox holder = new HBox(DEFAULT_NODE_SPACING);
 
         Text prompt = new Text(FILENAME_PROMPT);
         prompt.setFont(new Font(DEFAULT_FONT, FONT_SIZE));
@@ -203,11 +207,25 @@ public class SimulationRunner extends Application {
         myTextField = new TextField();
         // myTextField.setPrefColumnCount(20); //***
 
-        Button loadButton = new Button("Load");
-        loadButton.setOnAction(event -> loadButton());
+        Button xmlLoadButton = new Button("Load XML File");
+        xmlLoadButton.setOnAction(event -> xmlLoadButton());
 
-        buttonHolder.getChildren().addAll(prompt, myTextField, loadButton);
-        return buttonHolder;
+        holder.getChildren().addAll(prompt, myTextField, xmlLoadButton);
+        return holder;
+    }
+
+    private VBox setupUserButtons() {
+        VBox holder = new VBox(DEFAULT_NODE_SPACING);
+
+        Text prompt = new Text(USER_INPUT_PROMPT);
+        prompt.setFont(new Font(DEFAULT_FONT, FONT_SIZE));
+        prompt.setFill(FONT_COLOR);
+
+        Button userLoadButton = new Button("   Load   ");
+        userLoadButton.setOnAction(event -> userLoadButton());
+
+        holder.getChildren().addAll(prompt, userLoadButton);
+        return holder;
     }
 
     private VBox setupShapeButtons() {
@@ -285,14 +303,14 @@ public class SimulationRunner extends Application {
                 == TORUS);
     }
 
-    private void loadButton() {
+    private void xmlLoadButton() {
         isSimRunning = false;
         topLevelGrid.getChildren().remove(noCurrGrid);
         if (currSimulation != null)
             topLevelGrid.getChildren().remove(currSimulation.getDisplay()); //***
          // try {
             XMLFilename = String.format("%s%s", XML_FOLDER, myTextField.getText());
-            generateSimulation();
+            generateSimFromFilename();
             scrollPane.setContent(currSimulation.getDisplay());
             addMessage(myInfoBox, START_SIM_MESSAGE);
 //         } catch (Exception e) {
@@ -302,9 +320,29 @@ public class SimulationRunner extends Application {
 //         }
     }
 
-    private void generateSimulation() {
+    private void generateSimFromFilename() {
         GridStructure gs = fileParser.generateGrid(XMLFilename);
         currSimulation = new Simulation(gs, myShape);
+    }
+
+    private void userLoadButton() {
+        isSimRunning = false;
+        topLevelGrid.getChildren().remove(noCurrGrid);
+        if (currSimulation != null)
+            topLevelGrid.getChildren().remove(currSimulation.getDisplay()); //***
+        // try {
+        generateSimFromCurrentInput();
+        scrollPane.setContent(currSimulation.getDisplay());
+        addMessage(myInfoBox, START_SIM_MESSAGE);
+//      } catch (Exception e) {
+//         currSimulation = null;
+//         scrollPane.setContent(noCurrGrid);
+//         addMessage(myInfoBox, FILE_ERROR_MESSAGE);
+//      }
+    }
+
+    private void generateSimFromCurrentInput(){
+
     }
 
     private void addMessage (Pane messageBox, String message) {
