@@ -5,8 +5,6 @@ import cellsociety.backend.gridstructures.GridStructure;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -34,7 +32,6 @@ public class SimulationMenu extends Application {
     public static final Color DISPLAY_COLOR = Color.color(0.9, 0.9, 1.0);
     public static final Color FONT_COLOR = Color.color(0.0, 0.0, 0.4);
     public static final int FONT_SIZE = 16;
-
     public static final int PADDING = 5;
     public static final int V_GAP = 10;
     public static final int H_GAP = 50;
@@ -43,7 +40,6 @@ public class SimulationMenu extends Application {
     public static final int TOTAL_HEIGHT = 500;
     private static final double DEFAULT_NODE_SPACING = 12;
     private static final int BUTTON_SPACING = 4;
-    private static final int DEFAULT_SIM_DELAY = 20;
 
     private String myShape;
     private boolean isTorus = false;
@@ -233,7 +229,7 @@ public class SimulationMenu extends Application {
     }
 
     private void generateSimulation() {
-        GridStructure gs = fileParser.generateGrid(XMLFilename,isTorus);
+        GridStructure gs = fileParser.generateGrid(XMLFilename, isTorus, neighborhoodType);
         Stage stageForNewSim = new Stage();
         currSimulation = new Simulation(gs, myShape);
         SimulationUI sim = new SimulationUI(currSimulation,stageForNewSim);
