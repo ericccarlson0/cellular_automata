@@ -78,7 +78,6 @@ public abstract class GridStructure {
             for (int col = 0; col < colNum; col++) {
                 List<Cell> neighbors = new ArrayList<>();
                 switch(neighborhoodType){
-                    //TODO: make different configurations of neighbors
                     case 3:
                         neighbors = getNeighborsThree(row,col);
                         break;
@@ -123,12 +122,6 @@ public abstract class GridStructure {
         neighbors.add(isValidCoords(row+1,col));
         neighbors.add(isValidCoords(row, col-1));
         return neighbors;
-    }
-
-    private void removeNulls(List<Cell> neighbors) {
-        // Found at:
-        // https://stackoverflow.com/questions/4819635/how-to-remove-all-null-elements-from-a-arraylist-or-string-array
-        neighbors.removeAll(Collections.singleton(null));
     }
 
     private List<Cell> getNeighborsSix(int row, int col){
@@ -201,6 +194,12 @@ public abstract class GridStructure {
             neighbors.add(c);
         }
         return neighbors;
+    }
+
+    private void removeNulls(List<Cell> neighbors) {
+        // Found at:
+        // https://stackoverflow.com/questions/4819635/how-to-remove-all-null-elements-from-a-arraylist-or-string-array
+        neighbors.removeAll(Collections.singleton(null));
     }
 
     private Cell isValidCoords(int row, int col) {
