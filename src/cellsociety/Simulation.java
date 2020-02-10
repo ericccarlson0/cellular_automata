@@ -73,7 +73,7 @@ public class Simulation {
             gridDisplay = new TriangleDisplay(rowNum, colNum);
         } else if (cellShape.equals("HEXAGON")) {
             gridDisplay = new HexagonDisplay(rowNum, colNum);
-        } else if (cellShape.equals("CIRCLE")){
+        } else if (cellShape.equals("CIRCLE")) {
             gridDisplay = new CircleDisplay(rowNum, colNum);
         } else {
             gridDisplay = new SquareDisplay(rowNum, colNum);
