@@ -67,13 +67,13 @@ public class Simulation {
     }
 
     private void selectInitGrid(){
-        if (cellShape == "DIAMOND") {
+        if (cellShape.equals("DIAMOND")) {
             gridDisplay = new DiamondDisplay(rowNum, colNum);
-        } else if (cellShape == "TRIANGLE") {
+        } else if (cellShape.equals("TRIANGLE")) {
             gridDisplay = new TriangleDisplay(rowNum, colNum);
-        } else if (cellShape == "HEXAGON") {
+        } else if (cellShape.equals("HEXAGON")) {
             gridDisplay = new HexagonDisplay(rowNum, colNum);
-        } else if (cellShape == "CIRCLE") {
+        } else if (cellShape.equals("CIRCLE")){
             gridDisplay = new CircleDisplay(rowNum, colNum);
         } else {
             gridDisplay = new SquareDisplay(rowNum, colNum);

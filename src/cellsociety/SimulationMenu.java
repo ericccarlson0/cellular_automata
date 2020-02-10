@@ -32,24 +32,14 @@ public class SimulationMenu extends Application {
     public static final Color DISPLAY_COLOR = Color.color(0.9, 0.9, 1.0);
     public static final Color FONT_COLOR = Color.color(0.0, 0.0, 0.4);
     public static final int FONT_SIZE = 16;
-
     public static final int PADDING = 5;
     public static final int V_GAP = 10;
     public static final int H_GAP = 50;
     public static final int BOX_WIDTH = 100;
     public static final int TOTAL_WIDTH = 1000;
     public static final int TOTAL_HEIGHT = 750;
-    public static final int GRID_WIDTH = 600;
-    public static final int GRID_HEIGHT = 600;
-    private static final double DISPLAY_WIDTH = 450;
-    private static final double DISPLAY_HEIGHT = 450;
     private static final double DEFAULT_NODE_SPACING = 12;
     private static final int BUTTON_SPACING = 4;
-    private static final int DEFAULT_SIM_DELAY = 20;
-
-    private Rectangle noCurrGrid = new Rectangle(GRID_WIDTH, GRID_HEIGHT,
-            Color.color(0.2, 0.2, .6));
-
     private String myShape;
     private boolean isTorus = false;
 
@@ -66,6 +56,7 @@ public class SimulationMenu extends Application {
     private ToggleGroup myShapeButtons;
     private ToggleGroup myTorusButtons;
     HashMap<SimulationUI, Stage> allRunningSims;
+    private int neighborhoodType;
 
     Locale locale = Locale.ENGLISH;
     ResourceBundle textElements = ResourceBundle.getBundle("resources.TextElements", locale);
@@ -221,7 +212,7 @@ public class SimulationMenu extends Application {
     }
 
     private void generateSimulation() {
-        GridStructure gs = fileParser.generateGrid(XMLFilename,isTorus);
+        GridStructure gs = fileParser.generateGrid(XMLFilename,isTorus,neighborhoodType);
         Stage stageForNewSim = new Stage();
         currSimulation = new Simulation(gs, myShape);
         SimulationUI sim = new SimulationUI(currSimulation,stageForNewSim);
