@@ -5,9 +5,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
 /**
  * Abstract class that represents and holds all necessary information about the GridStructure and backend half of the program.
  * This class is extended when each new simulation type is added.
+ *
+ * Masterpiece Modifications:
+ * I modified the getEightNeighborhood function to remove redundant code and call the getFourNeighborhood cell instead.
+ * I also modified the setNeighbors function to remove the switch statement and move it to a different function. Instead of having a switch statement inside of the for loop, I call a function inside the loop every time.
+ * If my masterpiece could include more code, I would make cellList private and create an accessor to it, but this would require small modifications to all GridStructure subclasses. I discussed this as a flaw and a necessary change in my Analysis.md
  */
 public abstract class GridStructure {
     protected List<Cell> cellList;
@@ -109,30 +115,35 @@ public abstract class GridStructure {
         return states.get(-1);
     }
 
+    private List<Cell> selectCorrectType(int row, int col,int neighborhoodType){
+        List<Cell> neighbors = null;
+        switch(neighborhoodType){
+            case 3:
+                neighbors = getNeighborsThree(row,col);
+                break;
+            case 4:
+                neighbors = getNeighborsFour(row,col);
+                break;
+            case 6:
+                neighbors = getNeighborsSix(row,col);
+                break;
+            case 8:
+                neighbors = getNeighborsEight(row, col);
+                break;
+            case 9:
+                neighbors = getNeighborsNine(row,col);
+                break;
+            case 12:
+                neighbors = getNeighborsTwelve(row,col);
+                break;
+        }
+        return neighbors;
+    }
+
     private void initCellNeighbors(int neighborhoodType) {
         for (int row = 0; row < rowNum; row++) {
             for (int col = 0; col < colNum; col++) {
-                List<Cell> neighbors = new ArrayList<>();
-                switch(neighborhoodType){
-                    case 3:
-                        neighbors = getNeighborsThree(row,col);
-                        break;
-                    case 4:
-                        neighbors = getNeighborsFour(row,col);
-                        break;
-                    case 6:
-                        neighbors = getNeighborsSix(row,col);
-                        break;
-                    case 8:
-                        neighbors = getNeighborsEight(row, col);
-                        break;
-                    case 9:
-                        neighbors = getNeighborsNine(row,col);
-                        break;
-                    case 12:
-                        neighbors = getNeighborsTwelve(row,col);
-                        break;
-                }
+                List<Cell> neighbors = selectCorrectType(row,col,neighborhoodType);
                 removeNulls(neighbors);
                 gridStructure[row][col].setNeighbors(neighbors); //***
             }
@@ -181,15 +192,11 @@ public abstract class GridStructure {
     }
 
     private List<Cell> getNeighborsEight(int row, int col) {
-        List<Cell> neighbors = new ArrayList<>();
+        List<Cell> neighbors = getNeighborsFour(row, col);
         neighbors.add(isValidCoords(row - 1, col - 1));
-        neighbors.add(isValidCoords(row - 1,col));
         neighbors.add(isValidCoords(row - 1,col + 1));
-        neighbors.add(isValidCoords(row,col + 1));
         neighbors.add(isValidCoords(row + 1,col + 1));
-        neighbors.add(isValidCoords(row + 1,col));
         neighbors.add(isValidCoords(row + 1,col - 1));
-        neighbors.add(isValidCoords(row,col - 1));
         return neighbors;
     }
 
