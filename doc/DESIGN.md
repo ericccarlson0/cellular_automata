@@ -19,8 +19,16 @@
  * Simulation Types
     * simply add a new gridStructure subclass, add state types to Simulation.AllStates, and 
  * Shapes
+    * To add new cell shape types, create a new gridDisplay subclass.
+    * this subclass will handle calculations for deciding how it displays
+    * add to the method in simulation that takes in string type for creation of diff shaped displays
+    * add in new button corresponding to shape in SimulationMenu
  * Neighborhood Types
+    * Implement a new method in gridstructures to calculate which cells from structure get added to neighborhood
+    * add method to switch case where neighborhoodType selects which getNeighbors function to call
  * Interactive Display Features
+    * This would require adding some buttons in SimulationUI that change values that are passed into simulation.
+    * wouldnt require structural changes, just adding of a few methods
 
 ## High-level Design
 
@@ -57,13 +65,38 @@
 
 
 ## Assumptions that Affect the Design
+ * Most assumptions are in the formatting of the XML file.
+ * This creates random assortment of cells based on percentages of total grid
+ * Specifies simulation specific parameters in here under a <misc> tag
+ * Nice because allows all XML files to be the same format
 
 #### Features Affected by Assumptions
+ * Shapes and Neighborhood types cant be specified from XML files
+ * No specific display layout can be specified - did this because it didnt seem to make sense to have to specify states manually for all cells in a 100x100 grid(10k cells)
 
 
 ## New Features HowTo
 
 #### Easy to Add Features
+ * Simulation Types
+    * simply add a new gridStructure subclass, add state types to Simulation.AllStates, and 
+ * Shapes
+    * To add new cell shape types, create a new gridDisplay subclass.
+    * this subclass will handle calculations for deciding how it displays
+    * add to the method in simulation that takes in string type for creation of diff shaped displays
+    * add in new button corresponding to shape in SimulationMenu
+ * Neighborhood Types
+    * Implement a new method in gridstructures to calculate which cells from structure get added to neighborhood
+    * add method to switch case where neighborhoodType selects which getNeighbors function to call
 
 #### Other Features not yet Done
+ * Interactive Display Features
+    * This would require adding some buttons in SimulationUI that change values that are passed into simulation.
+    * wouldnt require structural changes, just adding of a few methods
+ * Specifying certain cells to change by clicking
+    * would require tracking of mouse clicks in SimulationUI, which would require passing of a parameter to Simulation to swap states
+    * wouldnt require major structural changes, just adding of a few methods to the SimulationUI and Simulation classes.
+ * Infinitely expanding grid
+    * Would require changing structure to an arraylist and then adding a method to add new rows or columns to the structure depending on where expansion was needed.
+    * Could get very slow on runtime eventually. Scrolling is already implemented to allow for this later though.
 
