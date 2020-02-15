@@ -6,7 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
+ * Abstract class that represents and holds all necessary information about the GridStructure and backend half of the program.
+ * This class is extended when each new simulation type is added.
  */
 public abstract class GridStructure {
     protected List<Cell> cellList;
