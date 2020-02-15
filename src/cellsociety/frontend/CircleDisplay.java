@@ -8,10 +8,21 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 public class CircleDisplay extends GridDisplay {
+    /**
+     * A descendant of GridDisplay, CircleDisplay represents a geometric matrix of cells. It is a matrix of circles
+     * whose successive rows (or columns, for that matter) are offset (as would be the case in a matrix of diamonds).
+     * These are sized and stretched in order to fit the specified row- and column-numbers.
+     */
     public CircleDisplay(int rowNum, int colNum) {
         super(rowNum, colNum);
     }
 
+    /**
+     *
+     * @param row int representing row where new shape being created should be
+     * @param col int representing col where new shape being created should be
+     * @return
+     */
     protected Shape createShape(int row, int col) {
         double unitHeight = Simulation.DISPLAY_HEIGHT/getNumRows() + 1;
         double unitWidth = Simulation.DISPLAY_WIDTH/getNumCols() + 1;

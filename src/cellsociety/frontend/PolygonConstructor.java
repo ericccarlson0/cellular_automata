@@ -3,6 +3,11 @@ package cellsociety.frontend;
 public class PolygonConstructor {
     public static final double SQRT_THREE = Math.sqrt(3);
     public static final double SQRT_TWO = Math.sqrt(2);
+
+    /**
+     * An object that is created in order to perform certain methods (like the Random() object), PolygonConstructor
+     * provides methods for calculating crucial lengths of polygons and for creating those polygons (as Shape objects).
+     */
     public PolygonConstructor(){ }
 
     double[] calcPolygonLengths(double radius, int n) {

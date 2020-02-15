@@ -7,6 +7,12 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 
 public class HexagonDisplay extends GridDisplay {
+    /**
+     * A descendant of GridDisplay, HexagonDisplay represents a geometric matrix of cells. It is a matrix of hexagons
+     * organized as is typical, with six neighbors to each cell. These are sized and stretched in order to fit the
+     * specified row- and column-numbers. Note: this results in around 2X vertical stretching when the row- and column-
+     * numbers are the same due to the fact that successive rows interlock so closely.
+     */
     public HexagonDisplay(int rowNum, int colNum) {
         super(rowNum, colNum);
     }

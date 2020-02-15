@@ -9,6 +9,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 public class DiamondDisplay extends GridDisplay {
+    /**
+     * A descendant of GridDisplay, DiamondDisplay represents a geometric matrix of cells. It is a matrix of diamonds
+     * whose successive rows (or columns, for that matter) are offset in order to fit as many as possible. These are
+     * sized and stretched in order to fit the specified row- and column-numbers.
+     */
     public DiamondDisplay(int rowNum, int colNum) {
         super(rowNum, colNum);
     }

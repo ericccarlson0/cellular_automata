@@ -7,6 +7,11 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 
 public class TriangleDisplay extends GridDisplay {
+    /**
+     * A descendant of GridDisplay, TriangleDisplay represents a geometric matrix of cells. It is a matrix of triangles
+     * organized as is typical, with each triangle rotated upside-down compared to the neighbors in its row. These are
+     * sized and stretched in order to fit the specified row- and column-numbers.
+     */
     public TriangleDisplay(int rowNum, int colNum) {
         super(rowNum, colNum);
     }

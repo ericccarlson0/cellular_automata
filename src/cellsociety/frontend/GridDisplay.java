@@ -6,12 +6,13 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
 
 /**
- * Abstract class representing the Grid Display frontend object that holds and handles the display of the backend GridStructure
+ * Abstract class representing the Grid Display object (frontend) that holds and handles the display of the backend
+ * GridStructure object (backend).
  */
 public abstract class GridDisplay {
 
     /**
-     * enumerator to specify different CellShape types
+     * Enumerator to specify different CellShape types.
      */
     enum CellShape {
          SQUARE, DIAMOND, TRIANGLE, HEXAGON, CIRCLE

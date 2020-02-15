@@ -9,6 +9,10 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 public class SquareDisplay extends GridDisplay {
+    /**
+     * A descendant of GridDisplay, SquareDisplay represents the typical matrix of cellular automata. It is a matrix of
+     * squares which are stretched in order to fit the specified row- and column-numbers.
+     */
     public SquareDisplay(int rowNum, int colNum) {
         super(rowNum, colNum);
         setCellRadius((Simulation.DISPLAY_WIDTH/colNum)/2);
