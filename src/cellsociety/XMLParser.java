@@ -13,11 +13,16 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-
+/**
+ * XMLParser object that is created in the Menu that allows for parsing and handling of XML Files
+ */
 public class XMLParser {
     private final DocumentBuilder DOCUMENT_BUILDER;
     private ArrayList<String> validSimTypes;
 
+    /**
+     * Constructor for XML Parser
+     */
     public XMLParser() {
         DOCUMENT_BUILDER = getDocumentBuilder();
         SimulationMenu.SimulationType[] validSims = SimulationMenu.SimulationType.values();
@@ -27,6 +32,13 @@ public class XMLParser {
         }
     }
 
+    /**
+     * generates a GridStructure object based on xml file and specified values if the xml file is of a valid format
+     * @param xmlFilename String representing the filename of the xml file this structure object is being created based off of.
+     * @param isTorus boolean representing whether the new sim being created should follow torus functionality
+     * @param neighborhoodType int representing neighborhood type for simulation being created
+     * @return GridStructure object created based on specifications of xml filename and parameters passed in, null if invalid
+     */
     public GridStructure generateGrid (String xmlFilename, boolean isTorus, int neighborhoodType) {
         File dataFile = new File(xmlFilename);
         Element root = getRootElement(dataFile);
